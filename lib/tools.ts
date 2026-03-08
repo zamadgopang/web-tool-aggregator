@@ -117,7 +117,21 @@ export const tools: Tool[] = [
 ]
 
 export function getToolBySlug(slug: string): Tool | undefined {
-  return tools.find((tool) => tool.slug === slug)
+  const foundTool = tools.find((tool) => tool.slug === slug)
+  if (!foundTool) return undefined
+  // Ensure we return a plain serializable object
+  return {
+    id: foundTool.id,
+    slug: foundTool.slug,
+    title: foundTool.title,
+    description: foundTool.description,
+    longDescription: foundTool.longDescription,
+    iconName: foundTool.iconName,
+    tag: foundTool.tag,
+    category: foundTool.category,
+    inputFormats: foundTool.inputFormats,
+    outputFormats: foundTool.outputFormats,
+  }
 }
 
 export function getToolsByCategory(category: ToolCategory): Tool[] {
