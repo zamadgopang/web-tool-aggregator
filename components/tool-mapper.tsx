@@ -9,6 +9,7 @@ import { JSONFormatter } from "@/components/tools/json-formatter"
 import { QRCodeGenerator } from "@/components/tools/qr-code-generator"
 import { UnitConverter } from "@/components/tools/unit-converter"
 import { TextMinifier } from "@/components/tools/text-minifier"
+import { SVGToPNG } from "@/components/tools/svg-to-png"
 import { MarkdownPreview } from "@/components/tools/markdown-preview"
 import { RegexTester } from "@/components/tools/regex-tester"
 import { URLEncoderDecoder } from "@/components/tools/url-encoder-decoder"
@@ -32,6 +33,7 @@ const toolComponents: Record<string, React.ComponentType> = {
   "qr-code-generator": QRCodeGenerator,
   "unit-converter": UnitConverter,
   "text-minifier": TextMinifier,
+  "svg-to-png": SVGToPNG,
   "markdown-preview": MarkdownPreview,
   "regex-tester": RegexTester,
   "url-encoder-decoder": URLEncoderDecoder,
@@ -65,9 +67,6 @@ export function ToolMapper({ toolId, onBack }: ToolMapperProps) {
         <ArrowLeft className="h-4 w-4 mr-2" />
         Back to Tools
       </Button>
-      <Component />
-    </div>
-  )
       <Component />
     </div>
   )
