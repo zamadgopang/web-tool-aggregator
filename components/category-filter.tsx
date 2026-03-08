@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { Image, FileText, FileType, Code, Film, LayoutGrid } from "lucide-react"
+import { Image, FileText, FileType, Code, Film, LayoutGrid, Zap, Wrench } from "lucide-react"
 
 const categories = [
   { id: "all", label: "All Tools", icon: LayoutGrid },
@@ -10,6 +10,8 @@ const categories = [
   { id: "document", label: "Document Converters", icon: FileType },
   { id: "developer", label: "Developer", icon: Code },
   { id: "media", label: "Media", icon: Film },
+  { id: "text", label: "Text Tools", icon: Zap },
+  { id: "utility", label: "Utilities", icon: Wrench },
 ]
 
 interface CategoryFilterProps {
