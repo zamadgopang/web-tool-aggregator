@@ -1,7 +1,6 @@
-import { Image, FileText, FileType, Film, Code } from "lucide-react"
-
 export type ToolCategory = "image" | "pdf" | "document" | "media" | "developer"
 export type ToolTag = "Client-side" | "Hot" | "New"
+export type ToolIconName = "image" | "file-text" | "file-type" | "film" | "code"
 
 export interface Tool {
   id: string
@@ -9,7 +8,7 @@ export interface Tool {
   title: string
   description: string
   longDescription: string
-  icon: typeof Image
+  iconName: ToolIconName
   tag: ToolTag
   category: ToolCategory
   inputFormats?: string[]
@@ -23,7 +22,7 @@ export const tools: Tool[] = [
     title: "Image Converter",
     description: "Convert any image format instantly in your browser.",
     longDescription: "Convert between popular image formats like JPG, PNG, WebP, GIF, BMP, and HEIC. All processing happens locally in your browser for maximum privacy and speed.",
-    icon: Image,
+    iconName: "image",
     tag: "Client-side",
     category: "image",
     inputFormats: ["jpg", "jpeg", "png", "webp", "gif", "bmp", "heic", "svg", "tiff", "ico"],
@@ -35,7 +34,7 @@ export const tools: Tool[] = [
     title: "HEIC to JPG",
     description: "Convert iPhone photos instantly in your browser.",
     longDescription: "Convert HEIC photos from your iPhone or iPad to universal JPG format. No upload required - everything is processed locally.",
-    icon: Image,
+    iconName: "image",
     tag: "Client-side",
     category: "image",
     inputFormats: ["heic"],
@@ -47,7 +46,7 @@ export const tools: Tool[] = [
     title: "WebP to PNG",
     description: "Fast, client-side image format conversion.",
     longDescription: "Convert WebP images to PNG format for better compatibility. Processing happens entirely in your browser.",
-    icon: Image,
+    iconName: "image",
     tag: "Hot",
     category: "image",
     inputFormats: ["webp"],
@@ -59,7 +58,7 @@ export const tools: Tool[] = [
     title: "Merge PDFs",
     description: "Combine multiple PDF documents securely without uploading.",
     longDescription: "Merge multiple PDF files into a single document. Drag and drop to reorder pages. All processing is done locally.",
-    icon: FileText,
+    iconName: "file-text",
     tag: "Client-side",
     category: "pdf",
   },
@@ -69,7 +68,7 @@ export const tools: Tool[] = [
     title: "Compress PDF",
     description: "Reduce file size instantly using WASM.",
     longDescription: "Compress PDF files to reduce their size while maintaining quality. Uses WebAssembly for fast local processing.",
-    icon: FileText,
+    iconName: "file-text",
     tag: "New",
     category: "pdf",
   },
@@ -79,7 +78,7 @@ export const tools: Tool[] = [
     title: "DOCX to PDF",
     description: "Convert Word documents with perfect formatting.",
     longDescription: "Convert Microsoft Word documents to PDF format while preserving all formatting, fonts, and layouts.",
-    icon: FileType,
+    iconName: "file-type",
     tag: "Client-side",
     category: "document",
   },
@@ -89,7 +88,7 @@ export const tools: Tool[] = [
     title: "CSV to Excel",
     description: "Instantly parse and convert spreadsheet data.",
     longDescription: "Convert CSV files to Excel format with proper column formatting and data types preserved.",
-    icon: FileType,
+    iconName: "file-type",
     tag: "Hot",
     category: "document",
   },
@@ -99,7 +98,7 @@ export const tools: Tool[] = [
     title: "Video to GIF",
     description: "Local FFmpeg processing right in your browser.",
     longDescription: "Convert video clips to animated GIFs using FFmpeg WASM. Adjust frame rate, size, and quality settings.",
-    icon: Film,
+    iconName: "film",
     tag: "New",
     category: "media",
   },
@@ -109,7 +108,7 @@ export const tools: Tool[] = [
     title: "SVG to PNG",
     description: "Render vector graphics into standard images.",
     longDescription: "Convert SVG vector graphics to PNG raster images at any resolution. Perfect for exporting icons and illustrations.",
-    icon: Code,
+    iconName: "code",
     tag: "Client-side",
     category: "developer",
   },

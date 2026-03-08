@@ -11,6 +11,7 @@ import {
   CommandList,
 } from "@/components/ui/command"
 import { tools } from "@/lib/tools"
+import { ToolIcon } from "@/components/tool-icon"
 
 const categoryLabels: Record<string, string> = {
   image: "Image Tools",
@@ -51,16 +52,14 @@ export function CommandSearch({ open, onOpenChange }: CommandSearchProps) {
       <CommandList>
         <CommandEmpty>No tools found.</CommandEmpty>
         <CommandGroup heading="Tools">
-          {tools.map((tool) => {
-            const Icon = tool.icon
-            return (
+          {tools.map((tool) => (
               <CommandItem 
                 key={tool.id} 
                 value={tool.title}
                 onSelect={() => handleSelect(tool.slug)}
                 className="flex items-center gap-3 cursor-pointer"
               >
-                <Icon className="h-4 w-4 text-muted-foreground" />
+                <ToolIcon name={tool.iconName} className="h-4 w-4 text-muted-foreground" />
                 <div className="flex flex-col">
                   <span>{tool.title}</span>
                   <span className="text-xs text-muted-foreground">
@@ -68,8 +67,7 @@ export function CommandSearch({ open, onOpenChange }: CommandSearchProps) {
                   </span>
                 </div>
               </CommandItem>
-            )
-          })}
+            ))}
         </CommandGroup>
       </CommandList>
     </CommandDialog>

@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { ArrowLeft, Shield, Zap, Lock } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { ToolIcon } from "@/components/tool-icon"
 import type { Tool } from "@/lib/tools"
 
 interface ToolPageLayoutProps {
@@ -11,8 +12,6 @@ interface ToolPageLayoutProps {
 }
 
 export function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
-  const Icon = tool.icon
-
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
@@ -29,7 +28,7 @@ export function ToolPageLayout({ tool, children }: ToolPageLayoutProps) {
         <div className="mb-8">
           <div className="flex items-start gap-4">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-secondary text-foreground">
-              <Icon className="h-7 w-7" />
+              <ToolIcon name={tool.iconName} className="h-7 w-7" />
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-3">

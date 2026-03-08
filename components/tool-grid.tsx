@@ -1,6 +1,7 @@
 "use client"
 
 import { ToolCard } from "@/components/tool-card"
+import { ToolIcon } from "@/components/tool-icon"
 import { tools } from "@/lib/tools"
 
 interface ToolGridProps {
@@ -15,20 +16,17 @@ export function ToolGrid({ activeCategory }: ToolGridProps) {
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {filteredTools.map((tool) => {
-        const Icon = tool.icon
-        return (
+      {filteredTools.map((tool) => (
           <ToolCard
             key={tool.id}
             slug={tool.slug}
             title={tool.title}
             description={tool.description}
-            icon={<Icon className="h-6 w-6" />}
+            icon={<ToolIcon name={tool.iconName} className="h-6 w-6" />}
             tag={tool.tag}
             category={tool.category}
           />
-        )
-      })}
+        ))}
     </div>
   )
 }
