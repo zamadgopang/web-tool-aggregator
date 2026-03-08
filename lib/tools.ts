@@ -1,7 +1,9 @@
+// Tool types and configuration for the ToolKit application
 export type ToolCategory = "image" | "pdf" | "document" | "media" | "developer"
 export type ToolTag = "Client-side" | "Hot" | "New"
 export type ToolIconName = "image" | "file-text" | "file-type" | "film" | "code"
 
+// Tool interface - only serializable data types (no React components)
 export interface Tool {
   id: string
   slug: string

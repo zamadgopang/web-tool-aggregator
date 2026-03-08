@@ -53,8 +53,22 @@ export default async function ToolPage({ params }: ToolPageProps) {
     notFound()
   }
 
+  // Only pass serializable data to client component
+  const serializableTool = {
+    id: tool.id,
+    slug: tool.slug,
+    title: tool.title,
+    description: tool.description,
+    longDescription: tool.longDescription,
+    iconName: tool.iconName,
+    tag: tool.tag,
+    category: tool.category,
+    inputFormats: tool.inputFormats,
+    outputFormats: tool.outputFormats,
+  }
+
   return (
-    <ToolPageLayout tool={tool}>
+    <ToolPageLayout tool={serializableTool}>
       {getToolComponent(slug)}
     </ToolPageLayout>
   )
