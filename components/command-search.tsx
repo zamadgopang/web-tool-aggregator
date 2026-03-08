@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
 import {
   CommandDialog,
   CommandEmpty,
@@ -9,18 +10,15 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
-import { Image, FileText, FileType, Film, Code } from "lucide-react"
+import { tools } from "@/lib/tools"
 
-const tools = [
-  { title: "HEIC to JPG", category: "Image Tools", icon: Image },
-  { title: "WebP to PNG", category: "Image Tools", icon: Image },
-  { title: "SVG to PNG", category: "Image Tools", icon: Image },
-  { title: "Merge PDFs", category: "PDF Utilities", icon: FileText },
-  { title: "Compress PDF", category: "PDF Utilities", icon: FileText },
-  { title: "DOCX to PDF", category: "Document Converters", icon: FileType },
-  { title: "CSV to Excel", category: "Document Converters", icon: FileType },
-  { title: "Video to GIF", category: "Media", icon: Film },
-]
+const categoryLabels: Record<string, string> = {
+  image: "Image Tools",
+  pdf: "PDF Utilities",
+  document: "Document Converters",
+  media: "Media",
+  developer: "Developer Tools",
+}
 
 interface CommandSearchProps {
   open: boolean
@@ -28,6 +26,8 @@ interface CommandSearchProps {
 }
 
 export function CommandSearch({ open, onOpenChange }: CommandSearchProps) {
+  const router = useRouter()
+
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
@@ -40,6 +40,11 @@ export function CommandSearch({ open, onOpenChange }: CommandSearchProps) {
     return () => document.removeEventListener("keydown", down)
   }, [open, onOpenChange])
 
+  const handleSelect = (slug: string) => {
+    onOpenChange(false)
+    router.push(`/${slug}`)
+  }
+
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
       <CommandInput placeholder="Search tools..." />
@@ -49,11 +54,18 @@ export function CommandSearch({ open, onOpenChange }: CommandSearchProps) {
           {tools.map((tool) => {
             const Icon = tool.icon
             return (
-              <CommandItem key={tool.title} className="flex items-center gap-3 cursor-pointer">
+              <CommandItem 
+                key={tool.id} 
+                value={tool.title}
+                onSelect={() => handleSelect(tool.slug)}
+                className="flex items-center gap-3 cursor-pointer"
+              >
                 <Icon className="h-4 w-4 text-muted-foreground" />
                 <div className="flex flex-col">
                   <span>{tool.title}</span>
-                  <span className="text-xs text-muted-foreground">{tool.category}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {categoryLabels[tool.category] || tool.category}
+                  </span>
                 </div>
               </CommandItem>
             )

@@ -1,8 +1,10 @@
 "use client"
 
+import Link from "next/link"
 import { cn } from "@/lib/utils"
 
 interface ToolCardProps {
+  slug: string
   title: string
   description: string
   icon: React.ReactNode
@@ -10,9 +12,10 @@ interface ToolCardProps {
   category: string
 }
 
-export function ToolCard({ title, description, icon, tag }: ToolCardProps) {
+export function ToolCard({ slug, title, description, icon, tag }: ToolCardProps) {
   return (
-    <button
+    <Link
+      href={`/${slug}`}
       className={cn(
         "group relative flex flex-col items-start gap-4 rounded-xl border border-border bg-card p-6 text-left transition-all duration-200",
         "hover:border-muted-foreground/30 hover:bg-secondary/50 hover:shadow-lg hover:-translate-y-0.5",
@@ -40,6 +43,6 @@ export function ToolCard({ title, description, icon, tag }: ToolCardProps) {
         <h3 className="font-semibold text-foreground">{title}</h3>
         <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
       </div>
-    </button>
+    </Link>
   )
 }
