@@ -7,7 +7,7 @@ import './globals.css'
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: 'ToolKit — Free Browser Tools',
+  title: 'Tools by ZamDev — Free Browser Tools',
   description: 'Lightning-fast browser tools that run instantly without server delays. Convert images, merge PDFs, and more.',
   generator: 'v0.app',
   icons: {

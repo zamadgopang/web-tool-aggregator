@@ -24,7 +24,15 @@ export function Header({ onSearchClick }: HeaderProps) {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground">
             <Zap className="h-5 w-5 text-background" />
           </div>
-          <span className="text-xl font-semibold text-foreground">ToolKit</span>
+          <span className="text-xl font-bold text-foreground">Tools</span>
+          <a
+            href="https://zamdev.me"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            by ZamDev
+          </a>
         </div>
 
         {/* Desktop search bar */}

@@ -93,7 +93,7 @@ export function ToolMapper({ toolId, onBack }: ToolMapperProps) {
 
   return (
     <div className="w-full pt-4">
-      <Button onClick={onBack} variant="ghost" className="mb-6 sticky top-20">
+      <Button onClick={onBack} variant="ghost" className="mb-6">
         <ArrowLeft className="h-4 w-4 mr-2" />
         Back to Tools
       </Button>

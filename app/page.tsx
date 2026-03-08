@@ -7,6 +7,7 @@ import { CategoryFilter } from "@/components/category-filter"
 import { ToolGrid } from "@/components/tool-grid"
 import { ToolMapper } from "@/components/tool-mapper"
 import { CommandSearch } from "@/components/command-search"
+import { AgencyCTA } from "@/components/agency-cta"
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("all")
@@ -22,6 +23,8 @@ export default function Home() {
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <ToolMapper toolId={selectedTool} onBack={() => setSelectedTool(null)} />
         </main>
+
+        <AgencyCTA />
       </div>
     )
   }
@@ -49,12 +52,14 @@ export default function Home() {
           <ToolGrid activeCategory={activeCategory} onToolClick={setSelectedTool} />
         </section>
       </main>
+
+      <AgencyCTA />
       
       <footer className="border-t border-border py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
             <p>All tools run 100% in your browser. Your files never leave your device.</p>
-            <p className="text-xs">14 free tools &bull; No ads &bull; Open source</p>
+            <p className="text-xs">15 free tools &bull; No ads &bull; Open source</p>
           </div>
         </div>
       </footer>
