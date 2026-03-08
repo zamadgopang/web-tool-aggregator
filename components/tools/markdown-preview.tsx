@@ -210,6 +210,22 @@ export function MarkdownPreview() {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-3 text-sm">
+            <div className="p-2 bg-muted rounded-lg text-center">
+              <p className="text-xs text-muted-foreground">Characters</p>
+              <p className="font-mono font-semibold">{input.length}</p>
+            </div>
+            <div className="p-2 bg-muted rounded-lg text-center">
+              <p className="text-xs text-muted-foreground">Words</p>
+              <p className="font-mono font-semibold">{input.trim() ? input.trim().split(/\s+/).length : 0}</p>
+            </div>
+            <div className="p-2 bg-muted rounded-lg text-center">
+              <p className="text-xs text-muted-foreground">Lines</p>
+              <p className="font-mono font-semibold">{input.split("\n").length}</p>
+            </div>
+          </div>
+
           <div className={`grid gap-4 ${view === "split" ? "grid-cols-1 lg:grid-cols-2" : "grid-cols-1"}`}>
             {/* Editor */}
             {(view === "split" || view === "editor") && (
@@ -258,21 +274,6 @@ export function MarkdownPreview() {
             )}
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-3 text-sm">
-            <div className="p-2 bg-muted rounded-lg text-center">
-              <p className="text-xs text-muted-foreground">Characters</p>
-              <p className="font-mono font-semibold">{input.length}</p>
-            </div>
-            <div className="p-2 bg-muted rounded-lg text-center">
-              <p className="text-xs text-muted-foreground">Words</p>
-              <p className="font-mono font-semibold">{input.trim() ? input.trim().split(/\s+/).length : 0}</p>
-            </div>
-            <div className="p-2 bg-muted rounded-lg text-center">
-              <p className="text-xs text-muted-foreground">Lines</p>
-              <p className="font-mono font-semibold">{input.split("\n").length}</p>
-            </div>
-          </div>
         </CardContent>
       </Card>
 
@@ -289,8 +290,8 @@ export function MarkdownPreview() {
         .prose-custom :global(em) { font-style: italic; }
         .prose-custom :global(del) { text-decoration: line-through; }
         .prose-custom :global(pre.md-code-block) { background: hsl(var(--muted)); padding: 1em; border-radius: 0.5em; overflow-x: auto; margin: 1em 0; }
-        .prose-custom :global(code.md-inline-code) { background: hsl(var(--muted)); padding: 0.2em 0.4em; border-radius: 0.25em; font-size: 0.875em; font-family: monospace; }
-        .prose-custom :global(pre.md-code-block code) { font-family: monospace; font-size: 0.875em; }
+        .prose-custom :global(code.md-inline-code) { background: hsl(var(--muted)); padding: 0.2em 0.4em; border-radius: 0.25em; font-size: 0.875em; font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Consolas', 'SF Mono', ui-monospace, monospace; }
+        .prose-custom :global(pre.md-code-block code) { font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Consolas', 'SF Mono', ui-monospace, monospace; font-size: 0.875em; }
         .prose-custom :global(blockquote.md-blockquote) { border-left: 4px solid hsl(var(--border)); padding: 0.5em 1em; margin: 1em 0; color: hsl(var(--muted-foreground)); }
         .prose-custom :global(ul.md-ul) { list-style-type: disc; padding-left: 2em; margin: 0.5em 0; }
         .prose-custom :global(ol.md-ol) { list-style-type: decimal; padding-left: 2em; margin: 0.5em 0; }

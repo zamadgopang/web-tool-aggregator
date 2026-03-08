@@ -148,13 +148,13 @@ export function ChmodCalculator() {
               {commonPermissions.map((perm) => (
                 <button
                   key={perm.label}
-                  className={`flex items-center gap-3 p-3 rounded-lg border text-left hover:bg-accent transition-colors cursor-pointer ${
-                    octalValue === perm.label ? "border-primary bg-accent" : ""
+                  className={`flex items-center gap-3 p-3 rounded-lg border text-left transition-colors cursor-pointer ${
+                    octalValue === perm.label ? "border-primary bg-primary text-primary-foreground" : "hover:bg-secondary"
                   }`}
                   onClick={() => setFromOctal(perm.label)}
                 >
-                  <span className="font-mono font-bold text-lg w-10">{perm.label}</span>
-                  <span className="text-xs text-muted-foreground">{perm.desc}</span>
+                  <span className={`font-mono font-bold text-lg w-10 ${octalValue === perm.label ? "text-primary-foreground" : ""}`}>{perm.label}</span>
+                  <span className={`text-xs ${octalValue === perm.label ? "text-primary-foreground/80" : "text-muted-foreground"}`}>{perm.desc}</span>
                 </button>
               ))}
             </div>

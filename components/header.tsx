@@ -1,7 +1,7 @@
 "use client"
 
 import { useTheme } from "next-themes"
-import { Command, Moon, Sun, Search, Zap } from "lucide-react"
+import { Moon, Sun, Search, Command } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 
@@ -20,19 +20,15 @@ export function Header({ onSearchClick }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground">
-            <Zap className="h-5 w-5 text-background" />
-          </div>
-          <span className="text-xl font-bold text-foreground">Tools</span>
-          <a
-            href="https://zamdev.me"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            by ZamDev
-          </a>
+        <div className="flex items-center gap-3">
+          {mounted && (
+            <img
+              src={theme === "dark" ? "/ZamDev_Dark_logo.png" : "/ZamDev_light_logo.png"}
+              alt="ZamDev Logo"
+              className="h-8 w-auto"
+            />
+          )}
+          <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 bg-clip-text text-transparent">Tools</span>
         </div>
 
         {/* Desktop search bar */}
