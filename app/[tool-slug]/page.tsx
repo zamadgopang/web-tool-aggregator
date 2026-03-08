@@ -1,9 +1,25 @@
 import { notFound } from "next/navigation"
-import { tools, getToolBySlug } from "@/lib/tools"
+import { tools, getToolBySlug, type Tool } from "@/lib/tools"
 import { ToolPageLayout } from "@/components/tool-page-layout"
 import { ImageConverter } from "@/components/tools/image-converter"
 import { ComingSoon } from "@/components/tools/coming-soon"
 import type { Metadata } from "next"
+
+// Helper to ensure tool data is serializable for client components
+function serializeTool(tool: Tool): Tool {
+  return {
+    id: tool.id,
+    slug: tool.slug,
+    title: tool.title,
+    description: tool.description,
+    longDescription: tool.longDescription,
+    iconName: tool.iconName,
+    tag: tool.tag,
+    category: tool.category,
+    inputFormats: tool.inputFormats,
+    outputFormats: tool.outputFormats,
+  }
+}
 
 interface ToolPageProps {
   params: Promise<{
@@ -53,8 +69,11 @@ export default async function ToolPage({ params }: ToolPageProps) {
     notFound()
   }
 
+  // Ensure we pass only serializable data to the client component
+  const serializedTool = serializeTool(tool)
+
   return (
-    <ToolPageLayout tool={tool}>
+    <ToolPageLayout tool={serializedTool}>
       {getToolComponent(slug)}
     </ToolPageLayout>
   )

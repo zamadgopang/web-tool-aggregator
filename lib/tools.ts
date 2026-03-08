@@ -1,9 +1,12 @@
-// Tool types and configuration for the ToolKit application
+/**
+ * Tool definitions for ToolKit application
+ * All data is serializable (no React components or functions)
+ */
+
 export type ToolCategory = "image" | "pdf" | "document" | "media" | "developer"
 export type ToolTag = "Client-side" | "Hot" | "New"
 export type ToolIconName = "image" | "file-text" | "file-type" | "film" | "code"
 
-// Tool interface - only serializable data types (no React components)
 export interface Tool {
   id: string
   slug: string
@@ -17,6 +20,7 @@ export interface Tool {
   outputFormats?: string[]
 }
 
+// Plain data array - no React components, only serializable values
 export const tools: Tool[] = [
   {
     id: "image-converter",
@@ -117,23 +121,13 @@ export const tools: Tool[] = [
 ]
 
 export function getToolBySlug(slug: string): Tool | undefined {
-  const foundTool = tools.find((tool) => tool.slug === slug)
-  if (!foundTool) return undefined
-  // Ensure we return a plain serializable object
-  return {
-    id: foundTool.id,
-    slug: foundTool.slug,
-    title: foundTool.title,
-    description: foundTool.description,
-    longDescription: foundTool.longDescription,
-    iconName: foundTool.iconName,
-    tag: foundTool.tag,
-    category: foundTool.category,
-    inputFormats: foundTool.inputFormats,
-    outputFormats: foundTool.outputFormats,
-  }
+  const found = tools.find((t) => t.slug === slug)
+  if (!found) return undefined
+  
+  // Return a new plain object to ensure serializability
+  return JSON.parse(JSON.stringify(found))
 }
 
 export function getToolsByCategory(category: ToolCategory): Tool[] {
-  return tools.filter((tool) => tool.category === category)
+  return tools.filter((t) => t.category === category)
 }
