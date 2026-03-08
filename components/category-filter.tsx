@@ -1,16 +1,13 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { Image, FileText, FileType, Code, Film, LayoutGrid, Zap, Wrench } from "lucide-react"
+import { Image, Code, LayoutGrid, Zap, Wrench } from "lucide-react"
 
 const categories = [
   { id: "all", label: "All Tools", icon: LayoutGrid },
-  { id: "image", label: "Image Tools", icon: Image },
-  { id: "pdf", label: "PDF Utilities", icon: FileText },
-  { id: "document", label: "Document Converters", icon: FileType },
+  { id: "image", label: "Image", icon: Image },
   { id: "developer", label: "Developer", icon: Code },
-  { id: "media", label: "Media", icon: Film },
-  { id: "text", label: "Text Tools", icon: Zap },
+  { id: "text", label: "Text", icon: Zap },
   { id: "utility", label: "Utilities", icon: Wrench },
 ]
 

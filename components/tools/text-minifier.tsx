@@ -194,7 +194,8 @@ export function TextMinifier() {
               {minifyType === "javascript" && (
                 <>
                   <li>Removes all comments</li>
-                  <li>Note: Be cautious with edge cases</li>
+                  <li>⚠️ Regex-based — may break complex code with strings containing operators</li>
+                  <li>For production, use dedicated tools like Terser or UglifyJS</li>
                 </>
               )}
             </ul>

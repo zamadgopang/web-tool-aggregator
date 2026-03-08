@@ -17,7 +17,7 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-background">
         <Header onSearchClick={() => setSearchOpen(true)} />
-        <CommandSearch open={searchOpen} onOpenChange={setSearchOpen} />
+        <CommandSearch open={searchOpen} onOpenChange={setSearchOpen} onToolSelect={setSelectedTool} />
         
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <ToolMapper toolId={selectedTool} onBack={() => setSelectedTool(null)} />
@@ -52,9 +52,10 @@ export default function Home() {
       
       <footer className="border-t border-border py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-sm text-muted-foreground">
-            All tools run 100% in your browser. Your files never leave your device.
-          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+            <p>All tools run 100% in your browser. Your files never leave your device.</p>
+            <p className="text-xs">14 free tools &bull; No ads &bull; Open source</p>
+          </div>
         </div>
       </footer>
     </div>

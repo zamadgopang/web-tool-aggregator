@@ -1,62 +1,20 @@
 "use client"
 
 import { ToolCard } from "@/components/tool-card"
-import { Image, FileText, FileType, Film, Code, Zap, Type, Shield, Hash, QrCode, Palette, Calculator } from "lucide-react"
+import { Image, FileText, FileType, Film, Code, Zap, Type, Shield, Hash, QrCode, Palette, Calculator, FileCode, TextIcon, Link, Regex, AlignLeft } from "lucide-react"
 
 const tools = [
   // Image Tools
   {
     id: "image-converter",
     title: "Image Converter",
-    description: "Convert images to any format (JPG, PNG, WebP, HEIC, BMP) with compression options.",
+    description: "Convert images to any format (JPG, PNG, WebP, BMP, GIF) with compression and resize options.",
     icon: <Image className="h-6 w-6" />,
     tag: "Premium" as const,
     category: "image",
   },
-  {
-    id: "svg-to-png",
-    title: "SVG to PNG",
-    description: "Render vector graphics into standard images with custom resolution.",
-    icon: <Code className="h-6 w-6" />,
-    tag: "Client-side" as const,
-    category: "image",
-  },
   
-  // PDF Tools
-  {
-    id: "merge-pdfs",
-    title: "Merge PDFs",
-    description: "Combine multiple PDF documents securely without uploading.",
-    icon: <FileText className="h-6 w-6" />,
-    tag: "Client-side" as const,
-    category: "pdf",
-  },
-  {
-    id: "compress-pdf",
-    title: "Compress PDF",
-    description: "Reduce file size instantly while maintaining quality.",
-    icon: <FileText className="h-6 w-6" />,
-    tag: "Hot" as const,
-    category: "pdf",
-  },
-  
-  // Document Tools
-  {
-    id: "docx-to-pdf",
-    title: "DOCX to PDF",
-    description: "Convert Word documents with perfect formatting.",
-    icon: <FileType className="h-6 w-6" />,
-    tag: "Client-side" as const,
-    category: "document",
-  },
-  {
-    id: "csv-to-excel",
-    title: "CSV to Excel",
-    description: "Instantly parse and convert spreadsheet data.",
-    icon: <FileType className="h-6 w-6" />,
-    tag: "Client-side" as const,
-    category: "document",
-  },
+  // Developer Tools
   {
     id: "json-formatter",
     title: "JSON Formatter",
@@ -65,18 +23,24 @@ const tools = [
     tag: "Popular" as const,
     category: "developer",
   },
-  
-  // Media Tools
   {
-    id: "video-to-gif",
-    title: "Video to GIF",
-    description: "Convert video files to animated GIFs with quality control.",
-    icon: <Film className="h-6 w-6" />,
+    id: "regex-tester",
+    title: "Regex Tester",
+    description: "Test and debug regular expressions with real-time highlighting.",
+    icon: <Regex className="h-6 w-6" />,
     tag: "New" as const,
-    category: "media",
+    category: "developer",
+  },
+  {
+    id: "markdown-preview",
+    title: "Markdown Preview",
+    description: "Write markdown with live preview, split view, and HTML export.",
+    icon: <FileCode className="h-6 w-6" />,
+    tag: "New" as const,
+    category: "developer",
   },
   
-  // Text & Utility Tools
+  // Text Tools
   {
     id: "text-minifier",
     title: "Text Minifier",
@@ -94,6 +58,32 @@ const tools = [
     category: "text",
   },
   {
+    id: "url-encoder-decoder",
+    title: "URL Encoder/Decoder",
+    description: "Encode or decode URLs and URI components.",
+    icon: <Link className="h-6 w-6" />,
+    tag: "New" as const,
+    category: "text",
+  },
+  {
+    id: "text-diff-checker",
+    title: "Text Diff Checker",
+    description: "Compare two texts and highlight differences line by line.",
+    icon: <AlignLeft className="h-6 w-6" />,
+    tag: "New" as const,
+    category: "text",
+  },
+  {
+    id: "lorem-ipsum-generator",
+    title: "Lorem Ipsum Generator",
+    description: "Generate placeholder text for designs and layouts.",
+    icon: <TextIcon className="h-6 w-6" />,
+    tag: "Client-side" as const,
+    category: "text",
+  },
+
+  // Utility Tools
+  {
     id: "password-generator",
     title: "Password Generator",
     description: "Generate secure, random passwords with custom options.",
@@ -104,7 +94,7 @@ const tools = [
   {
     id: "hash-generator",
     title: "Hash Generator",
-    description: "Generate MD5, SHA1, SHA256, and more hashes instantly.",
+    description: "Generate SHA-1, SHA-256, SHA-384, and SHA-512 hashes.",
     icon: <Hash className="h-6 w-6" />,
     tag: "Popular" as const,
     category: "utility",
@@ -114,13 +104,13 @@ const tools = [
     title: "QR Code Generator",
     description: "Create QR codes from text, URLs, or contact info.",
     icon: <QrCode className="h-6 w-6" />,
-    tag: "New" as const,
+    tag: "Popular" as const,
     category: "utility",
   },
   {
     id: "color-converter",
     title: "Color Converter",
-    description: "Convert colors between HEX, RGB, HSL, HSV formats.",
+    description: "Convert colors between HEX, RGB, HSL formats.",
     icon: <Palette className="h-6 w-6" />,
     tag: "Popular" as const,
     category: "utility",
@@ -128,7 +118,7 @@ const tools = [
   {
     id: "unit-converter",
     title: "Unit Converter",
-    description: "Convert length, weight, temperature, and more units.",
+    description: "Convert length, weight, temperature, volume, and speed units.",
     icon: <Calculator className="h-6 w-6" />,
     tag: "Popular" as const,
     category: "utility",

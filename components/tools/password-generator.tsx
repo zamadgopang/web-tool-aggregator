@@ -37,8 +37,10 @@ export function PasswordGenerator() {
     }
 
     let newPassword = ""
+    const randomValues = new Uint32Array(length)
+    crypto.getRandomValues(randomValues)
     for (let i = 0; i < length; i++) {
-      newPassword += chars.charAt(Math.floor(Math.random() * chars.length))
+      newPassword += chars.charAt(randomValues[i] % chars.length)
     }
     setPassword(newPassword)
 

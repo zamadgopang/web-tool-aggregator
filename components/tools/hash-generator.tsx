@@ -5,58 +5,37 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Copy, CheckCircle } from "lucide-react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Copy, CheckCircle, AlertCircle } from "lucide-react"
 
-type HashAlgorithm = "md5" | "sha1" | "sha256" | "sha512"
+type HashAlgorithm = "sha1" | "sha256" | "sha384" | "sha512"
 
-// Simple hash implementations for browser
+const algorithmMap: Record<HashAlgorithm, string> = {
+  sha1: "SHA-1",
+  sha256: "SHA-256",
+  sha384: "SHA-384",
+  sha512: "SHA-512",
+}
+
 async function hashString(str: string, algorithm: HashAlgorithm): Promise<string> {
   const encoder = new TextEncoder()
   const data = encoder.encode(str)
-  
-  let hashAlgo: string
-  switch (algorithm) {
-    case "sha256":
-      hashAlgo = "SHA-256"
-      break
-    case "sha512":
-      hashAlgo = "SHA-512"
-      break
-    case "sha1":
-      hashAlgo = "SHA-1"
-      break
-    case "md5":
-      // MD5 using a simple implementation
-      return simpleHash(str)
-    default:
-      hashAlgo = "SHA-256"
-  }
-
-  const hashBuffer = await crypto.subtle.digest(hashAlgo, data)
+  const hashBuffer = await crypto.subtle.digest(algorithmMap[algorithm], data)
   const hashArray = Array.from(new Uint8Array(hashBuffer))
   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("")
-}
-
-function simpleHash(str: string): string {
-  // Simple MD5-like hash (not cryptographically secure MD5, just for demo)
-  let hash = 0
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i)
-    hash = (hash << 5) - hash + char
-    hash = hash & hash
-  }
-  return Math.abs(hash).toString(16).padStart(32, "0")
 }
 
 export function HashGenerator() {
   const [input, setInput] = useState("")
   const [hashes, setHashes] = useState<Partial<Record<HashAlgorithm, string>>>({})
   const [copied, setCopied] = useState<HashAlgorithm | null>(null)
+  const [isGenerating, setIsGenerating] = useState(false)
 
   const handleGenerate = async () => {
     if (!input.trim()) return
 
-    const algorithms: HashAlgorithm[] = ["md5", "sha1", "sha256", "sha512"]
+    setIsGenerating(true)
+    const algorithms: HashAlgorithm[] = ["sha1", "sha256", "sha384", "sha512"]
     const newHashes: Partial<Record<HashAlgorithm, string>> = {}
 
     for (const algo of algorithms) {
@@ -64,6 +43,7 @@ export function HashGenerator() {
     }
 
     setHashes(newHashes)
+    setIsGenerating(false)
   }
 
   const handleCopy = (algo: HashAlgorithm) => {
@@ -79,13 +59,14 @@ export function HashGenerator() {
       <Card>
         <CardHeader>
           <CardTitle>Hash Generator</CardTitle>
-          <CardDescription>Generate MD5, SHA1, SHA256, and SHA512 hashes</CardDescription>
+          <CardDescription>Generate cryptographic hashes using the Web Crypto API</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Input */}
           <div className="space-y-2">
-            <Label>Input Text</Label>
+            <Label htmlFor="hash-input">Input Text</Label>
             <Textarea
+              id="hash-input"
               placeholder="Enter text to hash..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -94,15 +75,15 @@ export function HashGenerator() {
           </div>
 
           {/* Generate Button */}
-          <Button onClick={handleGenerate} className="w-full">
-            Generate Hashes
+          <Button onClick={handleGenerate} className="w-full" disabled={!input.trim() || isGenerating}>
+            {isGenerating ? "Generating..." : "Generate Hashes"}
           </Button>
 
           {/* Hash Results */}
           {Object.entries(hashes).length > 0 && (
             <div className="space-y-3">
               <Label className="text-base font-semibold">Results</Label>
-              {(["md5", "sha1", "sha256", "sha512"] as const).map((algo) => (
+              {(Object.keys(algorithmMap) as HashAlgorithm[]).map((algo) => (
                 <div key={algo} className="space-y-1.5 p-3 bg-muted rounded-lg">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium uppercase">{algo}</span>
@@ -110,15 +91,12 @@ export function HashGenerator() {
                       variant="ghost"
                       size="sm"
                       onClick={() => handleCopy(algo)}
+                      aria-label={`Copy ${algo} hash`}
                     >
                       {copied === algo ? (
-                        <>
-                          <CheckCircle className="h-4 w-4" />
-                        </>
+                        <CheckCircle className="h-4 w-4 text-green-600" />
                       ) : (
-                        <>
-                          <Copy className="h-4 w-4" />
-                        </>
+                        <Copy className="h-4 w-4" />
                       )}
                     </Button>
                   </div>
@@ -129,6 +107,14 @@ export function HashGenerator() {
               ))}
             </div>
           )}
+
+          {/* Info */}
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription className="text-xs">
+              All hashes are generated using the browser&apos;s native Web Crypto API. MD5 has been removed as it is cryptographically broken. Use SHA-256 or SHA-512 for security-sensitive applications.
+            </AlertDescription>
+          </Alert>
         </CardContent>
       </Card>
     </div>

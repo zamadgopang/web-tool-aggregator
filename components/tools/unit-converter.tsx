@@ -80,12 +80,19 @@ export function UnitConverter() {
 
     if (!fromUnitData || !toUnitData) return "0"
 
-    const baseValue = fromUnitData.toBase(value)
-    // Convert from base back to target unit
-    const targetValue = category === "temperature" 
-      ? (baseValue + 273.15 - 273.15 + (toUnit === "F" ? 32 + baseValue * (9/5) : toUnit === "K" ? 273.15 + baseValue : baseValue))
-      : baseValue / toUnitData.toBase(1)
+    if (category === "temperature") {
+      // Convert to Celsius (base) first, then to target
+      const celsius = fromUnitData.toBase(value)
+      let targetValue: number
+      if (toUnit === "C") targetValue = celsius
+      else if (toUnit === "F") targetValue = celsius * (9 / 5) + 32
+      else if (toUnit === "K") targetValue = celsius + 273.15
+      else targetValue = celsius
+      return targetValue.toFixed(6).replace(/\.?0+$/, "")
+    }
 
+    const baseValue = fromUnitData.toBase(value)
+    const targetValue = baseValue / toUnitData.toBase(1)
     return targetValue.toFixed(6).replace(/\.?0+$/, "")
   }
 

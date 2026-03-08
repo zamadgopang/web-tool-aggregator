@@ -9,19 +9,18 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
-import { Image, FileText, FileType, Film, Code, Zap, Shield, Hash, QrCode, Palette, Calculator } from "lucide-react"
+import { Image, Code, Zap, Shield, Hash, QrCode, Palette, Calculator, FileCode, TextIcon, Link, Regex, AlignLeft } from "lucide-react"
 
 const toolMap: Record<string, string> = {
   "Image Converter": "image-converter",
-  "SVG to PNG": "svg-to-png",
-  "Merge PDFs": "merge-pdfs",
-  "Compress PDF": "compress-pdf",
-  "DOCX to PDF": "docx-to-pdf",
-  "CSV to Excel": "csv-to-excel",
   "JSON Formatter": "json-formatter",
-  "Video to GIF": "video-to-gif",
+  "Regex Tester": "regex-tester",
+  "Markdown Preview": "markdown-preview",
   "Text Minifier": "text-minifier",
   "Base64 Converter": "base64-converter",
+  "URL Encoder/Decoder": "url-encoder-decoder",
+  "Text Diff Checker": "text-diff-checker",
+  "Lorem Ipsum Generator": "lorem-ipsum-generator",
   "Password Generator": "password-generator",
   "Hash Generator": "hash-generator",
   "QR Code Generator": "qr-code-generator",
@@ -32,23 +31,18 @@ const toolMap: Record<string, string> = {
 const tools = [
   // Image Tools
   { title: "Image Converter", category: "Image Tools", icon: Image },
-  { title: "SVG to PNG", category: "Image Tools", icon: Code },
   
-  // PDF Tools
-  { title: "Merge PDFs", category: "PDF Utilities", icon: FileText },
-  { title: "Compress PDF", category: "PDF Utilities", icon: FileText },
-  
-  // Document Tools
-  { title: "DOCX to PDF", category: "Document Converters", icon: FileType },
-  { title: "CSV to Excel", category: "Document Converters", icon: FileType },
+  // Developer Tools
   { title: "JSON Formatter", category: "Developer Tools", icon: Code },
-  
-  // Media Tools
-  { title: "Video to GIF", category: "Media", icon: Film },
+  { title: "Regex Tester", category: "Developer Tools", icon: Regex },
+  { title: "Markdown Preview", category: "Developer Tools", icon: FileCode },
   
   // Text Tools
   { title: "Text Minifier", category: "Text Tools", icon: Zap },
   { title: "Base64 Converter", category: "Text Tools", icon: Shield },
+  { title: "URL Encoder/Decoder", category: "Text Tools", icon: Link },
+  { title: "Text Diff Checker", category: "Text Tools", icon: AlignLeft },
+  { title: "Lorem Ipsum Generator", category: "Text Tools", icon: TextIcon },
   
   // Utility Tools
   { title: "Password Generator", category: "Security", icon: Shield },

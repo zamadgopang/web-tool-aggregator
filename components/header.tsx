@@ -1,7 +1,7 @@
 "use client"
 
 import { useTheme } from "next-themes"
-import { Command, Moon, Sun, Zap } from "lucide-react"
+import { Command, Moon, Sun, Search, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 
@@ -27,6 +27,7 @@ export function Header({ onSearchClick }: HeaderProps) {
           <span className="text-xl font-semibold text-foreground">ToolKit</span>
         </div>
 
+        {/* Desktop search bar */}
         <button
           onClick={onSearchClick}
           className="hidden sm:flex items-center gap-3 rounded-lg border border-border bg-secondary/50 px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground hover:border-muted-foreground/30 w-72"
@@ -38,19 +39,33 @@ export function Header({ onSearchClick }: HeaderProps) {
           </kbd>
         </button>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="h-9 w-9"
-        >
-          {mounted && theme === "dark" ? (
-            <Sun className="h-5 w-5" />
-          ) : (
-            <Moon className="h-5 w-5" />
-          )}
-          <span className="sr-only">Toggle theme</span>
-        </Button>
+        <div className="flex items-center gap-1">
+          {/* Mobile search button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onSearchClick}
+            className="h-9 w-9 sm:hidden"
+            aria-label="Search tools"
+          >
+            <Search className="h-5 w-5" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="h-9 w-9"
+            aria-label="Toggle theme"
+          >
+            {mounted && theme === "dark" ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+            <span className="sr-only">Toggle theme</span>
+          </Button>
+        </div>
       </div>
     </header>
   )

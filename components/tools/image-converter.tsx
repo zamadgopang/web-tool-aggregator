@@ -1,19 +1,32 @@
 "use client"
 
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useRef } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
-import { Upload, Download, X, Image as ImageIcon, AlertCircle } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Upload, Download, X, Image as ImageIcon, AlertCircle, Maximize2 } from "lucide-react"
 
 type ImageFormat = "jpg" | "png" | "webp" | "bmp" | "gif"
 
 interface ImageFile {
   file: File
   preview: string
+  width?: number
+  height?: number
 }
+
+const supportedFormats: { format: ImageFormat; label: string; mimeType: string; supportsQuality: boolean }[] = [
+  { format: "jpg", label: "JPEG", mimeType: "image/jpeg", supportsQuality: true },
+  { format: "png", label: "PNG", mimeType: "image/png", supportsQuality: false },
+  { format: "webp", label: "WebP", mimeType: "image/webp", supportsQuality: true },
+  { format: "bmp", label: "BMP", mimeType: "image/bmp", supportsQuality: false },
+  { format: "gif", label: "GIF", mimeType: "image/gif", supportsQuality: false },
+]
 
 export function ImageConverter() {
   const [uploadedImage, setUploadedImage] = useState<ImageFile | null>(null)
@@ -22,28 +35,24 @@ export function ImageConverter() {
   const [isConverting, setIsConverting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [enableResize, setEnableResize] = useState(false)
+  const [resizeWidth, setResizeWidth] = useState("")
+  const [resizeHeight, setResizeHeight] = useState("")
+  const [maintainAspectRatio, setMaintainAspectRatio] = useState(true)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  const supportedFormats: { format: ImageFormat; label: string; mimeType: string }[] = [
-    { format: "jpg", label: "JPEG", mimeType: "image/jpeg" },
-    { format: "png", label: "PNG", mimeType: "image/png" },
-    { format: "webp", label: "WebP", mimeType: "image/webp" },
-    { format: "bmp", label: "BMP", mimeType: "image/bmp" },
-    { format: "gif", label: "GIF", mimeType: "image/gif" },
-  ]
+  const currentFormatInfo = supportedFormats.find((f) => f.format === targetFormat)
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Validate file type
     if (!file.type.startsWith("image/")) {
       setError("Please select a valid image file")
       return
     }
 
-    // Validate file size (max 50MB)
     if (file.size > 50 * 1024 * 1024) {
       setError("File size must be less than 50MB")
       return
@@ -53,10 +62,32 @@ export function ImageConverter() {
     const reader = new FileReader()
     reader.onload = (event) => {
       const preview = event.target?.result as string
-      setUploadedImage({ file, preview })
-      setSuccessMessage(null)
+      const img = new Image()
+      img.onload = () => {
+        setUploadedImage({ file, preview, width: img.width, height: img.height })
+        setResizeWidth(String(img.width))
+        setResizeHeight(String(img.height))
+        setSuccessMessage(null)
+      }
+      img.src = preview
     }
     reader.readAsDataURL(file)
+  }
+
+  const handleResizeWidthChange = (w: string) => {
+    setResizeWidth(w)
+    if (maintainAspectRatio && uploadedImage?.width && uploadedImage?.height) {
+      const ratio = uploadedImage.height / uploadedImage.width
+      setResizeHeight(String(Math.round(Number(w) * ratio)))
+    }
+  }
+
+  const handleResizeHeightChange = (h: string) => {
+    setResizeHeight(h)
+    if (maintainAspectRatio && uploadedImage?.width && uploadedImage?.height) {
+      const ratio = uploadedImage.width / uploadedImage.height
+      setResizeWidth(String(Math.round(Number(h) * ratio)))
+    }
   }
 
   const handleConvert = async () => {
@@ -68,7 +99,7 @@ export function ImageConverter() {
 
     try {
       const img = new Image()
-      img.onload = async () => {
+      img.onload = () => {
         const canvas = canvasRef.current
         if (!canvas) return
 
@@ -79,17 +110,29 @@ export function ImageConverter() {
           return
         }
 
-        // Set canvas size to match image
-        canvas.width = img.width
-        canvas.height = img.height
+        let outW = img.width
+        let outH = img.height
 
-        // Draw image on canvas
-        ctx.fillStyle = "#ffffff"
-        ctx.fillRect(0, 0, canvas.width, canvas.height)
-        ctx.drawImage(img, 0, 0)
+        if (enableResize) {
+          outW = parseInt(resizeWidth) || img.width
+          outH = parseInt(resizeHeight) || img.height
+        }
+
+        canvas.width = outW
+        canvas.height = outH
+
+        // White background for formats that don't support transparency
+        if (targetFormat === "jpg" || targetFormat === "bmp") {
+          ctx.fillStyle = "#ffffff"
+          ctx.fillRect(0, 0, canvas.width, canvas.height)
+        }
+
+        ctx.drawImage(img, 0, 0, outW, outH)
 
         try {
-          // Convert to blob
+          const mimeType = targetFormat === "jpg" ? "image/jpeg" : `image/${targetFormat}`
+          const qualityValue = currentFormatInfo?.supportsQuality ? quality / 100 : undefined
+
           canvas.toBlob(
             (blob) => {
               if (!blob) {
@@ -98,11 +141,10 @@ export function ImageConverter() {
                 return
               }
 
-              // Create download link
               const url = URL.createObjectURL(blob)
               const link = document.createElement("a")
               link.href = url
-              const originalName = uploadedImage.file.name.split(".")[0]
+              const originalName = uploadedImage.file.name.replace(/\.[^.]+$/, "")
               link.download = `${originalName}.${targetFormat}`
               document.body.appendChild(link)
               link.click()
@@ -111,17 +153,17 @@ export function ImageConverter() {
 
               const originalSize = (uploadedImage.file.size / 1024).toFixed(2)
               const newSize = (blob.size / 1024).toFixed(2)
-              const compression = (((uploadedImage.file.size - blob.size) / uploadedImage.file.size) * 100).toFixed(1)
-              
+              const reduction = (((uploadedImage.file.size - blob.size) / uploadedImage.file.size) * 100).toFixed(1)
+
               setSuccessMessage(
-                `Converted successfully! Original: ${originalSize}KB → New: ${newSize}KB (${compression}% reduction)`
+                `Converted successfully! Original: ${originalSize}KB → New: ${newSize}KB (${Number(reduction) > 0 ? reduction + "% smaller" : Math.abs(Number(reduction)).toFixed(1) + "% larger"})`
               )
               setIsConverting(false)
             },
-            `image/${targetFormat}`,
-            quality / 100
+            mimeType,
+            qualityValue
           )
-        } catch (err) {
+        } catch {
           setError("Failed to convert image. Please try a different format.")
           setIsConverting(false)
         }
@@ -133,7 +175,7 @@ export function ImageConverter() {
       }
 
       img.src = uploadedImage.preview
-    } catch (err) {
+    } catch {
       setError("An error occurred during conversion")
       setIsConverting(false)
     }
@@ -254,12 +296,14 @@ export function ImageConverter() {
               </div>
             </div>
 
-            {/* Quality Slider */}
-            {(targetFormat === "jpg" || targetFormat === "webp") && (
+            {/* Quality Slider - Only for formats that support it */}
+            {currentFormatInfo?.supportsQuality && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium">Quality: {quality}%</label>
-                  <span className="text-xs text-muted-foreground">Higher = Better Quality</span>
+                  <span className="text-xs text-muted-foreground">
+                    {quality > 80 ? "High quality" : quality > 50 ? "Balanced" : "Smaller file"}
+                  </span>
                 </div>
                 <Slider
                   value={[quality]}
@@ -273,12 +317,86 @@ export function ImageConverter() {
               </div>
             )}
 
+            {/* Resize Options */}
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="enable-resize"
+                  checked={enableResize}
+                  onCheckedChange={(checked) => setEnableResize(checked as boolean)}
+                />
+                <Label htmlFor="enable-resize" className="cursor-pointer flex items-center gap-2">
+                  <Maximize2 className="h-4 w-4" />
+                  Resize Image
+                </Label>
+              </div>
+
+              {enableResize && (
+                <div className="space-y-3 pl-6 border-l-2 border-muted">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <Label htmlFor="resize-w" className="text-xs">Width (px)</Label>
+                      <Input
+                        id="resize-w"
+                        type="number"
+                        min="1"
+                        max="10000"
+                        value={resizeWidth}
+                        onChange={(e) => handleResizeWidthChange(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="resize-h" className="text-xs">Height (px)</Label>
+                      <Input
+                        id="resize-h"
+                        type="number"
+                        min="1"
+                        max="10000"
+                        value={resizeHeight}
+                        onChange={(e) => handleResizeHeightChange(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="aspect-ratio"
+                      checked={maintainAspectRatio}
+                      onCheckedChange={(checked) => setMaintainAspectRatio(checked as boolean)}
+                    />
+                    <Label htmlFor="aspect-ratio" className="text-xs cursor-pointer">
+                      Maintain aspect ratio
+                    </Label>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Image Info */}
+            {uploadedImage.width && uploadedImage.height && (
+              <div className="grid grid-cols-3 gap-3 text-sm">
+                <div className="p-2 bg-muted rounded-lg text-center">
+                  <p className="text-xs text-muted-foreground">Original</p>
+                  <p className="font-mono text-xs font-semibold">{uploadedImage.width}x{uploadedImage.height}</p>
+                </div>
+                <div className="p-2 bg-muted rounded-lg text-center">
+                  <p className="text-xs text-muted-foreground">File Size</p>
+                  <p className="font-mono text-xs font-semibold">{(uploadedImage.file.size / 1024).toFixed(1)}KB</p>
+                </div>
+                <div className="p-2 bg-muted rounded-lg text-center">
+                  <p className="text-xs text-muted-foreground">Output</p>
+                  <p className="font-mono text-xs font-semibold">
+                    {enableResize ? `${resizeWidth}x${resizeHeight}` : `${uploadedImage.width}x${uploadedImage.height}`}
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Compression Info */}
             <Alert>
               <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Compression Benefits</AlertTitle>
-              <AlertDescription>
-                Adjusting quality helps reduce file size while maintaining visual quality. PNG is lossless, JPG/WebP support lossy compression.
+              <AlertTitle>Format Guide</AlertTitle>
+              <AlertDescription className="text-xs">
+                <strong>JPEG</strong> &amp; <strong>WebP</strong>: Lossy compression with quality control. <strong>PNG</strong>: Lossless, best for graphics. <strong>BMP</strong>: Uncompressed. <strong>GIF</strong>: Limited to 256 colors.
               </AlertDescription>
             </Alert>
           </CardContent>
