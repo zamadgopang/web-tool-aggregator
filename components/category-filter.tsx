@@ -18,7 +18,7 @@ interface CategoryFilterProps {
 
 export function CategoryFilter({ activeCategory, onCategoryChange }: CategoryFilterProps) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-2 p-1 bg-secondary/50 rounded-xl w-fit">
       {categories.map((category) => {
         const Icon = category.icon
         return (
@@ -28,8 +28,8 @@ export function CategoryFilter({ activeCategory, onCategoryChange }: CategoryFil
             className={cn(
               "inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200",
               activeCategory === category.id
-                ? "bg-foreground text-background"
-                : "bg-secondary text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
+                ? "bg-foreground text-background shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
             )}
           >
             <Icon className="h-4 w-4" />

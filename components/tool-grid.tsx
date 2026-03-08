@@ -324,7 +324,7 @@ export function ToolGrid({ activeCategory, onToolClick }: ToolGridProps) {
         return (
           <div key={section.key}>
             <div className="flex items-center gap-3 mb-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-foreground text-background">
                 {meta.icon}
               </div>
               <div>

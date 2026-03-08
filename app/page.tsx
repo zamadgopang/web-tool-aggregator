@@ -59,7 +59,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
             <p>All tools run 100% in your browser. Your files never leave your device.</p>
-            <p className="text-xs">15 free tools &bull; No ads &bull; Open source</p>
+            <p className="text-xs">30+ free tools &bull; No ads &bull; Open source</p>
           </div>
         </div>
       </footer>

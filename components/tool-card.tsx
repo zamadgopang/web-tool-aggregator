@@ -13,28 +13,20 @@ interface ToolCardProps {
   onClick?: (id: string) => void
 }
 
-const categoryAccent: Record<string, string> = {
-  developer: "border-l-blue-500",
-  image: "border-l-violet-500",
-  text: "border-l-emerald-500",
-  utility: "border-l-orange-500",
-}
-
 export function ToolCard({ id, title, description, icon, tag, category, onClick }: ToolCardProps) {
   return (
     <button
       onClick={() => onClick?.(id)}
       className={cn(
-        "group relative flex flex-col items-start gap-4 rounded-xl border border-border border-l-4 bg-card p-6 text-left transition-all duration-200 w-full",
-        categoryAccent[category] || "border-l-border",
-        "hover:border-muted-foreground/30 hover:bg-secondary/50 hover:shadow-lg hover:-translate-y-0.5",
+        "group relative flex flex-col items-start gap-4 rounded-xl border border-border bg-card p-6 text-left transition-all duration-200 w-full",
+        "hover:border-foreground/20 hover:shadow-md hover:-translate-y-0.5",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-        "active:scale-95 disabled:opacity-50"
+        "active:scale-[0.98] disabled:opacity-50"
       )}
       aria-label={`Open ${title} tool`}
     >
       <div className="flex w-full items-start justify-between">
-        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-secondary text-foreground transition-colors group-hover:bg-accent group-hover:text-accent-foreground">
+        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-foreground/5 text-foreground transition-colors group-hover:bg-foreground group-hover:text-background">
           {icon}
         </div>
         <div className="flex gap-2 items-center">

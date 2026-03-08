@@ -28,7 +28,7 @@ export function Header({ onSearchClick }: HeaderProps) {
               className="h-8 w-auto"
             />
           )}
-          <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 bg-clip-text text-transparent">Tools</span>
+          <span className="text-xl font-bold text-foreground">Tools</span>
         </div>
 
         {/* Desktop search bar */}
