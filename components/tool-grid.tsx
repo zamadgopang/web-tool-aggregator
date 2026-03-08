@@ -1,7 +1,7 @@
 "use client"
 
 import { ToolCard } from "@/components/tool-card"
-import { Image, FileText, FileType, Film, Code, Zap, Type, Shield, Hash, QrCode, Palette, Calculator, FileCode, TextIcon, Link, Regex, AlignLeft } from "lucide-react"
+import { Image, FileText, FileType, Film, Code, Zap, Type, Shield, Hash, QrCode, Palette, Calculator, FileCode, TextIcon, Link, Regex, AlignLeft, KeyRound, Clock, Fingerprint, Braces, FileJson, Timer, Paintbrush, Database, Code2, Crop, Globe, Square, Terminal, Ratio, Droplets } from "lucide-react"
 
 const tools = [
   // Image Tools
@@ -120,6 +120,132 @@ const tools = [
     title: "Unit Converter",
     description: "Convert length, weight, temperature, volume, and speed units.",
     icon: <Calculator className="h-6 w-6" />,
+    tag: "Popular" as const,
+    category: "utility",
+  },
+
+  // New Developer Tools
+  {
+    id: "jwt-decoder",
+    title: "JWT Decoder",
+    description: "Decode and inspect JSON Web Tokens — view header, payload, and expiry.",
+    icon: <KeyRound className="h-6 w-6" />,
+    tag: "Popular" as const,
+    category: "developer",
+  },
+  {
+    id: "json-to-typescript",
+    title: "JSON → TypeScript",
+    description: "Generate TypeScript interfaces from JSON with nested types and arrays.",
+    icon: <Braces className="h-6 w-6" />,
+    tag: "Popular" as const,
+    category: "developer",
+  },
+  {
+    id: "yaml-json-converter",
+    title: "YAML ↔ JSON Converter",
+    description: "Convert between YAML and JSON formats bidirectionally.",
+    icon: <FileJson className="h-6 w-6" />,
+    tag: "New" as const,
+    category: "developer",
+  },
+  {
+    id: "cron-parser",
+    title: "Cron Expression Parser",
+    description: "Parse cron expressions into human-readable schedules with next run times.",
+    icon: <Timer className="h-6 w-6" />,
+    tag: "New" as const,
+    category: "developer",
+  },
+  {
+    id: "sql-formatter",
+    title: "SQL Formatter",
+    description: "Format, minify, and beautify SQL queries with keyword uppercasing.",
+    icon: <Database className="h-6 w-6" />,
+    tag: "New" as const,
+    category: "developer",
+  },
+  {
+    id: "html-entity-encoder",
+    title: "HTML Entity Encoder",
+    description: "Encode and decode HTML entities with a built-in reference table.",
+    icon: <Code2 className="h-6 w-6" />,
+    tag: "Client-side" as const,
+    category: "developer",
+  },
+  {
+    id: "meta-tag-generator",
+    title: "Meta Tag Generator",
+    description: "Generate SEO meta tags, Open Graph, and Twitter Card markup with preview.",
+    icon: <Globe className="h-6 w-6" />,
+    tag: "Popular" as const,
+    category: "developer",
+  },
+  {
+    id: "chmod-calculator",
+    title: "Chmod Calculator",
+    description: "Calculate Unix file permissions in numeric and symbolic notation.",
+    icon: <Terminal className="h-6 w-6" />,
+    tag: "New" as const,
+    category: "developer",
+  },
+
+  // New Image Tools
+  {
+    id: "image-cropper-resizer",
+    title: "Image Cropper & Resizer",
+    description: "Resize, rotate, and flip images with live preview and preset sizes.",
+    icon: <Crop className="h-6 w-6" />,
+    tag: "Popular" as const,
+    category: "image",
+  },
+
+  // New Utility Tools
+  {
+    id: "timestamp-converter",
+    title: "Timestamp Converter",
+    description: "Convert between Unix timestamps and human-readable dates with timezone support.",
+    icon: <Clock className="h-6 w-6" />,
+    tag: "Popular" as const,
+    category: "utility",
+  },
+  {
+    id: "uuid-generator",
+    title: "UUID / ID Generator",
+    description: "Generate cryptographically secure UUIDs, NanoIDs, and ULID-like identifiers.",
+    icon: <Fingerprint className="h-6 w-6" />,
+    tag: "Secure" as const,
+    category: "utility",
+  },
+  {
+    id: "css-gradient-generator",
+    title: "CSS Gradient Generator",
+    description: "Create linear, radial, and conic CSS gradients with live preview.",
+    icon: <Paintbrush className="h-6 w-6" />,
+    tag: "New" as const,
+    category: "utility",
+  },
+  {
+    id: "css-box-shadow-generator",
+    title: "CSS Box Shadow Generator",
+    description: "Create multi-layer box shadows with live preview and presets.",
+    icon: <Square className="h-6 w-6" />,
+    tag: "New" as const,
+    category: "utility",
+  },
+  {
+    id: "aspect-ratio-calculator",
+    title: "Aspect Ratio Calculator",
+    description: "Calculate dimensions and ratios for video, photos, and responsive design.",
+    icon: <Ratio className="h-6 w-6" />,
+    tag: "New" as const,
+    category: "utility",
+  },
+  {
+    id: "color-palette-generator",
+    title: "Color Palette Generator",
+    description: "Generate harmonious color palettes and export as CSS or Tailwind config.",
+    icon: <Droplets className="h-6 w-6" />,
     tag: "Popular" as const,
     category: "utility",
   },

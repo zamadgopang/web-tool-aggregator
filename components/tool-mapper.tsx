@@ -15,6 +15,21 @@ import { RegexTester } from "@/components/tools/regex-tester"
 import { URLEncoderDecoder } from "@/components/tools/url-encoder-decoder"
 import { LoremIpsumGenerator } from "@/components/tools/lorem-ipsum-generator"
 import { TextDiffChecker } from "@/components/tools/text-diff-checker"
+import { JWTDecoder } from "@/components/tools/jwt-decoder"
+import { TimestampConverter } from "@/components/tools/timestamp-converter"
+import { UUIDGenerator } from "@/components/tools/uuid-generator"
+import { JsonToTypescript } from "@/components/tools/json-to-typescript"
+import { YamlJsonConverter } from "@/components/tools/yaml-json-converter"
+import { CronParser } from "@/components/tools/cron-parser"
+import { CSSGradientGenerator } from "@/components/tools/css-gradient-generator"
+import { SQLFormatter } from "@/components/tools/sql-formatter"
+import { HTMLEntityEncoder } from "@/components/tools/html-entity-encoder"
+import { ImageCropperResizer } from "@/components/tools/image-cropper-resizer"
+import { MetaTagGenerator } from "@/components/tools/meta-tag-generator"
+import { CSSBoxShadowGenerator } from "@/components/tools/css-box-shadow-generator"
+import { ChmodCalculator } from "@/components/tools/chmod-calculator"
+import { AspectRatioCalculator } from "@/components/tools/aspect-ratio-calculator"
+import { ColorPaletteGenerator } from "@/components/tools/color-palette-generator"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 
@@ -39,6 +54,21 @@ const toolComponents: Record<string, React.ComponentType> = {
   "url-encoder-decoder": URLEncoderDecoder,
   "lorem-ipsum-generator": LoremIpsumGenerator,
   "text-diff-checker": TextDiffChecker,
+  "jwt-decoder": JWTDecoder,
+  "timestamp-converter": TimestampConverter,
+  "uuid-generator": UUIDGenerator,
+  "json-to-typescript": JsonToTypescript,
+  "yaml-json-converter": YamlJsonConverter,
+  "cron-parser": CronParser,
+  "css-gradient-generator": CSSGradientGenerator,
+  "sql-formatter": SQLFormatter,
+  "html-entity-encoder": HTMLEntityEncoder,
+  "image-cropper-resizer": ImageCropperResizer,
+  "meta-tag-generator": MetaTagGenerator,
+  "css-box-shadow-generator": CSSBoxShadowGenerator,
+  "chmod-calculator": ChmodCalculator,
+  "aspect-ratio-calculator": AspectRatioCalculator,
+  "color-palette-generator": ColorPaletteGenerator,
 }
 
 export function ToolMapper({ toolId, onBack }: ToolMapperProps) {
