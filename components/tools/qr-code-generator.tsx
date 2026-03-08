@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Slider } from "@/components/ui/slider"
 import { Download, Copy, CheckCircle } from "lucide-react"
 
 // Simple QR Code generator using a library-free approach
@@ -102,15 +103,14 @@ export function QRCodeGenerator() {
                 <Label htmlFor="size-slider">Size</Label>
                 <span className="text-sm font-medium">{size}x{size}px</span>
               </div>
-              <input
-                id="size-slider"
-                type="range"
-                min="100"
-                max="500"
-                step="50"
-                value={size}
-                onChange={(e) => setSize(parseInt(e.target.value))}
+              <Slider
+                value={[size]}
+                onValueChange={(value) => setSize(value[0])}
+                min={100}
+                max={500}
+                step={50}
                 className="w-full"
+                aria-label="QR code size"
               />
             </div>
 

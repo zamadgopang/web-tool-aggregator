@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Copy, CheckCircle } from "lucide-react"
 
 type UnitCategory = "length" | "weight" | "temperature" | "volume" | "speed"
@@ -146,17 +147,18 @@ export function UnitConverter() {
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Enter value"
               />
-              <select
-                value={fromUnit}
-                onChange={(e) => setFromUnit(e.target.value)}
-                className="w-full p-2 border rounded-lg bg-background text-foreground"
-              >
-                {categoryUnits.map(([key, unit]) => (
-                  <option key={key} value={key}>
-                    {unit.name} ({key})
-                  </option>
-                ))}
-              </select>
+              <Select value={fromUnit} onValueChange={setFromUnit}>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {categoryUnits.map(([key, unit]) => (
+                    <SelectItem key={key} value={key}>
+                      {unit.name} ({key})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* To Unit */}
@@ -168,17 +170,18 @@ export function UnitConverter() {
                 readOnly
                 className="bg-muted"
               />
-              <select
-                value={toUnit}
-                onChange={(e) => setToUnit(e.target.value)}
-                className="w-full p-2 border rounded-lg bg-background text-foreground"
-              >
-                {categoryUnits.map(([key, unit]) => (
-                  <option key={key} value={key}>
-                    {unit.name} ({key})
-                  </option>
-                ))}
-              </select>
+              <Select value={toUnit} onValueChange={setToUnit}>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {categoryUnits.map(([key, unit]) => (
+                    <SelectItem key={key} value={key}>
+                      {unit.name} ({key})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

@@ -193,11 +193,21 @@ export function ImageConverter() {
           <div
             className={cn(
               "relative border-2 border-dashed rounded-lg p-8 transition-colors cursor-pointer",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               !uploadedImage 
                 ? "border-muted-foreground/25 hover:border-muted-foreground/50 bg-muted/25 hover:bg-muted/50"
                 : "border-green-500/50 bg-green-50/10"
             )}
+            role="button"
+            tabIndex={0}
+            aria-label="Upload image file"
             onClick={() => fileInputRef.current?.click()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault()
+                fileInputRef.current?.click()
+              }
+            }}
             onDragOver={(e) => {
               e.preventDefault()
               e.currentTarget.classList.add("border-primary")
@@ -391,56 +401,50 @@ export function ImageConverter() {
               </div>
             )}
 
+            {/* Error Messages */}
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
+            {/* Success Messages */}
+            {successMessage && (
+              <Alert className="bg-green-500/10 border-green-500/30">
+                <AlertCircle className="h-4 w-4 text-green-600" />
+                <AlertTitle className="text-green-900 dark:text-green-400">Success</AlertTitle>
+                <AlertDescription className="text-green-800 dark:text-green-300">{successMessage}</AlertDescription>
+              </Alert>
+            )}
+
+            {/* Convert Button */}
+            <Button
+              onClick={handleConvert}
+              disabled={isConverting}
+              size="lg"
+              className="w-full"
+            >
+              {isConverting ? (
+                <>
+                  <div className="animate-spin mr-2 h-4 w-4 border-2 border-background border-t-foreground rounded-full" />
+                  Converting...
+                </>
+              ) : (
+                <>
+                  <Download className="h-4 w-4 mr-2" />
+                  Convert to {targetFormat.toUpperCase()}
+                </>
+              )}
+            </Button>
+
             {/* Compression Info */}
-            <Alert>
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Format Guide</AlertTitle>
-              <AlertDescription className="text-xs">
-                <strong>JPEG</strong> &amp; <strong>WebP</strong>: Lossy compression with quality control. <strong>PNG</strong>: Lossless, best for graphics. <strong>BMP</strong>: Uncompressed. <strong>GIF</strong>: Limited to 256 colors.
-              </AlertDescription>
-            </Alert>
+            <div className="text-xs text-muted-foreground p-3 bg-muted rounded-lg">
+              <strong>Format Guide:</strong> <strong>JPEG</strong> &amp; <strong>WebP</strong>: Lossy compression with quality control. <strong>PNG</strong>: Lossless, best for graphics. <strong>BMP</strong>: Uncompressed. <strong>GIF</strong>: Limited to 256 colors.
+            </div>
           </CardContent>
         </Card>
-      )}
-
-      {/* Error Messages */}
-      {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      {/* Success Messages */}
-      {successMessage && (
-        <Alert className="bg-green-500/10 border-green-500/30">
-          <AlertCircle className="h-4 w-4 text-green-600" />
-          <AlertTitle className="text-green-900 dark:text-green-400">Success</AlertTitle>
-          <AlertDescription className="text-green-800 dark:text-green-300">{successMessage}</AlertDescription>
-        </Alert>
-      )}
-
-      {/* Convert Button */}
-      {uploadedImage && (
-        <Button
-          onClick={handleConvert}
-          disabled={isConverting}
-          size="lg"
-          className="w-full"
-        >
-          {isConverting ? (
-            <>
-              <div className="animate-spin mr-2 h-4 w-4 border-2 border-background border-t-foreground rounded-full" />
-              Converting...
-            </>
-          ) : (
-            <>
-              <Download className="h-4 w-4 mr-2" />
-              Convert to {targetFormat.toUpperCase()}
-            </>
-          )}
-        </Button>
       )}
 
       {/* Hidden Canvas for conversion */}

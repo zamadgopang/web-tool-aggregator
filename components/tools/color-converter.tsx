@@ -191,9 +191,18 @@ export function ColorConverter() {
                 return (
                   <div
                     key={lightness}
-                    className="h-12 rounded-lg border-2 border-muted cursor-pointer hover:ring-2 hover:ring-offset-2 ring-primary transition-all"
+                    className="h-12 rounded-lg border-2 border-muted cursor-pointer hover:ring-2 hover:ring-offset-2 ring-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     style={{ backgroundColor: varColor }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Copy color ${varColor}`}
                     onClick={() => handleCopy(varColor, `hsl-${lightness}`)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault()
+                        handleCopy(varColor, `hsl-${lightness}`)
+                      }
+                    }}
                     title={varColor}
                   />
                 )

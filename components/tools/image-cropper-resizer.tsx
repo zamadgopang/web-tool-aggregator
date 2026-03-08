@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Upload, Download, RotateCw, FlipHorizontal, FlipVertical, X, AlertCircle, Image as ImageIcon } from "lucide-react"
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export function ImageCropperResizer() {
   const [imageSrc, setImageSrc] = useState<string | null>(null)
@@ -157,8 +159,17 @@ export function ImageCropperResizer() {
         <CardContent className="space-y-6">
           {/* Upload */}
           <div
-            className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors"
+            className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            role="button"
+            tabIndex={0}
+            aria-label="Upload image file"
             onClick={() => fileInputRef.current?.click()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault()
+                fileInputRef.current?.click()
+              }
+            }}
           >
             <input
               ref={fileInputRef}
@@ -166,6 +177,7 @@ export function ImageCropperResizer() {
               accept="image/*"
               onChange={handleFileSelect}
               className="hidden"
+              aria-label="Upload image file"
             />
             {imageSrc ? (
               <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
@@ -221,15 +233,16 @@ export function ImageCropperResizer() {
                     max={10000}
                   />
                 </div>
-                <label className="flex items-center gap-2 text-sm cursor-pointer pb-2">
-                  <input
-                    type="checkbox"
+                <div className="flex items-center gap-2 pb-2">
+                  <Checkbox
+                    id="lock-aspect-ratio"
                     checked={lockAspectRatio}
-                    onChange={(e) => setLockAspectRatio(e.target.checked)}
-                    className="rounded"
+                    onCheckedChange={(checked) => setLockAspectRatio(checked as boolean)}
                   />
-                  Lock aspect ratio
-                </label>
+                  <Label htmlFor="lock-aspect-ratio" className="text-sm font-normal cursor-pointer">
+                    Lock aspect ratio
+                  </Label>
+                </div>
               </div>
 
               {/* Preset Sizes */}
@@ -294,15 +307,16 @@ export function ImageCropperResizer() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Output Format</Label>
-                  <select
-                    value={outputFormat}
-                    onChange={(e) => setOutputFormat(e.target.value)}
-                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                  >
-                    <option value="image/png">PNG</option>
-                    <option value="image/jpeg">JPEG</option>
-                    <option value="image/webp">WebP</option>
-                  </select>
+                  <Select value={outputFormat} onValueChange={setOutputFormat}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="image/png">PNG</SelectItem>
+                      <SelectItem value="image/jpeg">JPEG</SelectItem>
+                      <SelectItem value="image/webp">WebP</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 {outputFormat !== "image/png" && (
                   <div className="space-y-2">

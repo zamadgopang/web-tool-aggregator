@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Copy, CheckCircle, ArrowRightLeft } from "lucide-react"
 
 // Named HTML entities map
@@ -136,15 +137,16 @@ export function HTMLEntityEncoder() {
               Swap ({mode === "encode" ? "Switch to Decode" : "Switch to Encode"})
             </Button>
             {mode === "encode" && (
-              <label className="flex items-center gap-2 text-sm cursor-pointer">
-                <input
-                  type="checkbox"
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="use-named"
                   checked={useNamed}
-                  onChange={(e) => setUseNamed(e.target.checked)}
-                  className="rounded"
+                  onCheckedChange={(checked) => setUseNamed(checked as boolean)}
                 />
-                Use named entities
-              </label>
+                <Label htmlFor="use-named" className="text-sm font-normal cursor-pointer">
+                  Use named entities
+                </Label>
+              </div>
             )}
           </div>
 

@@ -149,11 +149,21 @@ export function SVGToPNG() {
           <div
             className={cn(
               "relative border-2 border-dashed rounded-lg p-8 transition-colors cursor-pointer",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               !svgContent
                 ? "border-muted-foreground/25 hover:border-muted-foreground/50 bg-muted/25 hover:bg-muted/50"
                 : "border-green-500/50 bg-green-50/10"
             )}
+            role="button"
+            tabIndex={0}
+            aria-label="Upload SVG file"
             onClick={() => fileInputRef.current?.click()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault()
+                fileInputRef.current?.click()
+              }
+            }}
             onDragOver={(e) => {
               e.preventDefault()
               e.currentTarget.classList.add("border-primary")
@@ -289,39 +299,37 @@ export function SVGToPNG() {
                 )}
               </div>
             </div>
+
+            {/* Error Alert */}
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
+            {/* Convert Button */}
+            <Button
+              onClick={handleConvert}
+              disabled={isConverting}
+              size="lg"
+              className="w-full"
+            >
+              {isConverting ? (
+                <>
+                  <div className="animate-spin mr-2 h-4 w-4 border-2 border-background border-t-foreground rounded-full" />
+                  Converting...
+                </>
+              ) : (
+                <>
+                  <Download className="h-4 w-4 mr-2" />
+                  Convert to PNG
+                </>
+              )}
+            </Button>
           </CardContent>
         </Card>
-      )}
-
-      {/* Error Alert */}
-      {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      {/* Convert Button */}
-      {svgContent && (
-        <Button
-          onClick={handleConvert}
-          disabled={isConverting}
-          size="lg"
-          className="w-full"
-        >
-          {isConverting ? (
-            <>
-              <div className="animate-spin mr-2 h-4 w-4 border-2 border-background border-t-foreground rounded-full" />
-              Converting...
-            </>
-          ) : (
-            <>
-              <Download className="h-4 w-4 mr-2" />
-              Convert to PNG
-            </>
-          )}
-        </Button>
       )}
 
       {/* Hidden Canvas */}
