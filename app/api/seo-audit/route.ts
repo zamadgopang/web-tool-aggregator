@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import * as cheerio from "cheerio"
 
-interface CheerioData {
+interface HtmlData {
   title: string | null
   titleLength: number
   metaDescription: string | null
@@ -30,7 +29,21 @@ function isValidUrl(str: string): boolean {
   }
 }
 
-async function fetchHtmlData(url: string): Promise<CheerioData> {
+function extractFirst(html: string, regex: RegExp): string | null {
+  const match = html.match(regex)
+  return match ? match[1].trim() : null
+}
+
+function stripTags(str: string): string {
+  return str.replace(/<[^>]*>/g, "").trim()
+}
+
+function countMatches(html: string, regex: RegExp): number {
+  const matches = html.match(regex)
+  return matches ? matches.length : 0
+}
+
+async function fetchHtmlData(url: string): Promise<HtmlData> {
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), 15000)
 
@@ -50,28 +63,46 @@ async function fetchHtmlData(url: string): Promise<CheerioData> {
     }
 
     const html = await response.text()
-    const $ = cheerio.load(html)
 
-    const title = $("title").first().text().trim() || null
+    // Title
+    const titleRaw = extractFirst(html, /<title[^>]*>([\s\S]*?)<\/title>/i)
+    const title = titleRaw ? stripTags(titleRaw) : null
+
+    // Meta description
     const metaDescription =
-      $('meta[name="description"]').attr("content")?.trim() || null
-    const firstH1 = $("h1").first().text().trim() || null
+      extractFirst(html, /<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["']/i) ??
+      extractFirst(html, /<meta[^>]+content=["']([^"']*)["'][^>]+name=["']description["']/i)
 
-    const allImages = $("img")
-    const totalImages = allImages.length
+    // First H1
+    const h1Raw = extractFirst(html, /<h1[^>]*>([\s\S]*?)<\/h1>/i)
+    const firstH1 = h1Raw ? stripTags(h1Raw) : null
+
+    // Images
+    const imgTags = html.match(/<img[^>]*>/gi) || []
+    const totalImages = imgTags.length
     let imagesMissingAlt = 0
-    allImages.each((_, el) => {
-      const alt = $(el).attr("alt")
-      if (alt === undefined || alt.trim() === "") {
-        imagesMissingAlt++
-      }
-    })
+    for (const img of imgTags) {
+      const hasAlt = /\salt=["']([^"']+)["']/i.test(img)
+      if (!hasAlt) imagesMissingAlt++
+    }
 
-    const hasViewport = $('meta[name="viewport"]').length > 0
+    // Viewport
+    const hasViewport = /<meta[^>]+name=["']viewport["']/i.test(html)
+
+    // Charset
     const hasCharset =
-      $('meta[charset]').length > 0 ||
-      $('meta[http-equiv="Content-Type"]').length > 0
-    const canonicalUrl = $('link[rel="canonical"]').attr("href") || null
+      /<meta[^>]+charset[=]/i.test(html) ||
+      /<meta[^>]+http-equiv=["']Content-Type["']/i.test(html)
+
+    // Canonical
+    const canonicalUrl =
+      extractFirst(html, /<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']*)["']/i) ??
+      extractFirst(html, /<link[^>]+href=["']([^"']*)["'][^>]+rel=["']canonical["']/i)
+
+    // Heading counts
+    const h1Count = countMatches(html, /<h1[\s>]/gi)
+    const h2Count = countMatches(html, /<h2[\s>]/gi)
+    const h3Count = countMatches(html, /<h3[\s>]/gi)
 
     return {
       title,
@@ -84,11 +115,7 @@ async function fetchHtmlData(url: string): Promise<CheerioData> {
       hasViewport,
       hasCharset,
       canonicalUrl,
-      headings: {
-        h1: $("h1").length,
-        h2: $("h2").length,
-        h3: $("h3").length,
-      },
+      headings: { h1: h1Count, h2: h2Count, h3: h3Count },
     }
   } finally {
     clearTimeout(timeout)
