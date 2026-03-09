@@ -245,9 +245,16 @@ function ScoreCircle({ score, label }: { score: number | null; label: string }) 
   }, [score, circumference])
 
   return (
-    <div className={`flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-500 ${getScoreBg(score)}`}>
-      <div className="relative w-24 h-24">
-        <svg className="w-24 h-24 -rotate-90" viewBox="0 0 100 100">
+    <div
+      className={`flex flex-col items-center gap-1.5 sm:gap-2 p-2 sm:p-4 rounded-xl transition-all duration-500 ${getScoreBg(score)}`}
+      role="meter"
+      aria-valuenow={score ?? undefined}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-label={`${label}: ${score !== null ? `${score} out of 100` : "unavailable"}`}
+    >
+      <div className="relative w-16 h-16 sm:w-24 sm:h-24">
+        <svg className="w-16 h-16 sm:w-24 sm:h-24 -rotate-90" viewBox="0 0 100 100" aria-hidden="true">
           <circle cx="50" cy="50" r={radius} fill="none" strokeWidth="8" className="stroke-muted/30" />
           <circle
             cx="50" cy="50" r={radius} fill="none" strokeWidth="8" strokeLinecap="round"
@@ -256,12 +263,12 @@ function ScoreCircle({ score, label }: { score: number | null; label: string }) 
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className={`text-2xl font-bold ${getScoreColor(score)}`}>
+          <span className={`text-lg sm:text-2xl font-bold ${getScoreColor(score)}`}>
             {score !== null ? <AnimatedNumber value={score} /> : "—"}
           </span>
         </div>
       </div>
-      <span className="text-sm font-semibold">{label}</span>
+      <span className="text-xs sm:text-sm font-semibold text-center">{label}</span>
       <Badge variant={score !== null && score >= 90 ? "default" : score !== null && score >= 50 ? "secondary" : "destructive"} className="text-[10px]">
         {getScoreLabel(score)}
       </Badge>
@@ -442,12 +449,12 @@ function buildTechnicalChecks(data: HtmlData): CheckItem[] {
 
 function StatCard({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string | number; sub?: string }) {
   return (
-    <div className="rounded-xl border bg-card p-4 flex flex-col gap-1 animate-in fade-in slide-in-from-bottom-2 duration-500">
+    <div className="rounded-xl border bg-card p-3 sm:p-4 flex flex-col gap-1 animate-in fade-in slide-in-from-bottom-2 duration-500" role="group" aria-label={`${label}: ${value}${sub ? `, ${sub}` : ""}`}>
       <div className="flex items-center gap-2 text-muted-foreground">
-        {icon}
+        <span aria-hidden="true">{icon}</span>
         <span className="text-xs font-medium">{label}</span>
       </div>
-      <p className="text-2xl font-bold tracking-tight">
+      <p className="text-xl sm:text-2xl font-bold tracking-tight">
         {typeof value === "number" ? <AnimatedNumber value={value} /> : value}
       </p>
       {sub && <p className="text-xs text-muted-foreground">{sub}</p>}
@@ -459,20 +466,21 @@ function StatCard({ icon, label, value, sub }: { icon: React.ReactNode; label: s
 
 function CheckList({ checks }: { checks: CheckItem[] }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" role="list" aria-label="Audit checks">
       {checks.map((check, i) => (
         <div
           key={i}
-          className={`flex items-start gap-3 p-3 rounded-lg transition-all duration-300 ${statusBg(check.status)}`}
+          className={`flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg transition-all duration-300 ${statusBg(check.status)}`}
           style={{ animationDelay: `${i * 60}ms` }}
+          role="listitem"
         >
           <StatusIcon status={check.status} />
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium flex items-center gap-2">
-              {check.icon}
+            <p className="text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2">
+              <span aria-hidden="true">{check.icon}</span>
               {check.label}
             </p>
-            <p className="text-sm text-muted-foreground mt-0.5 break-words">{check.detail}</p>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 break-words">{check.detail}</p>
           </div>
         </div>
       ))}
@@ -541,18 +549,20 @@ export function SeoPerformanceAuditor() {
     setLighthouseLoading(true)
     setLighthouse(null)
     try {
-      const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(targetUrl)}&category=performance&category=seo&category=accessibility`
-      const response = await fetch(apiUrl)
+      const response = await fetch("/api/seo-audit/lighthouse", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: targetUrl }),
+      })
       if (!response.ok) {
         setLighthouse({ performance: null, seo: null, accessibility: null })
         return
       }
       const data = await response.json()
-      const categories = data?.lighthouseResult?.categories
       setLighthouse({
-        performance: categories?.performance?.score != null ? Math.round(categories.performance.score * 100) : null,
-        seo: categories?.seo?.score != null ? Math.round(categories.seo.score * 100) : null,
-        accessibility: categories?.accessibility?.score != null ? Math.round(categories.accessibility.score * 100) : null,
+        performance: data.performance ?? null,
+        seo: data.seo ?? null,
+        accessibility: data.accessibility ?? null,
       })
     } catch {
       setLighthouse({ performance: null, seo: null, accessibility: null })
@@ -614,13 +624,13 @@ export function SeoPerformanceAuditor() {
   ].filter((h) => h.count > 0) : []
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-4">
+    <div className="w-full max-w-5xl mx-auto px-3 py-4 sm:p-4">
       <Card className="overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10 border-b">
-          <div className="flex items-center justify-between">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10 border-b px-4 py-4 sm:px-6 sm:py-5">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div>
-              <CardTitle className="flex items-center gap-2 text-xl">
-                <div className="p-2 rounded-lg bg-primary/10">
+              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                <div className="p-2 rounded-lg bg-primary/10" aria-hidden="true">
                   <Globe className="h-5 w-5 text-primary" />
                 </div>
                 Website SEO & Performance Auditor
@@ -630,19 +640,19 @@ export function SeoPerformanceAuditor() {
               </CardDescription>
             </div>
             {overallGrade && !loading && (
-              <div className="text-center animate-in zoom-in duration-500">
-                <div className={`text-5xl font-black ${overallGrade.color}`}>{overallGrade.grade}</div>
+              <div className="text-center animate-in zoom-in duration-500" role="status" aria-label={`Overall grade: ${overallGrade.grade}, score: ${overallGrade.score}%`}>
+                <div className={`text-4xl sm:text-5xl font-black ${overallGrade.color}`}>{overallGrade.grade}</div>
                 <p className="text-xs text-muted-foreground mt-1">Overall Score: {overallGrade.score}%</p>
               </div>
             )}
           </div>
         </CardHeader>
 
-        <CardContent className="p-6 space-y-6">
+        <CardContent className="p-4 sm:p-6 space-y-5 sm:space-y-6">
           {/* URL Input */}
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <div className="relative flex-1">
-              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
               <Input
                 placeholder="example.com"
                 value={url}
@@ -650,28 +660,31 @@ export function SeoPerformanceAuditor() {
                 onKeyDown={handleKeyDown}
                 disabled={loading}
                 className="pl-9"
+                aria-label="Website URL to audit"
+                type="url"
+                autoComplete="url"
               />
             </div>
-            <Button onClick={handleAudit} disabled={loading || !url.trim()} size="lg">
-              {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Search className="h-4 w-4 mr-2" />}
+            <Button onClick={handleAudit} disabled={loading || !url.trim()} size="lg" className="w-full sm:w-auto">
+              {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" aria-hidden="true" /> : <Search className="h-4 w-4 mr-2" aria-hidden="true" />}
               {loading ? "Scanning..." : "Run Audit"}
             </Button>
           </div>
 
           {/* Loading State */}
           {loading && (
-            <div className="flex flex-col items-center justify-center py-16 gap-6 animate-in fade-in duration-300">
+            <div className="flex flex-col items-center justify-center py-10 sm:py-16 gap-4 sm:gap-6 animate-in fade-in duration-300" role="status" aria-label="Scanning website">
               <div className="relative">
-                <div className="w-20 h-20 rounded-full border-4 border-muted animate-spin border-t-primary" />
-                <div className="absolute inset-2 w-16 h-16 rounded-full border-4 border-muted animate-spin border-b-primary/50" style={{ animationDirection: "reverse", animationDuration: "1.5s" }} />
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-muted animate-spin border-t-primary" />
+                <div className="absolute inset-2 w-12 h-12 sm:w-16 sm:h-16 rounded-full border-4 border-muted animate-spin border-b-primary/50" style={{ animationDirection: "reverse", animationDuration: "1.5s" }} />
               </div>
               <div className="text-center space-y-2">
-                <p className="font-semibold text-lg">Scanning website architecture...</p>
-                <p className="text-sm text-muted-foreground animate-in fade-in slide-in-from-bottom-1 duration-300" key={scanPhase}>
+                <p className="font-semibold text-base sm:text-lg">Scanning website architecture...</p>
+                <p className="text-xs sm:text-sm text-muted-foreground animate-in fade-in slide-in-from-bottom-1 duration-300" key={scanPhase}>
                   {scanMessages[scanPhase]}
                 </p>
               </div>
-              <div className="flex gap-1">
+              <div className="flex gap-1" aria-hidden="true">
                 {scanMessages.map((_, i) => (
                   <div key={i} className={`w-2 h-2 rounded-full transition-all duration-300 ${i <= scanPhase ? "bg-primary scale-100" : "bg-muted scale-75"}`} />
                 ))}
@@ -681,8 +694,8 @@ export function SeoPerformanceAuditor() {
 
           {/* Error */}
           {error && !loading && (
-            <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-5 flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-              <XCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+            <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 sm:p-5 flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300" role="alert">
+              <XCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" aria-hidden="true" />
               <div>
                 <p className="font-semibold text-destructive">Audit Failed</p>
                 <p className="text-sm text-muted-foreground mt-1">{error}</p>
@@ -707,7 +720,7 @@ export function SeoPerformanceAuditor() {
               </div>
 
               {/* Quick Stats Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-3">
                 <StatCard icon={<FileText className="h-4 w-4" />} label="Word Count" value={result.htmlData.wordCount} />
                 <StatCard icon={<Link2 className="h-4 w-4" />} label="Total Links" value={result.htmlData.totalLinks} sub={`${result.htmlData.internalLinks} internal · ${result.htmlData.externalLinks} external`} />
                 <StatCard icon={<ImageIcon className="h-4 w-4" />} label="Images" value={result.htmlData.totalImages} sub={result.htmlData.imagesMissingAlt > 0 ? `${result.htmlData.imagesMissingAlt} missing alt` : "All have alt text"} />
@@ -730,37 +743,39 @@ export function SeoPerformanceAuditor() {
                 </CardHeader>
                 <CardContent>
                   {lighthouseLoading && (
-                    <div className="flex flex-col items-center justify-center py-10 gap-4">
+                    <div className="flex flex-col items-center justify-center py-8 sm:py-10 gap-4" role="status" aria-label="Loading Lighthouse scores">
                       <div className="relative">
                         <div className="w-12 h-12 rounded-full border-[3px] border-muted animate-spin border-t-primary" />
                       </div>
                       <div className="text-center">
                         <p className="text-sm font-medium">Fetching Lighthouse scores...</p>
-                        <p className="text-xs text-muted-foreground mt-1">This can take up to 60 seconds</p>
+                        <p className="text-xs text-muted-foreground mt-1">This can take up to 90 seconds</p>
                       </div>
                     </div>
                   )}
                   {!lighthouseLoading && lighthouse && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in duration-500">
-                      <div className="grid grid-cols-3 gap-3">
+                    <div className="space-y-6 animate-in fade-in duration-500">
+                      <div className="grid grid-cols-3 gap-2 sm:gap-3" role="group" aria-label="Lighthouse scores">
                         <ScoreCircle score={lighthouse.performance} label="Performance" />
                         <ScoreCircle score={lighthouse.seo} label="SEO" />
                         <ScoreCircle score={lighthouse.accessibility} label="Accessibility" />
                       </div>
-                      {/* Radar Chart */}
-                      <div className="flex items-center justify-center">
-                        <ResponsiveContainer width="100%" height={220}>
-                          <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="75%">
-                            <PolarGrid stroke="hsl(var(--muted))" />
-                            <PolarAngleAxis dataKey="metric" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
-                            <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
-                            <Radar name="Score" dataKey="score" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.2} strokeWidth={2} />
-                          </RadarChart>
-                        </ResponsiveContainer>
-                      </div>
+                      {/* Radar Chart - hidden on very small screens */}
+                      {(lighthouse.performance !== null || lighthouse.seo !== null || lighthouse.accessibility !== null) && (
+                        <div className="hidden sm:flex items-center justify-center" aria-label="Lighthouse scores radar chart">
+                          <ResponsiveContainer width="100%" height={220}>
+                            <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="75%">
+                              <PolarGrid stroke="hsl(var(--muted))" />
+                              <PolarAngleAxis dataKey="metric" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
+                              <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                              <Radar name="Score" dataKey="score" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.2} strokeWidth={2} />
+                            </RadarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      )}
                       {lighthouse.performance === null && lighthouse.seo === null && lighthouse.accessibility === null && (
-                        <p className="text-xs text-muted-foreground text-center col-span-full">
-                          Lighthouse scores unavailable. The API may be rate-limited.
+                        <p className="text-xs text-muted-foreground text-center" role="alert">
+                          Lighthouse scores unavailable. The API may be rate-limited or the site may be unreachable.
                         </p>
                       )}
                     </div>
@@ -770,11 +785,11 @@ export function SeoPerformanceAuditor() {
 
               {/* Tabbed Details */}
               <Tabs defaultValue="seo" className="w-full">
-                <TabsList className="w-full grid grid-cols-4">
-                  <TabsTrigger value="seo" className="gap-1.5"><Search className="h-3.5 w-3.5" />SEO</TabsTrigger>
-                  <TabsTrigger value="social" className="gap-1.5"><Share2 className="h-3.5 w-3.5" />Social</TabsTrigger>
-                  <TabsTrigger value="technical" className="gap-1.5"><Shield className="h-3.5 w-3.5" />Technical</TabsTrigger>
-                  <TabsTrigger value="structure" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" />Structure</TabsTrigger>
+                <TabsList className="w-full grid grid-cols-2 sm:grid-cols-4 h-auto">
+                  <TabsTrigger value="seo" className="gap-1.5 text-xs sm:text-sm py-2"><Search className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /><span className="truncate">SEO</span></TabsTrigger>
+                  <TabsTrigger value="social" className="gap-1.5 text-xs sm:text-sm py-2"><Share2 className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /><span className="truncate">Social</span></TabsTrigger>
+                  <TabsTrigger value="technical" className="gap-1.5 text-xs sm:text-sm py-2"><Shield className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /><span className="truncate">Technical</span></TabsTrigger>
+                  <TabsTrigger value="structure" className="gap-1.5 text-xs sm:text-sm py-2"><BarChart3 className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /><span className="truncate">Structure</span></TabsTrigger>
                 </TabsList>
 
                 {/* SEO Tab */}
@@ -824,15 +839,15 @@ export function SeoPerformanceAuditor() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3" role="group" aria-label="Security headers status">
                         {([
                           ["HSTS", result.htmlData.securityHeaders.hasHSTS],
                           ["CSP", result.htmlData.securityHeaders.hasCSP],
                           ["X-Frame", result.htmlData.securityHeaders.hasXFrame],
                           ["X-Content-Type", result.htmlData.securityHeaders.hasXContentType],
                         ] as [string, boolean][]).map(([name, present]) => (
-                          <div key={name} className={`rounded-lg p-3 text-center transition-all ${present ? "bg-emerald-500/10 border border-emerald-500/20" : "bg-red-500/5 border border-red-500/20"}`}>
-                            {present ? <CheckCircle className="h-5 w-5 text-emerald-500 mx-auto" /> : <XCircle className="h-5 w-5 text-red-400 mx-auto" />}
+                          <div key={name} className={`rounded-lg p-3 text-center transition-all ${present ? "bg-emerald-500/10 border border-emerald-500/20" : "bg-red-500/5 border border-red-500/20"}`} role="status" aria-label={`${name}: ${present ? "present" : "missing"}`}>
+                            {present ? <CheckCircle className="h-5 w-5 text-emerald-500 mx-auto" aria-hidden="true" /> : <XCircle className="h-5 w-5 text-red-400 mx-auto" aria-hidden="true" />}
                             <p className="text-xs font-medium mt-1.5">{name}</p>
                           </div>
                         ))}
