@@ -35,6 +35,10 @@ import {
   BarChart3,
   Zap,
   Lock,
+  Smartphone,
+  MonitorSmartphone,
+  Activity,
+  RefreshCw,
 } from "lucide-react"
 import {
   RadarChart,
@@ -92,6 +96,15 @@ interface LighthouseScores {
   performance: number | null
   seo: number | null
   accessibility: number | null
+  error?: string
+  metrics?: {
+    fcp?: number | null
+    lcp?: number | null
+    tbt?: number | null
+    cls?: number | null
+    si?: number | null
+    tti?: number | null
+  }
 }
 
 interface AuditResult {
@@ -524,8 +537,10 @@ export function SeoPerformanceAuditor() {
   const [result, setResult] = useState<AuditResult | null>(null)
   const [lighthouse, setLighthouse] = useState<LighthouseScores | null>(null)
   const [lighthouseLoading, setLighthouseLoading] = useState(false)
+  const [lighthouseError, setLighthouseError] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [scanPhase, setScanPhase] = useState(0)
+  const [strategy, setStrategy] = useState<"mobile" | "desktop">("mobile")
 
   const scanMessages = [
     "Connecting to server...",
@@ -545,31 +560,41 @@ export function SeoPerformanceAuditor() {
     return () => clearInterval(interval)
   }, [loading, scanMessages.length])
 
-  const fetchLighthouseScores = useCallback(async (targetUrl: string) => {
+  const fetchLighthouseScores = useCallback(async (targetUrl: string, deviceStrategy: string) => {
     setLighthouseLoading(true)
     setLighthouse(null)
+    setLighthouseError(null)
     try {
       const response = await fetch("/api/seo-audit/lighthouse", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: targetUrl }),
+        body: JSON.stringify({ url: targetUrl, strategy: deviceStrategy }),
       })
-      if (!response.ok) {
-        setLighthouse({ performance: null, seo: null, accessibility: null })
-        return
-      }
       const data = await response.json()
-      setLighthouse({
-        performance: data.performance ?? null,
-        seo: data.seo ?? null,
-        accessibility: data.accessibility ?? null,
-      })
-    } catch {
+      if (data.error && data.performance === null && data.seo === null && data.accessibility === null) {
+        setLighthouseError(data.error)
+        setLighthouse({ performance: null, seo: null, accessibility: null })
+      } else {
+        setLighthouse({
+          performance: data.performance ?? null,
+          seo: data.seo ?? null,
+          accessibility: data.accessibility ?? null,
+          metrics: data.metrics ?? undefined,
+        })
+      }
+    } catch (err) {
+      setLighthouseError(err instanceof Error ? err.message : "Network error fetching Lighthouse scores.")
       setLighthouse({ performance: null, seo: null, accessibility: null })
     } finally {
       setLighthouseLoading(false)
     }
   }, [])
+
+  const handleRetryLighthouse = () => {
+    if (result?.url) {
+      fetchLighthouseScores(result.url, strategy)
+    }
+  }
 
   const handleAudit = async () => {
     let targetUrl = url.trim()
@@ -593,7 +618,7 @@ export function SeoPerformanceAuditor() {
       const data = await response.json()
       if (!response.ok) { setError(data.error || "Failed to audit the website."); return }
       setResult(data)
-      fetchLighthouseScores(targetUrl)
+      fetchLighthouseScores(targetUrl, strategy)
     } catch {
       setError("Network error. Please check your connection and try again.")
     } finally {
@@ -730,7 +755,7 @@ export function SeoPerformanceAuditor() {
               {/* Lighthouse Scores */}
               <Card>
                 <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                     <div>
                       <CardTitle className="text-base flex items-center gap-2">
                         <BarChart3 className="h-4 w-4 text-primary" />
@@ -738,7 +763,32 @@ export function SeoPerformanceAuditor() {
                       </CardTitle>
                       <CardDescription>Google PageSpeed Insights</CardDescription>
                     </div>
-                    {lighthouseLoading && <Loader2 className="h-4 w-4 animate-spin text-primary" />}
+                    <div className="flex items-center gap-2">
+                      {/* Strategy Toggle */}
+                      <div className="flex items-center rounded-lg border bg-muted/30 p-0.5" role="radiogroup" aria-label="Analysis device type">
+                        <button
+                          onClick={() => { setStrategy("mobile"); if (result) fetchLighthouseScores(result.url, "mobile") }}
+                          className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all ${strategy === "mobile" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                          role="radio"
+                          aria-checked={strategy === "mobile"}
+                          disabled={lighthouseLoading}
+                        >
+                          <Smartphone className="h-3.5 w-3.5" />
+                          Mobile
+                        </button>
+                        <button
+                          onClick={() => { setStrategy("desktop"); if (result) fetchLighthouseScores(result.url, "desktop") }}
+                          className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all ${strategy === "desktop" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                          role="radio"
+                          aria-checked={strategy === "desktop"}
+                          disabled={lighthouseLoading}
+                        >
+                          <MonitorSmartphone className="h-3.5 w-3.5" />
+                          Desktop
+                        </button>
+                      </div>
+                      {lighthouseLoading && <Loader2 className="h-4 w-4 animate-spin text-primary" />}
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -748,8 +798,8 @@ export function SeoPerformanceAuditor() {
                         <div className="w-12 h-12 rounded-full border-[3px] border-muted animate-spin border-t-primary" />
                       </div>
                       <div className="text-center">
-                        <p className="text-sm font-medium">Fetching Lighthouse scores...</p>
-                        <p className="text-xs text-muted-foreground mt-1">This can take up to 90 seconds</p>
+                        <p className="text-sm font-medium">Fetching Lighthouse scores ({strategy})...</p>
+                        <p className="text-xs text-muted-foreground mt-1">This can take 30-60 seconds</p>
                       </div>
                     </div>
                   )}
@@ -760,6 +810,73 @@ export function SeoPerformanceAuditor() {
                         <ScoreCircle score={lighthouse.seo} label="SEO" />
                         <ScoreCircle score={lighthouse.accessibility} label="Accessibility" />
                       </div>
+
+                      {/* Core Web Vitals */}
+                      {lighthouse.metrics && Object.keys(lighthouse.metrics).length > 0 && (
+                        <div className="space-y-3">
+                          <h4 className="text-sm font-semibold flex items-center gap-2">
+                            <Activity className="h-4 w-4 text-primary" />
+                            Core Web Vitals
+                          </h4>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            {lighthouse.metrics.fcp != null && (
+                              <div className="rounded-lg border p-3 space-y-1">
+                                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">FCP</p>
+                                <p className={`text-lg font-bold ${lighthouse.metrics.fcp < 1800 ? "text-emerald-500" : lighthouse.metrics.fcp < 3000 ? "text-amber-500" : "text-red-500"}`}>
+                                  {(lighthouse.metrics.fcp / 1000).toFixed(1)}s
+                                </p>
+                                <p className="text-[10px] text-muted-foreground">First Contentful Paint</p>
+                              </div>
+                            )}
+                            {lighthouse.metrics.lcp != null && (
+                              <div className="rounded-lg border p-3 space-y-1">
+                                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">LCP</p>
+                                <p className={`text-lg font-bold ${lighthouse.metrics.lcp < 2500 ? "text-emerald-500" : lighthouse.metrics.lcp < 4000 ? "text-amber-500" : "text-red-500"}`}>
+                                  {(lighthouse.metrics.lcp / 1000).toFixed(1)}s
+                                </p>
+                                <p className="text-[10px] text-muted-foreground">Largest Contentful Paint</p>
+                              </div>
+                            )}
+                            {lighthouse.metrics.tbt != null && (
+                              <div className="rounded-lg border p-3 space-y-1">
+                                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">TBT</p>
+                                <p className={`text-lg font-bold ${lighthouse.metrics.tbt < 200 ? "text-emerald-500" : lighthouse.metrics.tbt < 600 ? "text-amber-500" : "text-red-500"}`}>
+                                  {lighthouse.metrics.tbt}ms
+                                </p>
+                                <p className="text-[10px] text-muted-foreground">Total Blocking Time</p>
+                              </div>
+                            )}
+                            {lighthouse.metrics.cls != null && (
+                              <div className="rounded-lg border p-3 space-y-1">
+                                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">CLS</p>
+                                <p className={`text-lg font-bold ${lighthouse.metrics.cls < 0.1 ? "text-emerald-500" : lighthouse.metrics.cls < 0.25 ? "text-amber-500" : "text-red-500"}`}>
+                                  {lighthouse.metrics.cls.toFixed(3)}
+                                </p>
+                                <p className="text-[10px] text-muted-foreground">Cumulative Layout Shift</p>
+                              </div>
+                            )}
+                            {lighthouse.metrics.si != null && (
+                              <div className="rounded-lg border p-3 space-y-1">
+                                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">SI</p>
+                                <p className={`text-lg font-bold ${lighthouse.metrics.si < 3400 ? "text-emerald-500" : lighthouse.metrics.si < 5800 ? "text-amber-500" : "text-red-500"}`}>
+                                  {(lighthouse.metrics.si / 1000).toFixed(1)}s
+                                </p>
+                                <p className="text-[10px] text-muted-foreground">Speed Index</p>
+                              </div>
+                            )}
+                            {lighthouse.metrics.tti != null && (
+                              <div className="rounded-lg border p-3 space-y-1">
+                                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">TTI</p>
+                                <p className={`text-lg font-bold ${lighthouse.metrics.tti < 3800 ? "text-emerald-500" : lighthouse.metrics.tti < 7300 ? "text-amber-500" : "text-red-500"}`}>
+                                  {(lighthouse.metrics.tti / 1000).toFixed(1)}s
+                                </p>
+                                <p className="text-[10px] text-muted-foreground">Time to Interactive</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
                       {/* Radar Chart - hidden on very small screens */}
                       {(lighthouse.performance !== null || lighthouse.seo !== null || lighthouse.accessibility !== null) && (
                         <div className="hidden sm:flex items-center justify-center" aria-label="Lighthouse scores radar chart">
@@ -773,10 +890,30 @@ export function SeoPerformanceAuditor() {
                           </ResponsiveContainer>
                         </div>
                       )}
+
+                      {/* Error + Retry for Lighthouse */}
                       {lighthouse.performance === null && lighthouse.seo === null && lighthouse.accessibility === null && (
-                        <p className="text-xs text-muted-foreground text-center" role="alert">
-                          Lighthouse scores unavailable. The API may be rate-limited or the site may be unreachable.
-                        </p>
+                        <div className="flex flex-col items-center gap-3 py-2" role="alert">
+                          {lighthouseError ? (
+                            <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-3 w-full">
+                              <div className="flex items-start gap-2">
+                                <AlertTriangle className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                                <div className="text-xs">
+                                  <p className="font-medium text-amber-600 dark:text-amber-400">Lighthouse scores could not be loaded</p>
+                                  <p className="text-muted-foreground mt-1">{lighthouseError}</p>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="text-xs text-muted-foreground text-center">
+                              Lighthouse scores unavailable.
+                            </p>
+                          )}
+                          <Button variant="outline" size="sm" onClick={handleRetryLighthouse} className="gap-2">
+                            <RefreshCw className="h-3.5 w-3.5" />
+                            Retry Lighthouse
+                          </Button>
+                        </div>
                       )}
                     </div>
                   )}

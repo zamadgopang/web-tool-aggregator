@@ -1,7 +1,8 @@
 "use client"
 
 import { ToolCard } from "@/components/tool-card"
-import { Image, FileText, FileType, Film, Code, Zap, Type, Shield, Hash, QrCode, Palette, Calculator, FileCode, TextIcon, Link, Regex, AlignLeft, KeyRound, Clock, Fingerprint, Braces, FileJson, Timer, Paintbrush, Database, Code2, Crop, Globe, Square, Terminal, Ratio, Droplets, Star } from "lucide-react"
+import { Image, FileText, FileType, Film, Code, Zap, Type, Shield, Hash, QrCode, Palette, Calculator, FileCode, TextIcon, Link, Regex, AlignLeft, KeyRound, Clock, Fingerprint, Braces, FileJson, Timer, Paintbrush, Database, Code2, Crop, Globe, Square, Terminal, Ratio, Droplets, Star, ArrowRight, BarChart3, Activity } from "lucide-react"
+import NextLink from "next/link"
 
 const tools = [
   // Popular / Featured Tools (ordered: Image Converter, Markdown Preview, Image Cropper, PDF to DOC, QR Code, then rest)
@@ -270,6 +271,15 @@ const tools = [
     tag: "Popular" as const,
     category: "utility",
   },
+  {
+    id: "seo-performance-auditor",
+    title: "SEO & Performance Auditor",
+    description: "Audit any website's SEO, performance, and accessibility with Google Lighthouse scores and on-page analysis.",
+    icon: <Globe className="h-6 w-6" />,
+    tag: "Hot" as const,
+    category: "developer",
+    popular: true,
+  },
 ]
 
 const sectionMeta: Record<string, { label: string; icon: React.ReactNode; description: string }> = {
@@ -299,6 +309,45 @@ const sectionMeta: Record<string, { label: string; icon: React.ReactNode; descri
     description: "Colors, passwords, timestamps, and more",
   },
 }
+
+// ─── Featured Tool Banner ─────────────────────────────────────────────
+
+function FeaturedToolBanner() {
+  return (
+    <NextLink
+      href="/tools/seo-performance-auditor"
+      className="group block w-full rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-5 sm:p-6 transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      aria-label="Try the SEO & Performance Auditor tool — featured tool"
+    >
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors" aria-hidden="true">
+          <BarChart3 className="h-7 w-7" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h3 className="text-lg font-bold text-foreground">SEO & Performance Auditor</h3>
+            <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+              Featured
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground mt-1">
+            Get Lighthouse scores, Core Web Vitals, security headers, social tags analysis, and detailed SEO recommendations for any website — powered by Google PageSpeed Insights.
+          </p>
+        </div>
+        <div className="hidden sm:flex items-center gap-3 shrink-0">
+          <div className="flex -space-x-1" aria-hidden="true">
+            <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center border-2 border-background"><Activity className="h-3.5 w-3.5 text-emerald-500" /></div>
+            <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center border-2 border-background"><Shield className="h-3.5 w-3.5 text-blue-500" /></div>
+            <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center border-2 border-background"><Globe className="h-3.5 w-3.5 text-amber-500" /></div>
+          </div>
+          <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 group-hover:text-primary transition-all" />
+        </div>
+      </div>
+    </NextLink>
+  )
+}
+
+// ─── Tool Grid ────────────────────────────────────────────────────────
 
 interface ToolGridProps {
   activeCategory: string
@@ -335,6 +384,9 @@ export function ToolGrid({ activeCategory }: ToolGridProps) {
 
   return (
     <div className="space-y-12">
+      {/* Featured Tool Banner */}
+      <FeaturedToolBanner />
+
       {sections.map((section) => {
         const meta = sectionMeta[section.key]
         if (!meta || section.tools.length === 0) return null

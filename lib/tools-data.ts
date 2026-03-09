@@ -286,9 +286,10 @@ export const tools: ToolMeta[] = [
   {
     id: "seo-performance-auditor",
     title: "SEO & Performance Auditor",
-    description: "Audit any website's SEO, performance, and accessibility with Lighthouse scores and on-page HTML analysis.",
-    tag: "New",
+    description: "Audit any website's SEO, performance, and accessibility with Google Lighthouse scores, Core Web Vitals, and detailed on-page HTML analysis.",
+    tag: "Hot",
     category: "developer",
+    popular: true,
     iconName: "Globe",
   },
 ]
