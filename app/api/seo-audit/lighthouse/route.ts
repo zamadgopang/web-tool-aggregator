@@ -46,6 +46,7 @@ export async function POST(request: NextRequest) {
           seo: null,
           accessibility: null,
           strategy: deviceStrategy,
+          isQuotaError: response.status === 429,
           error: `PageSpeed API returned HTTP ${response.status}. ${errorText.slice(0, 200)}`,
         })
       }

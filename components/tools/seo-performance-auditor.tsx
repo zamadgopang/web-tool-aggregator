@@ -216,6 +216,90 @@ function computeOverallGrade(html: HtmlData, lh: LighthouseScores | null): { gra
   return { grade, color, score: pct }
 }
 
+// ─── Fallback Scoring (when Lighthouse API is unavailable) ────────────
+
+function computeFallbackScores(html: HtmlData): LighthouseScores {
+  // Estimate Performance (0-100)
+  let perf = 0
+  // Response time scoring (35 pts)
+  if (html.responseTimeMs < 500) perf += 35
+  else if (html.responseTimeMs < 1000) perf += 28
+  else if (html.responseTimeMs < 2000) perf += 20
+  else if (html.responseTimeMs < 3000) perf += 12
+  else perf += 5
+  // Page size scoring (35 pts)
+  const sizeKB = html.contentLength / 1024
+  if (sizeKB < 100) perf += 35
+  else if (sizeKB < 300) perf += 28
+  else if (sizeKB < 500) perf += 22
+  else if (sizeKB < 1000) perf += 15
+  else perf += 5
+  // Image count penalty (15 pts)
+  if (html.totalImages === 0) perf += 15
+  else if (html.totalImages <= 5) perf += 12
+  else if (html.totalImages <= 15) perf += 8
+  else if (html.totalImages <= 30) perf += 4
+  else perf += 1
+  // External resources penalty (15 pts)
+  if (html.externalLinks <= 5) perf += 15
+  else if (html.externalLinks <= 15) perf += 10
+  else if (html.externalLinks <= 30) perf += 5
+  else perf += 2
+
+  // Estimate SEO (0-100)
+  let seo = 0
+  // Title (15 pts)
+  if (html.title && html.titleLength >= 30 && html.titleLength <= 60) seo += 15
+  else if (html.title) seo += 8
+  // Meta description (15 pts)
+  if (html.metaDescription && html.metaDescriptionLength >= 70 && html.metaDescriptionLength <= 160) seo += 15
+  else if (html.metaDescription) seo += 8
+  // H1 (10 pts)
+  if (html.firstH1 && html.headings.h1 === 1) seo += 10
+  else if (html.firstH1) seo += 5
+  // Canonical URL (10 pts)
+  if (html.canonicalUrl) seo += 10
+  // Language (5 pts)
+  if (html.language) seo += 5
+  // Viewport (10 pts)
+  if (html.hasViewport) seo += 10
+  // Images alt text (10 pts)
+  if (html.totalImages === 0) seo += 10
+  else seo += Math.round(((html.totalImages - html.imagesMissingAlt) / html.totalImages) * 10)
+  // Structured data (10 pts)
+  if (html.hasStructuredData) seo += 10
+  // Robots meta (5 pts)
+  if (html.robotsMeta === null || !html.robotsMeta.includes("noindex")) seo += 5
+  // Word count - having enough content (10 pts)
+  if (html.wordCount >= 300) seo += 10
+  else if (html.wordCount >= 100) seo += 5
+
+  // Estimate Accessibility (0-100)
+  let a11y = 0
+  // Charset (10 pts)
+  if (html.hasCharset) a11y += 10
+  // Viewport (15 pts)
+  if (html.hasViewport) a11y += 15
+  // Language attribute (15 pts)
+  if (html.language) a11y += 15
+  // Title (10 pts)
+  if (html.title) a11y += 10
+  // Images alt text (25 pts)
+  if (html.totalImages === 0) a11y += 25
+  else a11y += Math.round(((html.totalImages - html.imagesMissingAlt) / html.totalImages) * 25)
+  // Heading hierarchy (15 pts)
+  if (html.headings.h1 >= 1 && html.headings.h2 >= 1) a11y += 15
+  else if (html.headings.h1 >= 1) a11y += 8
+  // Structured data (10 pts)
+  if (html.hasStructuredData) a11y += 10
+
+  return {
+    performance: Math.min(perf, 100),
+    seo: Math.min(seo, 100),
+    accessibility: Math.min(a11y, 100),
+  }
+}
+
 // ─── Animated Counter ─────────────────────────────────────────────────
 
 function AnimatedNumber({ value, duration = 1200 }: { value: number; duration?: number }) {
@@ -541,6 +625,7 @@ export function SeoPerformanceAuditor() {
   const [error, setError] = useState<string | null>(null)
   const [scanPhase, setScanPhase] = useState(0)
   const [strategy, setStrategy] = useState<"mobile" | "desktop">("mobile")
+  const [isEstimated, setIsEstimated] = useState(false)
 
   const scanMessages = [
     "Connecting to server...",
@@ -564,6 +649,7 @@ export function SeoPerformanceAuditor() {
     setLighthouseLoading(true)
     setLighthouse(null)
     setLighthouseError(null)
+    setIsEstimated(false)
     try {
       const response = await fetch("/api/seo-audit/lighthouse", {
         method: "POST",
@@ -572,8 +658,19 @@ export function SeoPerformanceAuditor() {
       })
       const data = await response.json()
       if (data.error && data.performance === null && data.seo === null && data.accessibility === null) {
-        setLighthouseError(data.error)
-        setLighthouse({ performance: null, seo: null, accessibility: null })
+        // API failed — use fallback scoring from HTML data if available
+        if (result?.htmlData) {
+          const fallback = computeFallbackScores(result.htmlData)
+          setLighthouse(fallback)
+          setIsEstimated(true)
+          setLighthouseError(data.isQuotaError
+            ? "Google PageSpeed API quota exceeded. Showing estimated scores based on HTML analysis."
+            : "Lighthouse unavailable. Showing estimated scores based on HTML analysis."
+          )
+        } else {
+          setLighthouseError(data.error)
+          setLighthouse({ performance: null, seo: null, accessibility: null })
+        }
       } else {
         setLighthouse({
           performance: data.performance ?? null,
@@ -583,12 +680,20 @@ export function SeoPerformanceAuditor() {
         })
       }
     } catch (err) {
-      setLighthouseError(err instanceof Error ? err.message : "Network error fetching Lighthouse scores.")
-      setLighthouse({ performance: null, seo: null, accessibility: null })
+      // Network error — use fallback scoring if HTML data available
+      if (result?.htmlData) {
+        const fallback = computeFallbackScores(result.htmlData)
+        setLighthouse(fallback)
+        setIsEstimated(true)
+        setLighthouseError("Network error. Showing estimated scores based on HTML analysis.")
+      } else {
+        setLighthouseError(err instanceof Error ? err.message : "Network error fetching Lighthouse scores.")
+        setLighthouse({ performance: null, seo: null, accessibility: null })
+      }
     } finally {
       setLighthouseLoading(false)
     }
-  }, [])
+  }, [result])
 
   const handleRetryLighthouse = () => {
     if (result?.url) {
@@ -608,6 +713,7 @@ export function SeoPerformanceAuditor() {
     setResult(null)
     setLighthouse(null)
     setError(null)
+    setIsEstimated(false)
 
     try {
       const response = await fetch("/api/seo-audit", {
@@ -759,9 +865,14 @@ export function SeoPerformanceAuditor() {
                     <div>
                       <CardTitle className="text-base flex items-center gap-2">
                         <BarChart3 className="h-4 w-4 text-primary" />
-                        Lighthouse Scores
+                        {isEstimated ? "Estimated Scores" : "Lighthouse Scores"}
+                        {isEstimated && (
+                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30">
+                            Estimated
+                          </Badge>
+                        )}
                       </CardTitle>
-                      <CardDescription>Google PageSpeed Insights</CardDescription>
+                      <CardDescription>{isEstimated ? "Based on HTML analysis" : "Google PageSpeed Insights"}</CardDescription>
                     </div>
                     <div className="flex items-center gap-2">
                       {/* Strategy Toggle */}
@@ -810,6 +921,25 @@ export function SeoPerformanceAuditor() {
                         <ScoreCircle score={lighthouse.seo} label="SEO" />
                         <ScoreCircle score={lighthouse.accessibility} label="Accessibility" />
                       </div>
+
+                      {/* Estimated scores info banner */}
+                      {isEstimated && lighthouseError && (
+                        <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-3">
+                          <div className="flex items-start gap-2">
+                            <Activity className="h-4 w-4 text-blue-500 shrink-0 mt-0.5" />
+                            <div className="text-xs">
+                              <p className="font-medium text-blue-600 dark:text-blue-400">Scores estimated from HTML analysis</p>
+                              <p className="text-muted-foreground mt-1">{lighthouseError}</p>
+                            </div>
+                          </div>
+                          <div className="mt-2 flex justify-end">
+                            <Button variant="outline" size="sm" onClick={handleRetryLighthouse} className="gap-2 h-7 text-xs">
+                              <RefreshCw className="h-3 w-3" />
+                              Retry Lighthouse
+                            </Button>
+                          </div>
+                        </div>
+                      )}
 
                       {/* Core Web Vitals */}
                       {lighthouse.metrics && Object.keys(lighthouse.metrics).length > 0 && (
