@@ -1,14 +1,9 @@
 import { ImageResponse } from "next/og"
-import { getToolById, tools } from "@/lib/tools-data"
+import { getToolById } from "@/lib/tools-data"
 
-export const runtime = "edge"
 export const alt = "Tool by ZamDev"
 export const size = { width: 1200, height: 630 }
 export const contentType = "image/png"
-
-export async function generateStaticParams() {
-  return tools.map((tool) => ({ id: tool.id }))
-}
 
 const categoryColors: Record<string, { bg: string; text: string; accent: string }> = {
   developer: { bg: "#064e3b", text: "#6ee7b7", accent: "#10b981" },
