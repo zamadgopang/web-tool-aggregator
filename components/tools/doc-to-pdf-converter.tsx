@@ -15,11 +15,11 @@ declare global {
   }
 }
 
-function loadScript(id: string, src: string): Promise<void> {
+function loadScript(id: string, srcs: string | string[]): Promise<void> {
+  const urls = Array.isArray(srcs) ? srcs : [srcs]
   return new Promise((resolve, reject) => {
     const existing = document.getElementById(id)
     if (existing) {
-      // If the script tag exists but failed previously, remove it and retry
       if (!(existing as HTMLScriptElement).dataset.loaded) {
         existing.remove()
       } else {
@@ -27,23 +27,40 @@ function loadScript(id: string, src: string): Promise<void> {
         return
       }
     }
-    const s = document.createElement("script")
-    s.id = id
-    s.src = src
-    s.onload = () => { s.dataset.loaded = "true"; resolve() }
-    s.onerror = () => { s.remove(); reject(new Error(`Failed to load ${id}`)) }
-    document.head.appendChild(s)
+    let attempt = 0
+    function tryLoad() {
+      if (attempt >= urls.length) {
+        reject(new Error(`Failed to load ${id}`))
+        return
+      }
+      const s = document.createElement("script")
+      s.id = id
+      s.src = urls[attempt]
+      s.onload = () => { s.dataset.loaded = "true"; resolve() }
+      s.onerror = () => { s.remove(); attempt++; tryLoad() }
+      document.head.appendChild(s)
+    }
+    tryLoad()
   })
 }
 
 async function loadDependencies(onProgress: (msg: string) => void): Promise<void> {
   onProgress("Loading document parser...")
-  await loadScript("mammoth-js", "https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js")
+  await loadScript("mammoth-js", [
+    "https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js",
+    "https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js",
+  ])
   if (!window.mammoth) throw new Error("Failed to initialize document parser")
   onProgress("Loading PDF renderer...")
-  await loadScript("html2canvas-js", "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js")
+  await loadScript("html2canvas-js", [
+    "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js",
+    "https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js",
+  ])
   if (!window.html2canvas) throw new Error("Failed to initialize PDF renderer")
-  await loadScript("jspdf-js", "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js")
+  await loadScript("jspdf-js", [
+    "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+    "https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js",
+  ])
   if (!window.jspdf) throw new Error("Failed to initialize PDF generator")
 }
 
