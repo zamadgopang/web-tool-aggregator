@@ -805,7 +805,7 @@ export function PythonCompiler() {
           </div>
 
           {/* Editor + Output Split */}
-          <div className={`grid ${isFullscreen ? "grid-rows-[1fr_1fr] lg:grid-cols-[1fr_1fr] lg:grid-rows-1" : "grid-rows-[minmax(200px,1fr)_minmax(200px,1fr)] lg:grid-cols-[1fr_1fr] lg:grid-rows-1"}`} style={{ minHeight: isFullscreen ? "calc(100vh - 200px)" : undefined }}>
+          <div className={`grid ${isFullscreen ? "grid-rows-[1fr_1fr] lg:grid-cols-[1fr_1fr] lg:grid-rows-1" : "grid-rows-[minmax(300px,1fr)_minmax(280px,1fr)] lg:grid-cols-[1fr_1fr] lg:grid-rows-1"}`} style={{ minHeight: isFullscreen ? "calc(100vh - 200px)" : "600px" }}>
             {/* Code Editor Panel */}
             <div className="relative border-b lg:border-b-0 lg:border-r flex flex-col">
               {/* Editor Header */}
@@ -827,7 +827,7 @@ export function PythonCompiler() {
               </div>
 
               {/* Monaco Editor */}
-              <div className="flex-1 min-h-[200px] sm:min-h-[250px]" role="region" aria-label="Python code editor">
+              <div className="flex-1 min-h-[280px] sm:min-h-[350px]" role="region" aria-label="Python code editor">
                 {editorLoaded && MonacoEditor ? (
                   <MonacoEditor
                     height="100%"
@@ -876,7 +876,7 @@ export function PythonCompiler() {
             </div>
 
             {/* Output Panel */}
-            <div className="flex flex-col bg-[#0d1117] dark:bg-[#0d1117] min-h-[200px] sm:min-h-[250px]">
+            <div className="flex flex-col bg-[#0d1117] dark:bg-[#0d1117] min-h-[260px] sm:min-h-[350px]">
               {/* Output Header */}
               <div className="flex items-center justify-between px-3 py-1.5 border-b border-zinc-800 bg-[#161b22]">
                 <div className="flex items-center gap-2">
