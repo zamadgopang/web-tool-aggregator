@@ -38,6 +38,7 @@ const toolComponents: Record<string, React.ComponentType> = {
   "color-palette-generator": dynamic(() => import("@/components/tools/color-palette-generator").then((m) => m.ColorPaletteGenerator)),
   "pdf-to-doc-converter": dynamic(() => import("@/components/tools/pdf-to-doc-converter").then((m) => m.PdfToDocConverter)),
   "doc-to-pdf-converter": dynamic(() => import("@/components/tools/doc-to-pdf-converter").then((m) => m.DocToPdfConverter)),
+  "seo-performance-auditor": dynamic(() => import("@/components/tools/seo-performance-auditor").then((m) => m.SeoPerformanceAuditor)),
 }
 
 interface ToolMapperProps {
