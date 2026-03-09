@@ -34,8 +34,8 @@ const tools = [
   },
   {
     id: "doc-to-pdf-converter",
-    title: "DOC to PDF Converter",
-    description: "Convert Word documents to PDF with formatting, tables, and images preserved.",
+    title: "DOCX to PDF Converter",
+    description: "Convert DOCX files to PDF with Word formatting, tables, colors, and images preserved.",
     icon: <FileText className="h-6 w-6" />,
     tag: "Hot" as const,
     category: "utility",
