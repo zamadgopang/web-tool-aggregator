@@ -21,16 +21,29 @@ export function Header({ onSearchClick }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-xl" role="banner">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
-        <Link href="/" className="flex items-center gap-3" aria-label="ZamDev Tools — Go to homepage">
-          {mounted && (
-            <img
-              src={theme === "dark" ? "/ZamDev_Dark_logo.png" : "/ZamDev_light_logo.png"}
-              alt="ZamDev Logo"
-              className="h-8 w-auto"
-            />
-          )}
-          <span className="text-xl font-bold text-foreground">Tools by ZamDev</span>
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-2" aria-label="ZamDev Tools — Go to homepage">
+            {mounted && (
+              <img
+                src={theme === "dark" ? "/ZamDev_Dark_logo.png" : "/ZamDev_light_logo.png"}
+                alt="ZamDev Logo"
+                className="h-8 w-auto"
+              />
+            )}
+            <span className="text-xl font-bold text-foreground">Tools</span>
+          </Link>
+          <span className="text-sm text-muted-foreground">
+            by{" "}
+            <a
+              href="https://zamdev.me"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-foreground hover:underline"
+            >
+              ZamDev
+            </a>
+          </span>
+        </div>
 
         {/* Desktop search bar */}
         <button

@@ -37,6 +37,7 @@ const toolComponents: Record<string, React.ComponentType> = {
   "aspect-ratio-calculator": dynamic(() => import("@/components/tools/aspect-ratio-calculator").then((m) => m.AspectRatioCalculator)),
   "color-palette-generator": dynamic(() => import("@/components/tools/color-palette-generator").then((m) => m.ColorPaletteGenerator)),
   "pdf-to-doc-converter": dynamic(() => import("@/components/tools/pdf-to-doc-converter").then((m) => m.PdfToDocConverter)),
+  "doc-to-pdf-converter": dynamic(() => import("@/components/tools/doc-to-pdf-converter").then((m) => m.DocToPdfConverter)),
 }
 
 interface ToolMapperProps {

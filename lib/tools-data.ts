@@ -38,9 +38,9 @@ export const tools: ToolMeta[] = [
     iconName: "Crop",
   },
   {
-    id: "pdf-to-doc-converter",
-    title: "PDF to DOC Converter",
-    description: "Convert PDF files to Word documents (.docx) entirely in your browser.",
+    id: "doc-to-pdf-converter",
+    title: "DOC to PDF Converter",
+    description: "Convert Word documents to PDF with formatting, tables, and images preserved.",
     tag: "Hot",
     category: "utility",
     popular: true,
@@ -63,6 +63,15 @@ export const tools: ToolMeta[] = [
     category: "developer",
     popular: true,
     iconName: "Code",
+  },
+  {
+    id: "pdf-to-doc-converter",
+    title: "PDF to DOC Converter",
+    description: "Convert PDF files to Word documents (.docx) entirely in your browser.",
+    tag: "Hot",
+    category: "utility",
+    popular: true,
+    iconName: "FileText",
   },
   {
     id: "color-converter",

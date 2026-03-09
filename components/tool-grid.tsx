@@ -4,16 +4,7 @@ import { ToolCard } from "@/components/tool-card"
 import { Image, FileText, FileType, Film, Code, Zap, Type, Shield, Hash, QrCode, Palette, Calculator, FileCode, TextIcon, Link, Regex, AlignLeft, KeyRound, Clock, Fingerprint, Braces, FileJson, Timer, Paintbrush, Database, Code2, Crop, Globe, Square, Terminal, Ratio, Droplets, Star } from "lucide-react"
 
 const tools = [
-  // Popular / Featured Tools
-  {
-    id: "json-formatter",
-    title: "JSON Formatter",
-    description: "Format, validate, and minify JSON with syntax highlighting.",
-    icon: <Code className="h-6 w-6" />,
-    tag: "Popular" as const,
-    category: "developer",
-    popular: true,
-  },
+  // Popular / Featured Tools (ordered: Image Converter, Markdown Preview, Image Cropper, PDF to DOC, QR Code, then rest)
   {
     id: "image-converter",
     title: "Image Converter",
@@ -24,11 +15,29 @@ const tools = [
     popular: true,
   },
   {
-    id: "color-converter",
-    title: "Color Converter",
-    description: "Convert colors between HEX, RGB, HSL formats.",
-    icon: <Palette className="h-6 w-6" />,
+    id: "markdown-preview",
+    title: "Markdown Preview",
+    description: "Write markdown with live preview, split view, and HTML export.",
+    icon: <FileCode className="h-6 w-6" />,
+    tag: "Hot" as const,
+    category: "developer",
+    popular: true,
+  },
+  {
+    id: "image-cropper-resizer",
+    title: "Image Cropper & Resizer",
+    description: "Resize, rotate, and flip images with live preview and preset sizes.",
+    icon: <Crop className="h-6 w-6" />,
     tag: "Popular" as const,
+    category: "image",
+    popular: true,
+  },
+  {
+    id: "doc-to-pdf-converter",
+    title: "DOC to PDF Converter",
+    description: "Convert Word documents to PDF with formatting, tables, and images preserved.",
+    icon: <FileText className="h-6 w-6" />,
+    tag: "Hot" as const,
     category: "utility",
     popular: true,
   },
@@ -37,6 +46,33 @@ const tools = [
     title: "QR Code Generator",
     description: "Create QR codes from text, URLs, or contact info.",
     icon: <QrCode className="h-6 w-6" />,
+    tag: "Popular" as const,
+    category: "utility",
+    popular: true,
+  },
+  {
+    id: "json-formatter",
+    title: "JSON Formatter",
+    description: "Format, validate, and minify JSON with syntax highlighting.",
+    icon: <Code className="h-6 w-6" />,
+    tag: "Popular" as const,
+    category: "developer",
+    popular: true,
+  },
+  {
+    id: "pdf-to-doc-converter",
+    title: "PDF to DOC Converter",
+    description: "Convert PDF files to Word documents (.docx) with layout preservation.",
+    icon: <FileText className="h-6 w-6" />,
+    tag: "Hot" as const,
+    category: "utility",
+    popular: true,
+  },
+  {
+    id: "color-converter",
+    title: "Color Converter",
+    description: "Convert colors between HEX, RGB, HSL formats.",
+    icon: <Palette className="h-6 w-6" />,
     tag: "Popular" as const,
     category: "utility",
     popular: true,
@@ -68,15 +104,6 @@ const tools = [
     category: "utility",
     popular: true,
   },
-  {
-    id: "image-cropper-resizer",
-    title: "Image Cropper & Resizer",
-    description: "Resize, rotate, and flip images with live preview and preset sizes.",
-    icon: <Crop className="h-6 w-6" />,
-    tag: "Popular" as const,
-    category: "image",
-    popular: true,
-  },
 
   // Developer Tools
   {
@@ -84,14 +111,6 @@ const tools = [
     title: "Regex Tester",
     description: "Test and debug regular expressions with real-time highlighting.",
     icon: <Regex className="h-6 w-6" />,
-    tag: "New" as const,
-    category: "developer",
-  },
-  {
-    id: "markdown-preview",
-    title: "Markdown Preview",
-    description: "Write markdown with live preview, split view, and HTML export.",
-    icon: <FileCode className="h-6 w-6" />,
     tag: "New" as const,
     category: "developer",
   },
