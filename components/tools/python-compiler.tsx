@@ -58,7 +58,7 @@ const CODE_EXAMPLES: Record<string, { label: string; code: string }> = {
     code: `# 👋 Hello World — Your first Python program
 print("Hello, World!")
 print("Welcome to the Online Python Compiler!")
-print(f"Python is running 100% in your browser via WebAssembly 🚀")
+print(f"Built with ❤️ by zamdev — runs entirely in your browser 🚀")
 `,
   },
   fibonacci: {
@@ -612,11 +612,11 @@ export function PythonCompiler() {
                 <CardTitle className="text-lg sm:text-xl flex items-center gap-2 flex-wrap">
                   Python Compiler
                   <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 text-[10px]">
-                    WebAssembly
+                    by zamdev
                   </Badge>
                 </CardTitle>
                 <CardDescription className="mt-0.5">
-                  Write and run Python code directly in your browser — powered by Pyodide
+                  Write and run Python code directly in your browser — built by zamdev
                 </CardDescription>
               </div>
             </div>
@@ -664,7 +664,7 @@ export function PythonCompiler() {
               <div className="flex items-center justify-between text-xs">
                 <span className="text-muted-foreground flex items-center gap-1.5">
                   <Cpu className="h-3.5 w-3.5 animate-pulse" />
-                  Initializing Python Engine (WebAssembly)...
+                  Initializing zamdev Python Engine...
                 </span>
                 <span className="font-mono text-emerald-500">{loadProgress}%</span>
               </div>
@@ -817,7 +817,7 @@ export function PythonCompiler() {
                   </span>
                 </div>
                 <span className="text-[10px] text-muted-foreground font-mono">
-                  Python 3.11 (Pyodide)
+                  Python 3.11 · zamdev
                 </span>
               </div>
 
@@ -984,7 +984,7 @@ export function PythonCompiler() {
             </span>
             <span className="flex items-center gap-1.5">
               <Zap className="h-3.5 w-3.5 text-amber-500" />
-              WebAssembly Powered
+              Built by zamdev
             </span>
             <span className="flex items-center gap-1.5">
               <FileText className="h-3.5 w-3.5 text-purple-500" />
