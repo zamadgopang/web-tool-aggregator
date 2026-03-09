@@ -11,7 +11,27 @@ interface HtmlData {
   hasViewport: boolean
   hasCharset: boolean
   canonicalUrl: string | null
-  headings: { h1: number; h2: number; h3: number }
+  headings: { h1: number; h2: number; h3: number; h4: number; h5: number; h6: number }
+  wordCount: number
+  internalLinks: number
+  externalLinks: number
+  totalLinks: number
+  hasOpenGraph: boolean
+  ogTags: Record<string, string>
+  hasTwitterCard: boolean
+  twitterTags: Record<string, string>
+  hasStructuredData: boolean
+  structuredDataTypes: string[]
+  language: string | null
+  robotsMeta: string | null
+  responseTimeMs: number
+  contentLength: number
+  securityHeaders: {
+    hasHSTS: boolean
+    hasCSP: boolean
+    hasXFrame: boolean
+    hasXContentType: boolean
+  }
 }
 
 function isValidUrl(str: string): boolean {
@@ -37,9 +57,19 @@ function countMatches(html: string, regex: RegExp): number {
   return matches ? matches.length : 0
 }
 
+function extractAllMatches(html: string, regex: RegExp): string[] {
+  const results: string[] = []
+  let match
+  while ((match = regex.exec(html)) !== null) {
+    results.push(match[1])
+  }
+  return results
+}
+
 async function fetchHtmlData(url: string): Promise<HtmlData> {
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), 15000)
+  const startTime = Date.now()
 
   try {
     const response = await fetch(url, {
@@ -52,11 +82,22 @@ async function fetchHtmlData(url: string): Promise<HtmlData> {
       redirect: "follow",
     })
 
+    const responseTimeMs = Date.now() - startTime
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)
     }
 
+    // Security headers
+    const securityHeaders = {
+      hasHSTS: !!response.headers.get("strict-transport-security"),
+      hasCSP: !!response.headers.get("content-security-policy"),
+      hasXFrame: !!response.headers.get("x-frame-options"),
+      hasXContentType: !!response.headers.get("x-content-type-options"),
+    }
+
     const html = await response.text()
+    const contentLength = html.length
 
     // Title
     const titleRaw = extractFirst(html, /<title[^>]*>([\s\S]*?)<\/title>/i)
@@ -94,9 +135,82 @@ async function fetchHtmlData(url: string): Promise<HtmlData> {
       extractFirst(html, /<link[^>]+href=["']([^"']*)["'][^>]+rel=["']canonical["']/i)
 
     // Heading counts
-    const h1Count = countMatches(html, /<h1[\s>]/gi)
-    const h2Count = countMatches(html, /<h2[\s>]/gi)
-    const h3Count = countMatches(html, /<h3[\s>]/gi)
+    const headings = {
+      h1: countMatches(html, /<h1[\s>]/gi),
+      h2: countMatches(html, /<h2[\s>]/gi),
+      h3: countMatches(html, /<h3[\s>]/gi),
+      h4: countMatches(html, /<h4[\s>]/gi),
+      h5: countMatches(html, /<h5[\s>]/gi),
+      h6: countMatches(html, /<h6[\s>]/gi),
+    }
+
+    // Word count (strip all tags, count words in body)
+    const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i)
+    const bodyText = bodyMatch ? stripTags(bodyMatch[1]) : stripTags(html)
+    const wordCount = bodyText.split(/\s+/).filter((w) => w.length > 0).length
+
+    // Links
+    const parsedUrl = new URL(url)
+    const linkHrefs = extractAllMatches(html, /<a[^>]+href=["']([^"'#]*?)["']/gi)
+    let internalLinks = 0
+    let externalLinks = 0
+    for (const href of linkHrefs) {
+      if (!href || href.startsWith("javascript") || href.startsWith("mailto")) continue
+      try {
+        const linkUrl = new URL(href, url)
+        if (linkUrl.hostname === parsedUrl.hostname) {
+          internalLinks++
+        } else {
+          externalLinks++
+        }
+      } catch {
+        internalLinks++ // relative links are internal
+      }
+    }
+
+    // Open Graph tags
+    const ogTags: Record<string, string> = {}
+    const ogMatches = html.matchAll(/<meta[^>]+property=["'](og:[^"']*)["'][^>]+content=["']([^"']*)["']/gi)
+    for (const m of ogMatches) {
+      ogTags[m[1]] = m[2]
+    }
+    // Also check reverse attribute order
+    const ogMatches2 = html.matchAll(/<meta[^>]+content=["']([^"']*)["'][^>]+property=["'](og:[^"']*)["']/gi)
+    for (const m of ogMatches2) {
+      ogTags[m[2]] = m[1]
+    }
+
+    // Twitter Card tags
+    const twitterTags: Record<string, string> = {}
+    const twMatches = html.matchAll(/<meta[^>]+(?:name|property)=["'](twitter:[^"']*)["'][^>]+content=["']([^"']*)["']/gi)
+    for (const m of twMatches) {
+      twitterTags[m[1]] = m[2]
+    }
+
+    // Structured data (JSON-LD)
+    const jsonLdBlocks = extractAllMatches(html, /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)
+    const structuredDataTypes: string[] = []
+    for (const block of jsonLdBlocks) {
+      try {
+        const parsed = JSON.parse(block)
+        if (parsed["@type"]) structuredDataTypes.push(parsed["@type"])
+        if (Array.isArray(parsed["@graph"])) {
+          for (const item of parsed["@graph"]) {
+            if (item["@type"]) structuredDataTypes.push(item["@type"])
+          }
+        }
+      } catch {
+        // skip invalid JSON-LD
+      }
+    }
+
+    // Language
+    const language = extractFirst(html, /<html[^>]+lang=["']([^"']*)["']/i)
+
+    // Robots meta
+    const robotsMeta =
+      extractFirst(html, /<meta[^>]+name=["']robots["'][^>]+content=["']([^"']*)["']/i) ??
+      extractFirst(html, /<meta[^>]+content=["']([^"']*)["'][^>]+name=["']robots["']/i)
 
     return {
       title,
@@ -109,7 +223,22 @@ async function fetchHtmlData(url: string): Promise<HtmlData> {
       hasViewport,
       hasCharset,
       canonicalUrl,
-      headings: { h1: h1Count, h2: h2Count, h3: h3Count },
+      headings,
+      wordCount,
+      internalLinks,
+      externalLinks,
+      totalLinks: internalLinks + externalLinks,
+      hasOpenGraph: Object.keys(ogTags).length > 0,
+      ogTags,
+      hasTwitterCard: Object.keys(twitterTags).length > 0,
+      twitterTags,
+      hasStructuredData: structuredDataTypes.length > 0,
+      structuredDataTypes,
+      language,
+      robotsMeta,
+      responseTimeMs,
+      contentLength,
+      securityHeaders,
     }
   } finally {
     clearTimeout(timeout)
