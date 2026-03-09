@@ -161,84 +161,92 @@ async function generatePdf(
   fileName: string,
   onProgress: (msg: string) => void,
 ): Promise<Blob> {
-  // Create a hidden container with exact A4 rendering
-  const container = document.createElement("div")
-  container.style.position = "fixed"
-  container.style.left = "-9999px"
-  container.style.top = "0"
-  container.style.width = "794px" // A4 at 96dpi
-  container.style.background = "#fff"
-  container.style.zIndex = "-1"
+  // Use an iframe to isolate from the page's CSS (avoids html2canvas errors with lab() colors)
+  const iframe = document.createElement("iframe")
+  iframe.style.position = "fixed"
+  iframe.style.left = "-9999px"
+  iframe.style.top = "0"
+  iframe.style.width = "794px"
+  iframe.style.height = "1200px"
+  iframe.style.border = "none"
+  iframe.style.zIndex = "-1"
+  document.body.appendChild(iframe)
 
-  const styleEl = document.createElement("style")
-  styleEl.textContent = DOC_STYLES
-  container.appendChild(styleEl)
+  try {
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document
+    if (!iframeDoc) throw new Error("Failed to create rendering context")
 
-  const contentEl = document.createElement("div")
-  contentEl.className = "doc-render"
-  contentEl.innerHTML = html
-  container.appendChild(contentEl)
-  document.body.appendChild(container)
+    iframeDoc.open()
+    iframeDoc.write(`<!DOCTYPE html><html><head><style>${DOC_STYLES}</style></head><body><div class="doc-render">${html}</div></body></html>`)
+    iframeDoc.close()
 
-  // Wait for images
-  const images = contentEl.querySelectorAll("img")
-  await Promise.all(
-    Array.from(images).map(
-      (img) =>
-        new Promise<void>((res) => {
-          if (img.complete) { res(); return }
-          img.onload = () => res()
-          img.onerror = () => res()
-        })
+    const contentEl = iframeDoc.querySelector(".doc-render") as HTMLElement
+    if (!contentEl) throw new Error("Failed to render document content")
+
+    // Wait for images
+    const images = contentEl.querySelectorAll("img")
+    await Promise.all(
+      Array.from(images).map(
+        (img) =>
+          new Promise<void>((res) => {
+            if (img.complete) { res(); return }
+            img.onload = () => res()
+            img.onerror = () => res()
+          })
+      )
     )
-  )
 
-  // Small delay for layout
-  await new Promise((r) => setTimeout(r, 300))
+    // Small delay for layout
+    await new Promise((r) => setTimeout(r, 300))
 
-  onProgress("Rendering document...")
+    onProgress("Rendering document...")
 
-  const A4_W = 794  // px at 96dpi
-  const A4_H = 1123 // px at 96dpi
-  const SCALE = 2   // high resolution
+    const A4_W = 794  // px at 96dpi
+    const A4_H = 1123 // px at 96dpi
+    const SCALE = 2   // high resolution
 
-  // Get total content height
-  const totalHeight = contentEl.scrollHeight
+    // Resize iframe to fit content
+    const totalHeight = contentEl.scrollHeight
+    iframe.style.height = `${totalHeight + 200}px`
 
-  // Calculate number of pages
-  const contentPageH = A4_H - 112 // subtract top+bottom padding
-  const pageCount = Math.max(1, Math.ceil(totalHeight / contentPageH))
+    // Wait for resize
+    await new Promise((r) => setTimeout(r, 100))
 
-  const { jsPDF } = window.jspdf
-  const pdf = new jsPDF({ orientation: "portrait", unit: "px", format: [A4_W, A4_H], hotfixes: ["px_scaling"] })
+    // Calculate number of pages
+    const contentPageH = A4_H - 112 // subtract top+bottom padding
+    const pageCount = Math.max(1, Math.ceil(totalHeight / contentPageH))
 
-  for (let page = 0; page < pageCount; page++) {
-    onProgress(`Rendering page ${page + 1} of ${pageCount}...`)
+    const { jsPDF } = window.jspdf
+    const pdf = new jsPDF({ orientation: "portrait", unit: "px", format: [A4_W, A4_H], hotfixes: ["px_scaling"] })
 
-    if (page > 0) pdf.addPage()
+    for (let page = 0; page < pageCount; page++) {
+      onProgress(`Rendering page ${page + 1} of ${pageCount}...`)
 
-    // Render full content to canvas
-    const canvas = await window.html2canvas(contentEl, {
-      scale: SCALE,
-      width: A4_W,
-      windowWidth: A4_W,
-      y: page * contentPageH,
-      height: Math.min(contentPageH, totalHeight - page * contentPageH),
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: "#ffffff",
-      logging: false,
-    })
+      if (page > 0) pdf.addPage()
 
-    const imgData = canvas.toDataURL("image/jpeg", 0.95)
-    const imgH = (canvas.height / SCALE)
-    pdf.addImage(imgData, "JPEG", 0, 56, A4_W, imgH) // 56px = top padding
+      // Render content to canvas using the iframe's html2canvas reference
+      const canvas = await window.html2canvas(contentEl, {
+        scale: SCALE,
+        width: A4_W,
+        windowWidth: A4_W,
+        y: page * contentPageH,
+        height: Math.min(contentPageH, totalHeight - page * contentPageH),
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+      })
+
+      const imgData = canvas.toDataURL("image/jpeg", 0.95)
+      const imgH = (canvas.height / SCALE)
+      pdf.addImage(imgData, "JPEG", 0, 56, A4_W, imgH) // 56px = top padding
+    }
+
+    onProgress("Finalizing PDF...")
+    return pdf.output("blob")
+  } finally {
+    document.body.removeChild(iframe)
   }
-
-  document.body.removeChild(container)
-
-  onProgress("Finalizing PDF...")
-  return pdf.output("blob")
 }
 
 export function DocToPdfConverter() {
