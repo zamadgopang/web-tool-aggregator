@@ -594,10 +594,10 @@ export function PythonCompiler() {
   const MonacoEditor = MonacoEditorRef.current
 
   return (
-    <div className={`w-full mx-auto ${isFullscreen ? "fixed inset-0 z-50 bg-background p-2 sm:p-4" : "max-w-[1400px] px-3 py-4 sm:p-4"}`}>
-      <Card className="overflow-hidden border-2 border-border/50 shadow-xl">
+    <div className={`w-full mx-auto ${isFullscreen ? "fixed inset-0 z-50 bg-background p-2 sm:p-4 overflow-auto" : "max-w-[1400px] px-2 py-3 sm:px-3 sm:py-4 md:p-4"}`}>
+      <Card className="overflow-hidden border-2 border-border/50 shadow-xl" role="region" aria-label="Python Compiler">
         {/* Header */}
-        <CardHeader className="bg-gradient-to-r from-emerald-500/5 via-green-500/10 to-teal-500/5 border-b px-4 py-4 sm:px-6 sm:py-5">
+        <CardHeader className="bg-gradient-to-r from-emerald-500/5 via-green-500/10 to-teal-500/5 border-b px-3 py-3 sm:px-6 sm:py-5">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="relative">
@@ -646,8 +646,9 @@ export function PythonCompiler() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8"
+                      className="h-9 w-9 sm:h-8 sm:w-8"
                       onClick={() => setIsFullscreen(!isFullscreen)}
+                      aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
                     >
                       {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
                     </Button>
@@ -668,7 +669,7 @@ export function PythonCompiler() {
                 </span>
                 <span className="font-mono text-emerald-500">{loadProgress}%</span>
               </div>
-              <div className="h-2 rounded-full bg-muted overflow-hidden">
+              <div className="h-2 rounded-full bg-muted overflow-hidden" role="progressbar" aria-valuenow={loadProgress} aria-valuemin={0} aria-valuemax={100} aria-label={`Loading Python engine: ${loadProgress}%`}>
                 <div
                   className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300 ease-out"
                   style={{ width: `${loadProgress}%` }}
@@ -683,18 +684,21 @@ export function PythonCompiler() {
 
         <CardContent className="p-0">
           {/* Toolbar */}
-          <div className="flex flex-wrap items-center gap-2 px-3 py-2.5 sm:px-4 border-b bg-muted/30">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 px-2 py-2 sm:px-4 sm:py-2.5 border-b bg-muted/30" role="toolbar" aria-label="Code editor actions">
             {/* Run Button */}
             <Button
               onClick={runCode}
               disabled={pyodideStatus !== "ready" || isRunning}
-              className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 font-medium"
+              className="gap-1.5 sm:gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 font-medium min-h-[36px] sm:min-h-0"
               size="sm"
+              aria-busy={isRunning}
+              aria-label={isRunning ? "Code is running" : "Run Python code"}
             >
               {isRunning ? (
                 <>
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  Running...
+                  <span className="hidden xs:inline">Running...</span>
+                  <span className="xs:hidden">Run</span>
                 </>
               ) : (
                 <>
@@ -708,9 +712,9 @@ export function PythonCompiler() {
 
             {/* Examples Dropdown */}
             <Select onValueChange={loadExample}>
-              <SelectTrigger className="w-[160px] h-8 text-xs">
+              <SelectTrigger className="w-[120px] sm:w-[160px] h-9 sm:h-8 text-xs" aria-label="Load code example">
                 <div className="flex items-center gap-1.5">
-                  <BookOpen className="h-3.5 w-3.5" />
+                  <BookOpen className="h-3.5 w-3.5 shrink-0" />
                   <SelectValue placeholder="Examples" />
                 </div>
               </SelectTrigger>
@@ -727,27 +731,27 @@ export function PythonCompiler() {
 
             {/* Action Buttons */}
             <TooltipProvider>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-0.5 sm:gap-1">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={uploadCode}>
-                      <Upload className="h-3.5 w-3.5" />
+                    <Button variant="ghost" size="icon" className="h-9 w-9 sm:h-8 sm:w-8" onClick={uploadCode} aria-label="Upload Python file">
+                      <Upload className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Upload .py file</TooltipContent>
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={downloadCode}>
-                      <Download className="h-3.5 w-3.5" />
+                    <Button variant="ghost" size="icon" className="h-9 w-9 sm:h-8 sm:w-8" onClick={downloadCode} aria-label="Download as script.py">
+                      <Download className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Download script.py</TooltipContent>
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={resetCode}>
-                      <RotateCcw className="h-3.5 w-3.5" />
+                    <Button variant="ghost" size="icon" className="h-9 w-9 sm:h-8 sm:w-8" onClick={resetCode} aria-label="Reset code to default">
+                      <RotateCcw className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Reset to default</TooltipContent>
@@ -780,10 +784,11 @@ export function PythonCompiler() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8"
+                    className="h-9 w-9 sm:h-8 sm:w-8"
                     onClick={() => setEditorTheme(editorTheme === "vs-dark" ? "light" : "vs-dark")}
+                    aria-label={editorTheme === "vs-dark" ? "Switch to light theme" : "Switch to dark theme"}
                   >
-                    {editorTheme === "vs-dark" ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
+                    {editorTheme === "vs-dark" ? <Sun className="h-4 w-4 sm:h-3.5 sm:w-3.5" /> : <Moon className="h-4 w-4 sm:h-3.5 sm:w-3.5" />}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Toggle editor theme</TooltipContent>
@@ -800,7 +805,7 @@ export function PythonCompiler() {
           </div>
 
           {/* Editor + Output Split */}
-          <div className={`grid ${isFullscreen ? "grid-rows-[1fr_1fr] lg:grid-cols-[1fr_1fr] lg:grid-rows-1" : "grid-rows-[1fr] lg:grid-cols-[1fr_1fr]"}`} style={{ minHeight: isFullscreen ? "calc(100vh - 200px)" : "500px" }}>
+          <div className={`grid ${isFullscreen ? "grid-rows-[1fr_1fr] lg:grid-cols-[1fr_1fr] lg:grid-rows-1" : "grid-rows-[minmax(200px,1fr)_minmax(200px,1fr)] lg:grid-cols-[1fr_1fr] lg:grid-rows-1"}`} style={{ minHeight: isFullscreen ? "calc(100vh - 200px)" : undefined }}>
             {/* Code Editor Panel */}
             <div className="relative border-b lg:border-b-0 lg:border-r flex flex-col">
               {/* Editor Header */}
@@ -822,7 +827,7 @@ export function PythonCompiler() {
               </div>
 
               {/* Monaco Editor */}
-              <div className="flex-1 min-h-[250px]">
+              <div className="flex-1 min-h-[200px] sm:min-h-[250px]" role="region" aria-label="Python code editor">
                 {editorLoaded && MonacoEditor ? (
                   <MonacoEditor
                     height="100%"
@@ -853,10 +858,14 @@ export function PythonCompiler() {
                       wordWrap: "on" as const,
                       tabSize: 4,
                       insertSpaces: true,
+                      lineNumbers: typeof window !== "undefined" && window.innerWidth < 640 ? "off" as const : "on" as const,
+                      folding: typeof window !== "undefined" && window.innerWidth < 640 ? false : true,
+                      glyphMargin: false,
+                      lineDecorationsWidth: typeof window !== "undefined" && window.innerWidth < 640 ? 0 : 10,
                     }}
                   />
                 ) : (
-                  <div className="flex items-center justify-center h-full">
+                  <div className="flex items-center justify-center h-full" role="status">
                     <div className="flex flex-col items-center gap-3 text-muted-foreground">
                       <Loader2 className="h-6 w-6 animate-spin" />
                       <p className="text-sm">Loading editor...</p>
@@ -867,7 +876,7 @@ export function PythonCompiler() {
             </div>
 
             {/* Output Panel */}
-            <div className="flex flex-col bg-[#0d1117] dark:bg-[#0d1117] min-h-[250px]">
+            <div className="flex flex-col bg-[#0d1117] dark:bg-[#0d1117] min-h-[200px] sm:min-h-[250px]">
               {/* Output Header */}
               <div className="flex items-center justify-between px-3 py-1.5 border-b border-zinc-800 bg-[#161b22]">
                 <div className="flex items-center gap-2">
@@ -886,11 +895,12 @@ export function PythonCompiler() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-7 w-7 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800"
+                          className="h-8 w-8 sm:h-7 sm:w-7 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800"
                           onClick={copyOutput}
                           disabled={output.length === 0}
+                          aria-label={copied ? "Output copied" : "Copy output to clipboard"}
                         >
-                          {copied ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3" />}
+                          {copied ? <Check className="h-3.5 w-3.5 sm:h-3 sm:w-3 text-emerald-400" /> : <Copy className="h-3.5 w-3.5 sm:h-3 sm:w-3" />}
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>Copy output</TooltipContent>
@@ -900,11 +910,12 @@ export function PythonCompiler() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-7 w-7 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800"
+                          className="h-8 w-8 sm:h-7 sm:w-7 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800"
                           onClick={clearOutput}
                           disabled={output.length === 0}
+                          aria-label="Clear output"
                         >
-                          <Trash2 className="h-3 w-3" />
+                          <Trash2 className="h-3.5 w-3.5 sm:h-3 sm:w-3" />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>Clear output</TooltipContent>
@@ -916,8 +927,12 @@ export function PythonCompiler() {
               {/* Output Content */}
               <div
                 ref={outputRef}
-                className="flex-1 overflow-auto p-3 sm:p-4 font-mono text-sm leading-relaxed"
-                style={{ fontSize: Math.max(fontSize - 1, 12) }}
+                className="flex-1 overflow-auto p-2.5 sm:p-4 font-mono text-xs sm:text-sm leading-relaxed"
+                style={{ fontSize: Math.max(fontSize - 2, 11) }}
+                role="log"
+                aria-live="polite"
+                aria-label="Program output"
+                tabIndex={0}
               >
                 {output.length === 0 && !isRunning && (
                   <div className="flex flex-col items-center justify-center h-full text-zinc-600 gap-3">
@@ -973,7 +988,7 @@ export function PythonCompiler() {
           </div>
 
           {/* Feature Bar */}
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 px-4 py-3 border-t bg-muted/20 text-xs text-muted-foreground">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-6 px-3 py-2.5 sm:px-4 sm:py-3 border-t bg-muted/20 text-[11px] sm:text-xs text-muted-foreground" role="contentinfo" aria-label="Compiler features">
             <span className="flex items-center gap-1.5">
               <Cpu className="h-3.5 w-3.5 text-emerald-500" />
               100% Client-Side
