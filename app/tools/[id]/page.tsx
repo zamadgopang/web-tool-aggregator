@@ -32,20 +32,11 @@ export async function generateMetadata({ params }: ToolPageProps): Promise<Metad
       url,
       siteName: siteConfig.name,
       type: "website",
-      images: [
-        {
-          url: "/og-image.png",
-          width: 1200,
-          height: 630,
-          alt: `${tool.title} — ${siteConfig.name}`,
-        },
-      ],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: ["/og-image.png"],
     },
     alternates: {
       canonical: url,
