@@ -29,7 +29,7 @@ export function Header({ onSearchClick }: HeaderProps) {
               className="h-8 w-auto"
             />
           )}
-          <span className="text-xl font-bold text-foreground">Tools</span>
+          <span className="text-xl font-bold text-foreground">Tools by ZamDev</span>
         </Link>
 
         {/* Desktop search bar */}

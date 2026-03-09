@@ -9,16 +9,7 @@ export interface ToolMeta {
 }
 
 export const tools: ToolMeta[] = [
-  // Popular / Featured Tools
-  {
-    id: "json-formatter",
-    title: "JSON Formatter",
-    description: "Format, validate, and minify JSON with syntax highlighting.",
-    tag: "Popular",
-    category: "developer",
-    popular: true,
-    iconName: "Code",
-  },
+  // Top Featured Tools
   {
     id: "image-converter",
     title: "Image Converter",
@@ -29,13 +20,31 @@ export const tools: ToolMeta[] = [
     iconName: "Image",
   },
   {
-    id: "color-converter",
-    title: "Color Converter",
-    description: "Convert colors between HEX, RGB, HSL formats.",
+    id: "markdown-preview",
+    title: "Markdown Preview",
+    description: "Write markdown with live preview, split view, and HTML export.",
+    tag: "Hot",
+    category: "developer",
+    popular: true,
+    iconName: "FileCode",
+  },
+  {
+    id: "image-cropper-resizer",
+    title: "Image Cropper & Resizer",
+    description: "Resize, rotate, and flip images with live preview and preset sizes.",
     tag: "Popular",
+    category: "image",
+    popular: true,
+    iconName: "Crop",
+  },
+  {
+    id: "pdf-to-doc-converter",
+    title: "PDF to DOC Converter",
+    description: "Convert PDF files to Word documents (.docx) entirely in your browser.",
+    tag: "Hot",
     category: "utility",
     popular: true,
-    iconName: "Palette",
+    iconName: "FileText",
   },
   {
     id: "qr-code-generator",
@@ -45,6 +54,24 @@ export const tools: ToolMeta[] = [
     category: "utility",
     popular: true,
     iconName: "QrCode",
+  },
+  {
+    id: "json-formatter",
+    title: "JSON Formatter",
+    description: "Format, validate, and minify JSON with syntax highlighting.",
+    tag: "Popular",
+    category: "developer",
+    popular: true,
+    iconName: "Code",
+  },
+  {
+    id: "color-converter",
+    title: "Color Converter",
+    description: "Convert colors between HEX, RGB, HSL formats.",
+    tag: "Popular",
+    category: "utility",
+    popular: true,
+    iconName: "Palette",
   },
   {
     id: "password-generator",
@@ -73,15 +100,6 @@ export const tools: ToolMeta[] = [
     popular: true,
     iconName: "Calculator",
   },
-  {
-    id: "image-cropper-resizer",
-    title: "Image Cropper & Resizer",
-    description: "Resize, rotate, and flip images with live preview and preset sizes.",
-    tag: "Popular",
-    category: "image",
-    popular: true,
-    iconName: "Crop",
-  },
 
   // Developer Tools
   {
@@ -91,14 +109,6 @@ export const tools: ToolMeta[] = [
     tag: "New",
     category: "developer",
     iconName: "Regex",
-  },
-  {
-    id: "markdown-preview",
-    title: "Markdown Preview",
-    description: "Write markdown with live preview, split view, and HTML export.",
-    tag: "New",
-    category: "developer",
-    iconName: "FileCode",
   },
   {
     id: "jwt-decoder",

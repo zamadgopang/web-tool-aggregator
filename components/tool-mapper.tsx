@@ -36,6 +36,7 @@ const toolComponents: Record<string, React.ComponentType> = {
   "chmod-calculator": dynamic(() => import("@/components/tools/chmod-calculator").then((m) => m.ChmodCalculator)),
   "aspect-ratio-calculator": dynamic(() => import("@/components/tools/aspect-ratio-calculator").then((m) => m.AspectRatioCalculator)),
   "color-palette-generator": dynamic(() => import("@/components/tools/color-palette-generator").then((m) => m.ColorPaletteGenerator)),
+  "pdf-to-doc-converter": dynamic(() => import("@/components/tools/pdf-to-doc-converter").then((m) => m.PdfToDocConverter)),
 }
 
 interface ToolMapperProps {
