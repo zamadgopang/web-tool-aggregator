@@ -283,10 +283,9 @@ const sectionMeta: Record<string, { label: string; icon: React.ReactNode; descri
 
 interface ToolGridProps {
   activeCategory: string
-  onToolClick?: (toolId: string) => void
 }
 
-export function ToolGrid({ activeCategory, onToolClick }: ToolGridProps) {
+export function ToolGrid({ activeCategory }: ToolGridProps) {
   if (activeCategory !== "all") {
     const filteredTools = tools.filter((tool) => tool.category === activeCategory)
     return (
@@ -300,7 +299,6 @@ export function ToolGrid({ activeCategory, onToolClick }: ToolGridProps) {
             icon={tool.icon}
             tag={tool.tag}
             category={tool.category}
-            onClick={onToolClick}
           />
         ))}
       </div>
@@ -324,7 +322,7 @@ export function ToolGrid({ activeCategory, onToolClick }: ToolGridProps) {
         return (
           <div key={section.key}>
             <div className="flex items-center gap-3 mb-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-foreground text-background">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-foreground text-background" aria-hidden="true">
                 {meta.icon}
               </div>
               <div>
@@ -342,7 +340,6 @@ export function ToolGrid({ activeCategory, onToolClick }: ToolGridProps) {
                   icon={tool.icon}
                   tag={tool.tag}
                   category={tool.category}
-                  onClick={onToolClick}
                 />
               ))}
             </div>

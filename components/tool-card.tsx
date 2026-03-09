@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils"
 import { ArrowRight } from "lucide-react"
+import Link from "next/link"
 
 interface ToolCardProps {
   id: string
@@ -10,23 +11,22 @@ interface ToolCardProps {
   icon: React.ReactNode
   tag?: "Client-side" | "Hot" | "New" | "Premium" | "Popular" | "Secure"
   category: string
-  onClick?: (id: string) => void
 }
 
-export function ToolCard({ id, title, description, icon, tag, category, onClick }: ToolCardProps) {
+export function ToolCard({ id, title, description, icon, tag, category }: ToolCardProps) {
   return (
-    <button
-      onClick={() => onClick?.(id)}
+    <Link
+      href={`/tools/${id}`}
       className={cn(
         "group relative flex flex-col items-start gap-4 rounded-xl border border-border bg-card p-6 text-left transition-all duration-200 w-full",
         "hover:border-foreground/20 hover:shadow-md hover:-translate-y-0.5",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-        "active:scale-[0.98] disabled:opacity-50"
+        "active:scale-[0.98]"
       )}
       aria-label={`Open ${title} tool`}
     >
       <div className="flex w-full items-start justify-between">
-        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-foreground/5 text-foreground transition-colors group-hover:bg-foreground group-hover:text-background">
+        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-foreground/5 text-foreground transition-colors group-hover:bg-foreground group-hover:text-background" aria-hidden="true">
           {icon}
         </div>
         <div className="flex gap-2 items-center">
@@ -45,13 +45,13 @@ export function ToolCard({ id, title, description, icon, tag, category, onClick 
               {tag}
             </span>
           )}
-          <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+          <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" aria-hidden="true" />
         </div>
       </div>
       <div className="flex flex-col gap-1.5 flex-1">
         <h3 className="font-semibold text-foreground">{title}</h3>
         <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
       </div>
-    </button>
+    </Link>
   )
 }

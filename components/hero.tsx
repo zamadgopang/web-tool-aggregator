@@ -1,8 +1,8 @@
 export function Hero() {
   return (
-    <section className="relative py-16 sm:py-24 overflow-hidden">
+    <section className="relative py-16 sm:py-24 overflow-hidden" aria-label="Hero">
       {/* Subtle background decoration */}
-      <div className="absolute inset-0 -z-10">
+      <div className="absolute inset-0 -z-10" aria-hidden="true">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-foreground/[0.02] rounded-full blur-3xl" />
       </div>
       <div className="flex flex-col items-center text-center">

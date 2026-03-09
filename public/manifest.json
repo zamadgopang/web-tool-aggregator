@@ -3,14 +3,19 @@
   "short_name": "ZamDev Tools",
   "description": "30+ free, lightning-fast browser tools. Convert images, format JSON, generate passwords, and more — all running 100% client-side.",
   "start_url": "/",
+  "scope": "/",
+  "id": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#0a0a0a",
+  "orientation": "any",
+  "categories": ["developer", "utilities", "productivity"],
   "icons": [
     {
       "src": "/icon.svg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any"
     },
     {
       "src": "/icon-dark-32x32.png",
@@ -20,7 +25,8 @@
     {
       "src": "/apple-icon.png",
       "sizes": "180x180",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
