@@ -1,11 +1,20 @@
 "use client"
 
 import { ToolCard } from "@/components/tool-card"
-import { Image, FileText, FileType, Film, Code, Zap, Type, Shield, Hash, QrCode, Palette, Calculator, FileCode, TextIcon, Link, Regex, AlignLeft, KeyRound, Clock, Fingerprint, Braces, FileJson, Timer, Paintbrush, Database, Code2, Crop, Globe, Square, Terminal, Ratio, Droplets, Star, ArrowRight, BarChart3, Activity } from "lucide-react"
+import { Image, FileText, FileType, Film, Code, Zap, Type, Shield, Hash, QrCode, Palette, Calculator, FileCode, TextIcon, Link, Regex, AlignLeft, KeyRound, Clock, Fingerprint, Braces, FileJson, Timer, Paintbrush, Database, Code2, Crop, Globe, Square, Terminal, Ratio, Droplets, Star, ArrowRight, BarChart3, Activity, Play } from "lucide-react"
 import NextLink from "next/link"
 
 const tools = [
-  // Popular / Featured Tools (ordered: Image Converter, Markdown Preview, Image Cropper, PDF to DOC, QR Code, then rest)
+  // Popular / Featured Tools (ordered: Python Compiler first, then Image Converter, Markdown Preview, etc.)
+  {
+    id: "python-compiler",
+    title: "Python Compiler",
+    description: "Write and run Python code directly in your browser — powered by WebAssembly. Full Python 3.11 with stdlib.",
+    icon: <Code2 className="h-6 w-6" />,
+    tag: "Hot" as const,
+    category: "developer",
+    popular: true,
+  },
   {
     id: "image-converter",
     title: "Image Converter",
@@ -310,40 +319,75 @@ const sectionMeta: Record<string, { label: string; icon: React.ReactNode; descri
   },
 }
 
-// ─── Featured Tool Banner ─────────────────────────────────────────────
+// ─── Featured Tool Banners ────────────────────────────────────────────
 
 function FeaturedToolBanner() {
   return (
-    <NextLink
-      href="/tools/seo-performance-auditor"
-      className="group block w-full rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-5 sm:p-6 transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      aria-label="Try the SEO & Performance Auditor tool — featured tool"
-    >
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors" aria-hidden="true">
-          <BarChart3 className="h-7 w-7" />
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* Python Compiler — Primary Featured */}
+      <NextLink
+        href="/tools/python-compiler"
+        className="group block w-full rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 via-teal-500/10 to-green-500/5 p-5 sm:p-6 transition-all duration-300 hover:border-emerald-500/40 hover:shadow-lg hover:shadow-emerald-500/10 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        aria-label="Try the Online Python Compiler — main featured tool"
+      >
+        <div className="flex flex-col gap-3">
+          <div className="flex items-start justify-between">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-colors" aria-hidden="true">
+              <Code2 className="h-6 w-6" />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+                New
+              </span>
+              <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 group-hover:text-emerald-500 transition-all" />
+            </div>
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-foreground">Python Compiler</h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              Write and run Python 3.11 directly in your browser — powered by WebAssembly. Full stdlib, Monaco editor, 7 examples included.
+            </p>
+          </div>
+          <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+            <span className="flex items-center gap-1"><Play className="h-3 w-3 text-emerald-500" />Instant Run</span>
+            <span className="flex items-center gap-1"><Zap className="h-3 w-3 text-amber-500" />WebAssembly</span>
+            <span className="flex items-center gap-1"><Shield className="h-3 w-3 text-blue-500" />Client-Side</span>
+          </div>
         </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
+      </NextLink>
+
+      {/* SEO Auditor — Secondary Featured */}
+      <NextLink
+        href="/tools/seo-performance-auditor"
+        className="group block w-full rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 p-5 sm:p-6 transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        aria-label="Try the SEO & Performance Auditor tool"
+      >
+        <div className="flex flex-col gap-3">
+          <div className="flex items-start justify-between">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors" aria-hidden="true">
+              <BarChart3 className="h-6 w-6" />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary uppercase tracking-wider">
+                Featured
+              </span>
+              <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 group-hover:text-primary transition-all" />
+            </div>
+          </div>
+          <div>
             <h3 className="text-lg font-bold text-foreground">SEO & Performance Auditor</h3>
-            <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
-              Featured
-            </span>
+            <p className="text-sm text-muted-foreground mt-1">
+              Lighthouse scores, Core Web Vitals, security headers, social tags analysis, and detailed SEO recommendations.
+            </p>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Get Lighthouse scores, Core Web Vitals, security headers, social tags analysis, and detailed SEO recommendations for any website — powered by Google PageSpeed Insights.
-          </p>
-        </div>
-        <div className="hidden sm:flex items-center gap-3 shrink-0">
-          <div className="flex -space-x-1" aria-hidden="true">
-            <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center border-2 border-background"><Activity className="h-3.5 w-3.5 text-emerald-500" /></div>
-            <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center border-2 border-background"><Shield className="h-3.5 w-3.5 text-blue-500" /></div>
-            <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center border-2 border-background"><Globe className="h-3.5 w-3.5 text-amber-500" /></div>
+          <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+            <span className="flex items-center gap-1"><Activity className="h-3 w-3 text-emerald-500" />Lighthouse</span>
+            <span className="flex items-center gap-1"><Globe className="h-3 w-3 text-amber-500" />SEO Analysis</span>
+            <span className="flex items-center gap-1"><Shield className="h-3 w-3 text-blue-500" />Security</span>
           </div>
-          <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 group-hover:text-primary transition-all" />
         </div>
-      </div>
-    </NextLink>
+      </NextLink>
+    </div>
   )
 }
 

@@ -11,6 +11,15 @@ export interface ToolMeta {
 export const tools: ToolMeta[] = [
   // Top Featured Tools
   {
+    id: "python-compiler",
+    title: "Python Compiler",
+    description: "Write and run Python code directly in your browser — powered by WebAssembly. Full Python 3.11 with stdlib, Monaco editor, and instant execution.",
+    tag: "Hot",
+    category: "developer",
+    popular: true,
+    iconName: "Code2",
+  },
+  {
     id: "image-converter",
     title: "Image Converter",
     description: "Convert images to any format (JPG, PNG, WebP, BMP, GIF) with compression and resize options.",
