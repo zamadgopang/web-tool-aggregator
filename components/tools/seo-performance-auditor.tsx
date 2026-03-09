@@ -49,7 +49,12 @@ interface LighthouseScores {
 interface AuditResult {
   url: string
   htmlData: HtmlData
-  lighthouse: LighthouseScores
+}
+
+interface LighthouseScores {
+  performance: number | null
+  seo: number | null
+  accessibility: number | null
 }
 
 function getScoreColor(score: number | null): string {
@@ -316,7 +321,39 @@ export function SeoPerformanceAuditor() {
   const [url, setUrl] = useState("")
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<AuditResult | null>(null)
+  const [lighthouse, setLighthouse] = useState<LighthouseScores | null>(null)
+  const [lighthouseLoading, setLighthouseLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const fetchLighthouseScores = async (targetUrl: string) => {
+    setLighthouseLoading(true)
+    setLighthouse(null)
+    try {
+      const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(targetUrl)}&category=performance&category=seo&category=accessibility`
+      const response = await fetch(apiUrl)
+      if (!response.ok) {
+        setLighthouse({ performance: null, seo: null, accessibility: null })
+        return
+      }
+      const data = await response.json()
+      const categories = data?.lighthouseResult?.categories
+      setLighthouse({
+        performance: categories?.performance?.score != null
+          ? Math.round(categories.performance.score * 100)
+          : null,
+        seo: categories?.seo?.score != null
+          ? Math.round(categories.seo.score * 100)
+          : null,
+        accessibility: categories?.accessibility?.score != null
+          ? Math.round(categories.accessibility.score * 100)
+          : null,
+      })
+    } catch {
+      setLighthouse({ performance: null, seo: null, accessibility: null })
+    } finally {
+      setLighthouseLoading(false)
+    }
+  }
 
   const handleAudit = async () => {
     let targetUrl = url.trim()
@@ -329,6 +366,7 @@ export function SeoPerformanceAuditor() {
 
     setLoading(true)
     setResult(null)
+    setLighthouse(null)
     setError(null)
 
     try {
@@ -346,6 +384,9 @@ export function SeoPerformanceAuditor() {
       }
 
       setResult(data)
+
+      // Fetch Lighthouse scores from the client (avoids Vercel function timeout)
+      fetchLighthouseScores(targetUrl)
     } catch {
       setError("Network error. Please check your connection and try again.")
     } finally {
@@ -440,27 +481,39 @@ export function SeoPerformanceAuditor() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-3 gap-4">
-                    <ScoreCircle
-                      score={result.lighthouse.performance}
-                      label="Performance"
-                    />
-                    <ScoreCircle
-                      score={result.lighthouse.seo}
-                      label="SEO"
-                    />
-                    <ScoreCircle
-                      score={result.lighthouse.accessibility}
-                      label="Accessibility"
-                    />
-                  </div>
-                  {result.lighthouse.performance === null &&
-                    result.lighthouse.seo === null &&
-                    result.lighthouse.accessibility === null && (
-                      <p className="text-xs text-muted-foreground mt-3 text-center">
-                        Lighthouse scores unavailable. The Google API may be rate-limited or the site may block crawlers.
+                  {lighthouseLoading && (
+                    <div className="flex flex-col items-center justify-center py-8 gap-3">
+                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                      <p className="text-sm text-muted-foreground">
+                        Fetching Lighthouse scores... This can take up to 60 seconds.
                       </p>
-                    )}
+                    </div>
+                  )}
+                  {!lighthouseLoading && lighthouse && (
+                    <>
+                      <div className="grid grid-cols-3 gap-4">
+                        <ScoreCircle
+                          score={lighthouse.performance}
+                          label="Performance"
+                        />
+                        <ScoreCircle
+                          score={lighthouse.seo}
+                          label="SEO"
+                        />
+                        <ScoreCircle
+                          score={lighthouse.accessibility}
+                          label="Accessibility"
+                        />
+                      </div>
+                      {lighthouse.performance === null &&
+                        lighthouse.seo === null &&
+                        lighthouse.accessibility === null && (
+                          <p className="text-xs text-muted-foreground mt-3 text-center">
+                            Lighthouse scores unavailable. The Google API may be rate-limited or the site may block crawlers.
+                          </p>
+                        )}
+                    </>
+                  )}
                 </CardContent>
               </Card>
 
@@ -471,7 +524,7 @@ export function SeoPerformanceAuditor() {
                     On-Page SEO Analysis
                   </CardTitle>
                   <CardDescription>
-                    HTML structure and meta tag analysis via Cheerio
+                    HTML structure and meta tag analysis
                   </CardDescription>
                 </CardHeader>
                 <CardContent>

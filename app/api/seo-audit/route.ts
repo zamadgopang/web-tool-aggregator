@@ -14,12 +14,6 @@ interface HtmlData {
   headings: { h1: number; h2: number; h3: number }
 }
 
-interface LighthouseScores {
-  performance: number | null
-  seo: number | null
-  accessibility: number | null
-}
-
 function isValidUrl(str: string): boolean {
   try {
     const url = new URL(str)
@@ -122,42 +116,6 @@ async function fetchHtmlData(url: string): Promise<HtmlData> {
   }
 }
 
-async function fetchLighthouseScores(
-  url: string
-): Promise<LighthouseScores> {
-  const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&category=performance&category=seo&category=accessibility`
-
-  const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), 60000)
-
-  try {
-    const response = await fetch(apiUrl, { signal: controller.signal })
-
-    if (!response.ok) {
-      return { performance: null, seo: null, accessibility: null }
-    }
-
-    const data = await response.json()
-    const categories = data?.lighthouseResult?.categories
-
-    return {
-      performance: categories?.performance?.score != null
-        ? Math.round(categories.performance.score * 100)
-        : null,
-      seo: categories?.seo?.score != null
-        ? Math.round(categories.seo.score * 100)
-        : null,
-      accessibility: categories?.accessibility?.score != null
-        ? Math.round(categories.accessibility.score * 100)
-        : null,
-    }
-  } catch {
-    return { performance: null, seo: null, accessibility: null }
-  } finally {
-    clearTimeout(timeout)
-  }
-}
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -179,15 +137,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const [htmlData, lighthouse] = await Promise.all([
-      fetchHtmlData(trimmedUrl),
-      fetchLighthouseScores(trimmedUrl),
-    ])
+    const htmlData = await fetchHtmlData(trimmedUrl)
 
     return NextResponse.json({
       url: trimmedUrl,
       htmlData,
-      lighthouse,
     })
   } catch (error) {
     const message =
