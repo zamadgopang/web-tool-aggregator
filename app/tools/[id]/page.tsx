@@ -52,5 +52,5 @@ export default async function ToolPage({ params }: ToolPageProps) {
     notFound()
   }
 
-  return <ToolPageClient toolId={id} toolTitle={tool.title} />
+  return <ToolPageClient toolId={id} />
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = "zamdev-tools-v1";
+const CACHE_NAME = "zamdev-tools-v2";
 const PRECACHE_URLS = [
   "/",
   "/manifest.json",
@@ -36,11 +36,15 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   if (!url.protocol.startsWith("http")) return;
 
+  // Restrict caching to same-origin requests to avoid third-party cache noise.
+  if (url.origin !== self.location.origin) return;
+
   // Network-first for navigation requests (HTML pages)
   if (request.mode === "navigate") {
     event.respondWith(
       fetch(request)
         .then((response) => {
+          if (!response.ok) return response;
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
           return response;
@@ -59,6 +63,7 @@ self.addEventListener("fetch", (event) => {
         (cached) =>
           cached ||
           fetch(request).then((response) => {
+            if (!response.ok) return response;
             const clone = response.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
             return response;
@@ -72,6 +77,7 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     fetch(request)
       .then((response) => {
+        if (!response.ok) return response;
         const clone = response.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
         return response;

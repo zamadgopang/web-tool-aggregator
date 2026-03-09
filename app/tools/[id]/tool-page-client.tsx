@@ -7,10 +7,9 @@ import { useState } from "react"
 
 interface ToolPageClientProps {
   toolId: string
-  toolTitle: string
 }
 
-export function ToolPageClient({ toolId, toolTitle }: ToolPageClientProps) {
+export function ToolPageClient({ toolId }: ToolPageClientProps) {
   const [searchOpen, setSearchOpen] = useState(false)
 
   return (
