@@ -26,7 +26,9 @@ export async function POST(request: NextRequest) {
 
     const targetUrl = url.trim()
     const deviceStrategy = strategy === "desktop" ? "desktop" : "mobile"
-    const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(targetUrl)}&strategy=${deviceStrategy}&category=performance&category=seo&category=accessibility`
+    const apiKey = process.env.PAGESPEED_API_KEY
+    const keyParam = apiKey ? `&key=${apiKey}` : ""
+    const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(targetUrl)}&strategy=${deviceStrategy}&category=performance&category=seo&category=accessibility${keyParam}`
 
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 55000)
