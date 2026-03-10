@@ -19,7 +19,7 @@ export function Header({ onSearchClick }: HeaderProps) {
   }, [])
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/15 dark:border-white/10 bg-white/60 dark:bg-white/[0.06] backdrop-blur-2xl backdrop-saturate-[1.8]" role="banner">
+    <header className="sticky top-0 z-50 w-full border-b border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl dark:backdrop-blur-2xl backdrop-saturate-150 dark:backdrop-saturate-150 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]" role="banner">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2" aria-label="ZamDev Tools — Go to homepage">
@@ -49,7 +49,7 @@ export function Header({ onSearchClick }: HeaderProps) {
         <button
           onClick={onSearchClick}
           aria-label="Search tools (Ctrl+K)"
-          className="hidden sm:flex items-center gap-3 rounded-xl border border-white/20 dark:border-white/10 bg-white/40 dark:bg-white/[0.06] backdrop-blur-xl px-4 py-2 text-sm text-muted-foreground transition-all hover:bg-white/60 dark:hover:bg-white/10 hover:text-foreground hover:shadow-sm w-72"
+          className="hidden sm:flex items-center gap-3 rounded-xl border border-white/80 dark:border-white/20 bg-white/60 dark:bg-white/10 backdrop-blur-md dark:backdrop-blur-md shadow-sm dark:shadow-sm px-4 py-2 text-sm text-muted-foreground transition-all hover:bg-white/70 dark:hover:bg-white/15 hover:text-foreground hover:shadow-md w-72"
         >
           <Command className="h-4 w-4" aria-hidden="true" />
           <span>Search tools...</span>

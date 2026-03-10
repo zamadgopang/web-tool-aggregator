@@ -39,7 +39,7 @@ export function ToolPageClient({ toolId, tool }: ToolPageClientProps) {
 
       <AgencyCTA />
 
-      <footer className="border-t border-white/15 dark:border-white/[0.06] bg-white/40 dark:bg-white/[0.03] backdrop-blur-2xl py-8" role="contentinfo">
+      <footer className="border-t border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl dark:backdrop-blur-2xl backdrop-saturate-150 dark:backdrop-saturate-150 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] py-8" role="contentinfo">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
             <p>All tools run 100% in your browser. Your files never leave your device.</p>

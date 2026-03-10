@@ -15,7 +15,7 @@ function HomeFaqItem({ question, answer }: { question: string; answer: string })
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="border border-white/20 dark:border-white/[0.08] rounded-xl overflow-hidden bg-white/40 dark:bg-white/[0.04] backdrop-blur-xl">
+    <div className="border border-white/60 dark:border-white/10 rounded-xl overflow-hidden bg-white/40 dark:bg-black/40 backdrop-blur-2xl dark:backdrop-blur-2xl backdrop-saturate-150 dark:backdrop-saturate-150 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
       <button
         className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-medium text-foreground hover:bg-white/30 dark:hover:bg-white/[0.04] transition-colors"
         onClick={() => setOpen(!open)}
@@ -70,7 +70,7 @@ export function HomeClient() {
             Why Use ZamDev Tools?
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div className="flex flex-col items-center text-center p-6 rounded-2xl border border-white/20 dark:border-white/[0.08] bg-white/50 dark:bg-white/[0.05] backdrop-blur-xl">
+            <div className="flex flex-col items-center text-center p-6 rounded-2xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl dark:backdrop-blur-2xl backdrop-saturate-150 dark:backdrop-saturate-150 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-foreground/5 mb-4">
                 <Zap className="h-6 w-6 text-foreground" aria-hidden="true" />
               </div>
@@ -79,7 +79,7 @@ export function HomeClient() {
                 Every tool runs entirely in your browser. No file uploads, no server processing, no waiting. Results appear instantly.
               </p>
             </div>
-            <div className="flex flex-col items-center text-center p-6 rounded-2xl border border-white/20 dark:border-white/[0.08] bg-white/50 dark:bg-white/[0.05] backdrop-blur-xl">
+            <div className="flex flex-col items-center text-center p-6 rounded-2xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl dark:backdrop-blur-2xl backdrop-saturate-150 dark:backdrop-saturate-150 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-foreground/5 mb-4">
                 <Shield className="h-6 w-6 text-foreground" aria-hidden="true" />
               </div>
@@ -88,7 +88,7 @@ export function HomeClient() {
                 Your files and data never leave your device. All processing happens locally using modern browser APIs — no tracking, no data collection.
               </p>
             </div>
-            <div className="flex flex-col items-center text-center p-6 rounded-2xl border border-white/20 dark:border-white/[0.08] bg-white/50 dark:bg-white/[0.05] backdrop-blur-xl">
+            <div className="flex flex-col items-center text-center p-6 rounded-2xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl dark:backdrop-blur-2xl backdrop-saturate-150 dark:backdrop-saturate-150 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-foreground/5 mb-4">
                 <DollarSign className="h-6 w-6 text-foreground" aria-hidden="true" />
               </div>
@@ -106,25 +106,25 @@ export function HomeClient() {
             Built for Everyone
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="p-5 rounded-2xl border border-white/20 dark:border-white/[0.08] bg-white/50 dark:bg-white/[0.05] backdrop-blur-xl">
+            <div className="p-5 rounded-2xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl dark:backdrop-blur-2xl backdrop-saturate-150 dark:backdrop-saturate-150 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
               <h3 className="font-semibold text-foreground mb-2">Developers</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Format JSON, decode JWTs, test regex, generate TypeScript interfaces, parse cron expressions, and hash data — all essential developer utilities in one place.
               </p>
             </div>
-            <div className="p-5 rounded-2xl border border-white/20 dark:border-white/[0.08] bg-white/50 dark:bg-white/[0.05] backdrop-blur-xl">
+            <div className="p-5 rounded-2xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl dark:backdrop-blur-2xl backdrop-saturate-150 dark:backdrop-saturate-150 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
               <h3 className="font-semibold text-foreground mb-2">Designers</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Convert and resize images, generate color palettes, create CSS gradients and shadows, calculate aspect ratios, and export SVGs — design workflow essentials.
               </p>
             </div>
-            <div className="p-5 rounded-2xl border border-white/20 dark:border-white/[0.08] bg-white/50 dark:bg-white/[0.05] backdrop-blur-xl">
+            <div className="p-5 rounded-2xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl dark:backdrop-blur-2xl backdrop-saturate-150 dark:backdrop-saturate-150 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
               <h3 className="font-semibold text-foreground mb-2">Marketers</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Audit SEO performance, generate meta tags, create QR codes, convert documents to PDF, and optimize images for web — tools that boost your digital presence.
               </p>
             </div>
-            <div className="p-5 rounded-2xl border border-white/20 dark:border-white/[0.08] bg-white/50 dark:bg-white/[0.05] backdrop-blur-xl">
+            <div className="p-5 rounded-2xl border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl dark:backdrop-blur-2xl backdrop-saturate-150 dark:backdrop-saturate-150 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
               <h3 className="font-semibold text-foreground mb-2">Students</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Run Python code in the browser, convert units, generate passwords, compare text differences, and learn Markdown — study and project helpers with zero setup.
@@ -215,7 +215,7 @@ export function HomeClient() {
 
       <AgencyCTA />
 
-      <footer className="border-t border-white/15 dark:border-white/[0.06] bg-white/40 dark:bg-white/[0.03] backdrop-blur-2xl" role="contentinfo">
+      <footer className="border-t border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl dark:backdrop-blur-2xl backdrop-saturate-150 dark:backdrop-saturate-150 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]" role="contentinfo">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Brand */}
