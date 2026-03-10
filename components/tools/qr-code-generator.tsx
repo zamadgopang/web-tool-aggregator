@@ -1,6 +1,7 @@
 "use client"
 
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect, useCallback } from "react"
+import QRCode from "qrcode"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -8,42 +9,44 @@ import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Download, Copy, CheckCircle } from "lucide-react"
 
-// Simple QR Code generator using a library-free approach
-// Using QR Server API for generation
 export function QRCodeGenerator() {
   const [inputValue, setInputValue] = useState("https://example.com")
-  const [qrCode, setQrCode] = useState<string | null>(null)
+  const [dataUrl, setDataUrl] = useState<string | null>(null)
   const [size, setSize] = useState(300)
-  const [errorLevel, setErrorLevel] = useState("M")
+  const [errorLevel, setErrorLevel] = useState<"L" | "M" | "Q" | "H">("M")
   const [copied, setCopied] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  // Generate QR code using the QR Server API
-  useEffect(() => {
-    if (inputValue.trim()) {
-      const encodedValue = encodeURIComponent(inputValue)
-      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodedValue}&ecc=${errorLevel}`
-      setQrCode(qrUrl)
+  const generateQR = useCallback(async () => {
+    if (!inputValue.trim()) {
+      setDataUrl(null)
+      return
+    }
+    try {
+      const url = await QRCode.toDataURL(inputValue, {
+        width: size,
+        margin: 2,
+        errorCorrectionLevel: errorLevel,
+        color: { dark: "#000000", light: "#ffffff" },
+      })
+      setDataUrl(url)
+    } catch {
+      setDataUrl(null)
     }
   }, [inputValue, size, errorLevel])
 
-  const handleDownload = async () => {
-    if (!qrCode) return
+  useEffect(() => {
+    generateQR()
+  }, [generateQR])
 
-    try {
-      const response = await fetch(qrCode)
-      const blob = await response.blob()
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement("a")
-      link.href = url
-      link.download = `qr-code-${Date.now()}.png`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      URL.revokeObjectURL(url)
-    } catch (error) {
-      console.error("Failed to download QR code:", error)
-    }
+  const handleDownload = () => {
+    if (!dataUrl) return
+    const link = document.createElement("a")
+    link.href = dataUrl
+    link.download = `qr-code-${Date.now()}.png`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   const handleCopy = () => {
@@ -78,10 +81,10 @@ export function QRCodeGenerator() {
           </div>
 
           {/* QR Code Preview */}
-          {qrCode && (
+          {dataUrl && (
             <div className="flex flex-col items-center gap-4 p-6 bg-muted rounded-lg">
               <img
-                src={qrCode}
+                src={dataUrl}
                 alt="QR Code"
                 style={{
                   width: `${Math.min(size, 300)}px`,
