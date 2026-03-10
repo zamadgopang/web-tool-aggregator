@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
+import { checkRateLimit } from "@/lib/rate-limit"
 
 export const maxDuration = 30
 
@@ -296,6 +297,9 @@ async function fetchHtmlData(url: string): Promise<HtmlData> {
 }
 
 export async function POST(request: NextRequest) {
+  const rateLimited = checkRateLimit(request)
+  if (rateLimited) return rateLimited
+
   try {
     const body = await request.json()
     const { url } = body

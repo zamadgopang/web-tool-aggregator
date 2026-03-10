@@ -1076,32 +1076,10 @@ export const tools: ToolMeta[] = [
     tag: "New",
     category: "utility",
     iconName: "Square",
-    keywords: ["css box shadow generator", "box shadow maker", "css shadow tool", "shadow generator online", "box shadow css", "drop shadow generator", "css shadow builder", "inner shadow", "card shadow css", "material design shadow"],
-    seoContent: {
-      longDescription: "The ZamDev CSS Box Shadow Generator lets you create sophisticated box shadow effects with an intuitive visual builder. Stack multiple shadow layers to achieve realistic depth, adjust offset, blur, spread, and color for each layer, and preview the result in real time. Professional presets (subtle, medium, large, inner shadow) provide quick starting points. Copy the production-ready CSS and use it in any web project.",
-      howItWorks: [
-        "Choose a preset shadow style or start from scratch.",
-        "Adjust shadow properties: horizontal offset, vertical offset, blur radius, spread radius.",
-        "Pick a shadow color and set the opacity.",
-        "Add multiple shadow layers for complex effects.",
-        "Copy the generated CSS box-shadow property value."
-      ],
-      useCases: [
-        "Adding elevation and depth to card components",
-        "Creating Material Design-style elevation shadows",
-        "Designing button hover shadows for interactive feedback",
-        "Building glass-morphism effects with layered shadows",
-        "Adding inner shadows for input field styling",
-        "Creating realistic drop shadows for modals and dialogs"
-      ],
-    },
+    keywords: ["css box shadow generator", "box shadow maker", "css shadow tool", "shadow generator online", "box shadow css"],
     faqItems: [
       { q: "Can I add multiple shadow layers?", a: "Yes. You can stack multiple shadow layers to create complex, realistic shadow effects. Each layer has independent settings for offset, blur, spread, and color." },
       { q: "Are there pre-made shadow presets?", a: "Yes. Several professionally designed presets are available as starting points, including subtle, medium, large, and inner shadow styles." },
-      { q: "What is the difference between blur and spread?", a: "Blur radius controls how soft/diffused the shadow edge is. Spread radius expands or contracts the shadow size. A positive spread makes the shadow larger than the element, negative makes it smaller." },
-      { q: "How do I create an inner shadow?", a: "Add the 'inset' keyword to your shadow. The tool has an inset toggle that switches between outer and inner shadows, creating a recessed/pressed effect." },
-      { q: "What shadow values does Material Design use?", a: "Material Design uses multi-layer shadows to simulate paper elevation. Level 1 uses soft, small shadows while level 24 uses larger, more diffused shadows. The presets include Material-inspired options." },
-      { q: "Do box shadows affect performance?", a: "Simple box shadows have minimal performance impact. However, very large blur values or many shadow layers can increase rendering time. For best performance, keep blur values under 40px and limit to 2-3 layers." },
     ],
   },
   {
@@ -1111,32 +1089,10 @@ export const tools: ToolMeta[] = [
     tag: "New",
     category: "utility",
     iconName: "Ratio",
-    keywords: ["aspect ratio calculator", "image ratio calculator", "video aspect ratio", "screen resolution calculator", "dimension calculator", "16:9 calculator", "4:3 ratio", "aspect ratio converter", "image dimension calculator", "responsive design ratio"],
-    seoContent: {
-      longDescription: "The ZamDev Aspect Ratio Calculator helps you calculate dimensions, aspect ratios, and resize values for video, photography, and responsive web design. Enter any two dimensions to find the ratio, or lock a ratio and calculate the missing dimension. Includes common presets for widescreen (16:9), traditional (4:3), square (1:1), and ultrawide (21:9) formats. Perfect for video production, responsive CSS, and social media content creation.",
-      howItWorks: [
-        "Enter width and height to calculate the aspect ratio.",
-        "Or select a preset ratio and enter one dimension to calculate the other.",
-        "Lock the ratio to maintain proportions while adjusting dimensions.",
-        "See results in both ratio format (16:9) and decimal format (1.778).",
-        "Use the calculated dimensions in your design, video, or CSS."
-      ],
-      useCases: [
-        "Calculating dimensions for video exports in 16:9 or 4:3 formats",
-        "Sizing images for responsive website layouts",
-        "Calculating social media image dimensions (Instagram, Facebook, YouTube)",
-        "Planning screen resolutions for app and game development",
-        "Resizing images while maintaining proportions",
-        "Setting CSS aspect-ratio property values for responsive containers"
-      ],
-    },
+    keywords: ["aspect ratio calculator", "image ratio calculator", "video aspect ratio", "screen resolution calculator", "dimension calculator"],
     faqItems: [
       { q: "What can I calculate with this tool?", a: "Enter any two dimensions (width and height) to calculate the aspect ratio. You can also lock a ratio and calculate the missing dimension based on one known value." },
       { q: "What are common aspect ratios?", a: "Common ratios include 16:9 (widescreen video), 4:3 (traditional TV), 1:1 (square/Instagram), 9:16 (vertical/mobile video), and 21:9 (ultrawide)." },
-      { q: "What aspect ratio does YouTube use?", a: "YouTube's standard player uses 16:9 (1920×1080, 1280×720). YouTube Shorts use 9:16 (1080×1920). Uploading in these ratios ensures your video fills the player without black bars." },
-      { q: "What ratio should I use for Instagram?", a: "Instagram supports 1:1 (square, 1080×1080), 4:5 (portrait, 1080×1350), and 1.91:1 (landscape, 1080×566). Portrait 4:5 gets the most screen real estate in the feed." },
-      { q: "How does the CSS aspect-ratio property work?", a: "The CSS aspect-ratio property (e.g., aspect-ratio: 16/9) forces an element to maintain a specific ratio. This is useful for responsive video containers, image placeholders, and layout components." },
-      { q: "What ratio is best for printing photos?", a: "Standard photo prints use 3:2 (4×6 inches), 5:4 (8×10 inches), or 7:5 (5×7 inches). If your camera shoots in 3:2, printing in standard sizes maintains the full image without cropping." },
     ],
   },
   {
@@ -1146,32 +1102,10 @@ export const tools: ToolMeta[] = [
     tag: "Popular",
     category: "utility",
     iconName: "Droplets",
-    keywords: ["color palette generator", "color scheme generator", "tailwind colors", "css color palette", "color harmony generator", "complementary colors", "color palette maker", "design color scheme", "brand colors generator", "color theory tool"],
-    seoContent: {
-      longDescription: "The ZamDev Color Palette Generator creates harmonious color schemes based on color theory principles. Start with any base color and generate complementary, analogous, triadic, split-complementary, or monochromatic palettes automatically. Preview palettes visually, explore variations, and export as CSS custom properties or Tailwind CSS configuration. Perfect for designers building brand identities, UI kits, and design systems.",
-      howItWorks: [
-        "Pick a base color using the color picker or enter a hex value.",
-        "Select a color harmony type (complementary, analogous, triadic, etc.).",
-        "The tool generates a harmonious palette based on color theory.",
-        "Explore generated colors and their HEX/RGB/HSL values.",
-        "Export the palette as CSS custom properties or Tailwind CSS config."
-      ],
-      useCases: [
-        "Creating brand color palettes from a primary brand color",
-        "Generating color scales for design system components",
-        "Finding complementary colors for marketing materials",
-        "Building Tailwind CSS theme configurations",
-        "Exploring color harmonies for UI design projects",
-        "Creating accessible color combinations for websites"
-      ],
-    },
+    keywords: ["color palette generator", "color scheme generator", "tailwind colors", "css color palette", "color harmony generator"],
     faqItems: [
       { q: "What color harmonies are supported?", a: "The generator supports complementary, analogous, triadic, split-complementary, and monochromatic color harmonies based on color theory principles." },
       { q: "Can I export for Tailwind CSS?", a: "Yes. You can export your generated palette as CSS custom properties or as a Tailwind CSS configuration object ready to paste into your tailwind.config.js." },
-      { q: "What is a complementary color scheme?", a: "Complementary colors are opposite each other on the color wheel (like blue and orange). They create high contrast and visual energy, making them great for calls-to-action and accent colors." },
-      { q: "What is an analogous color scheme?", a: "Analogous colors are next to each other on the color wheel (like blue, blue-green, and green). They create harmonious, cohesive designs and are often found in nature." },
-      { q: "How do I pick a good base color?", a: "Start with your brand's primary color or pick a color that evokes the right emotion: blue for trust, green for growth, red for energy, purple for creativity. The tool handles generating harmonious companions." },
-      { q: "Can I check color contrast for accessibility?", a: "The palette display shows color values that you can test for WCAG contrast ratios. For best accessibility, ensure text colors have at least 4.5:1 contrast ratio against backgrounds." },
     ],
   },
   {
@@ -1181,32 +1115,10 @@ export const tools: ToolMeta[] = [
     tag: "New",
     category: "image",
     iconName: "Image",
-    keywords: ["svg to png", "convert svg to png", "svg converter", "svg to image", "svg to png online", "svg to raster", "svg export png", "vector to png", "svg to bitmap", "high resolution svg export"],
-    seoContent: {
-      longDescription: "The ZamDev SVG to PNG Converter transforms scalable vector graphics into high-quality PNG raster images at any resolution. Upload an SVG file, set your desired output dimensions, and download a crisp PNG — perfect for social media, email, or any context where SVG isn't supported. The converter preserves transparency, colors, and all visual elements. Everything processes in your browser with no server upload.",
-      howItWorks: [
-        "Upload or paste your SVG file into the converter.",
-        "Set the desired output width and height in pixels.",
-        "The tool renders the SVG at your specified dimensions.",
-        "Preview the PNG output to verify quality.",
-        "Download the high-resolution PNG image."
-      ],
-      useCases: [
-        "Converting SVG logos to PNG for social media profiles",
-        "Creating high-resolution icon exports from SVG icon libraries",
-        "Exporting SVG illustrations as PNG for email newsletters",
-        "Converting SVG charts and graphs to images for reports",
-        "Creating favicon PNGs from SVG source files",
-        "Generating app store icons at specific pixel dimensions from SVG"
-      ],
-    },
+    keywords: ["svg to png", "convert svg to png", "svg converter", "svg to image", "svg to png online"],
     faqItems: [
       { q: "Can I set custom dimensions for the PNG?", a: "Yes. You can specify the exact width and height in pixels for the output PNG, allowing you to create high-resolution exports from scalable SVG files." },
       { q: "Does it preserve transparency?", a: "Yes. PNG supports transparency, so any transparent areas in your SVG will remain transparent in the converted PNG output." },
-      { q: "Why convert SVG to PNG?", a: "While SVG is ideal for web, many platforms (social media, email clients, older apps) don't support SVG. PNG provides universal compatibility with lossless quality and transparency support." },
-      { q: "What resolution should I use?", a: "For web use, 1x or 2x your display size (e.g., 200px display = 400px export for retina). For print, use at least 300 DPI equivalent. The tool lets you set exact pixel dimensions." },
-      { q: "Can I convert SVG code pasted as text?", a: "Yes. You can either upload an .svg file or paste SVG markup directly. The converter handles both methods and renders the SVG for conversion." },
-      { q: "Does it handle complex SVGs with filters and gradients?", a: "Yes. The converter uses the browser's native SVG rendering engine, which handles gradients, filters, masks, clip paths, and all standard SVG features." },
     ],
   },
   {
@@ -1217,34 +1129,11 @@ export const tools: ToolMeta[] = [
     category: "developer",
     popular: true,
     iconName: "Globe",
-    keywords: ["seo auditor", "website performance checker", "lighthouse scores", "core web vitals", "seo checker", "page speed test", "website seo analysis", "website audit tool", "google pagespeed test", "web performance analyzer", "site speed checker", "accessibility checker"],
-    seoContent: {
-      longDescription: "The ZamDev SEO & Performance Auditor provides a comprehensive analysis of any website using real Google Lighthouse data. Get performance, SEO, accessibility, and best practices scores along with detailed Core Web Vitals metrics (FCP, LCP, TBT, CLS). The tool also performs deep on-page analysis including heading structure, meta tags, Open Graph tags, security headers, structured data validation, and image optimization checks. Identify exactly what to fix to improve your search rankings, page speed, and user experience.",
-      howItWorks: [
-        "Enter the URL of the website you want to audit.",
-        "The tool fetches real Lighthouse data via the Google PageSpeed Insights API.",
-        "View performance scores and Core Web Vitals metrics.",
-        "Review detailed SEO checks: meta tags, headings, Open Graph, structured data.",
-        "Get actionable recommendations to improve your website's score."
-      ],
-      useCases: [
-        "Auditing your website before launch to catch SEO issues",
-        "Monitoring Core Web Vitals for Google ranking factors",
-        "Comparing performance scores before and after optimizations",
-        "Checking competitor websites for SEO benchmark insights",
-        "Validating accessibility compliance for WCAG standards",
-        "Verifying Open Graph and structured data for social sharing"
-      ],
-    },
+    keywords: ["seo auditor", "website performance checker", "lighthouse scores", "core web vitals", "seo checker", "page speed test", "website seo analysis"],
     faqItems: [
       { q: "What does the SEO Auditor check?", a: "It analyzes Google Lighthouse scores (Performance, SEO, Accessibility, Best Practices), Core Web Vitals (FCP, LCP, TBT, CLS), security headers, Open Graph tags, structured data, heading structure, meta tags, and more." },
       { q: "Does it use Google's API?", a: "Yes. The tool uses the Google PageSpeed Insights API to fetch real Lighthouse audit data, giving you the same scores you'd see in Chrome DevTools." },
       { q: "Can I audit any website?", a: "You can audit any publicly accessible website. Simply enter the URL and the tool will fetch and analyze the page's SEO health, performance metrics, and accessibility scores." },
-      { q: "What are Core Web Vitals?", a: "Core Web Vitals are Google's key metrics for user experience: Largest Contentful Paint (LCP) measures loading speed, First Input Delay (FID) / Total Blocking Time (TBT) measures interactivity, and Cumulative Layout Shift (CLS) measures visual stability. These directly affect Google search rankings." },
-      { q: "How often should I audit my website?", a: "Audit after every major deployment, and do regular monthly checks. Performance can degrade over time as content and third-party scripts are added. Regular auditing catches issues before they affect rankings." },
-      { q: "What is a good Lighthouse performance score?", a: "Scores are 0-100. 90-100 is excellent (green), 50-89 is needs improvement (orange), 0-49 is poor (red). Aim for 90+ on all four categories: Performance, SEO, Accessibility, and Best Practices." },
-      { q: "Why are mobile and desktop scores different?", a: "Mobile scores are typically lower because Lighthouse simulates a mid-range mobile device on a slower network. Desktop has more CPU and bandwidth. Google uses mobile-first indexing, so mobile scores are more important for SEO." },
-      { q: "Does it check for structured data (schema markup)?", a: "Yes. The auditor checks for JSON-LD structured data on the page and validates common schema types like Organization, WebSite, Article, and BreadcrumbList." },
     ],
   },
 ]

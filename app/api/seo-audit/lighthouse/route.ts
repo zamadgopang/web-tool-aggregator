@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
+import { checkRateLimit } from "@/lib/rate-limit"
 
 // Allow up to 60 seconds for this serverless function (Vercel hobby = 60s max)
 export const maxDuration = 60
@@ -48,6 +49,9 @@ function isValidUrl(str: string): boolean {
 }
 
 export async function POST(request: NextRequest) {
+  const rateLimited = checkRateLimit(request)
+  if (rateLimited) return rateLimited
+
   try {
     const body = await request.json()
     const { url, strategy } = body
