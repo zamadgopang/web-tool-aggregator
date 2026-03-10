@@ -1,9 +1,13 @@
-const CACHE_NAME = "zamdev-tools-v2";
+const CACHE_NAME = "zamdev-tools-v3";
 const PRECACHE_URLS = [
   "/",
   "/manifest.json",
   "/favicon.svg",
   "/icon.svg",
+  "/icons/icon-192x192.png",
+  "/icons/icon-512x512.png",
+  "/icons/maskable-icon-512x512.png",
+  "/apple-icon.png",
 ];
 
 self.addEventListener("install", (event) => {

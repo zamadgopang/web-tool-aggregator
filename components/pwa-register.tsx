@@ -10,7 +10,27 @@ export function PWARegister() {
 
     const register = async () => {
       try {
-        await navigator.serviceWorker.register("/sw.js")
+        const registration = await navigator.serviceWorker.register("/sw.js")
+
+        // Check for updates periodically (every 60 minutes)
+        setInterval(() => {
+          registration.update()
+        }, 60 * 60 * 1000)
+
+        // When a new service worker is found, activate it on next load
+        registration.addEventListener("updatefound", () => {
+          const newWorker = registration.installing
+          if (!newWorker) return
+
+          newWorker.addEventListener("statechange", () => {
+            if (
+              newWorker.state === "activated" &&
+              navigator.serviceWorker.controller
+            ) {
+              // New content available; will be used on next reload
+            }
+          })
+        })
       } catch {
         // Keep registration failures silent for end users.
       }
