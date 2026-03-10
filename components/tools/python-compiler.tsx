@@ -4,13 +4,6 @@ import React, { useState, useEffect, useRef, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -33,20 +26,20 @@ import {
   Loader2,
   Terminal,
   Code2,
-  Cpu,
   Zap,
   Clock,
-  FileText,
   RotateCcw,
   Maximize2,
   Minimize2,
   Sun,
   Moon,
-  Package,
   BookOpen,
   Keyboard,
   RefreshCw,
   AlertCircle,
+  GripHorizontal,
+  X,
+  PanelBottom,
 } from "lucide-react"
 
 // ─── Constants ────────────────────────────────────────────────────────
@@ -58,7 +51,7 @@ const CODE_EXAMPLES: Record<string, { label: string; code: string }> = {
   input_demo: {
     label: "User Input Demo",
     code: `# 🎤 User Input Demo — Try entering inputs!
-# Add your inputs in the Input panel below the terminal
+# Switch to the INPUT tab in the terminal panel below
 # Enter one value per line before running
 
 name = input("What is your name? ")
@@ -373,7 +366,7 @@ const DEFAULT_CODE_KEY = "hello"
 
 interface OutputLine {
   text: string
-  type: "stdout" | "stderr" | "system" | "input"
+  type: "stdout" | "stderr" | "system" | "input-echo" | "input-prompt"
   timestamp: number
 }
 
@@ -402,6 +395,7 @@ declare global {
 // ─── Main Component ──────────────────────────────────────────────────
 
 export function PythonCompiler() {
+  // ─── State ─────────────────────────────────────────────────────────
   const [code, setCode] = useState(CODE_EXAMPLES[DEFAULT_CODE_KEY].code)
   const [output, setOutput] = useState<OutputLine[]>([])
   const [isRunning, setIsRunning] = useState(false)
@@ -415,11 +409,22 @@ export function PythonCompiler() {
   const [stdinInput, setStdinInput] = useState("")
   const [retryCount, setRetryCount] = useState(0)
 
+  // Panel state
+  const [activePanel, setActivePanel] = useState<"terminal" | "input">("terminal")
+  const [panelHeight, setPanelHeight] = useState(280)
+  const [isPanelOpen, setIsPanelOpen] = useState(true)
+
+  // Refs
   const pyodideRef = useRef<PyodideInterface | null>(null)
   const editorRef = useRef<unknown>(null)
   const outputRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const isResizing = useRef(false)
   const MonacoEditorRef = useRef<React.ComponentType<Record<string, unknown>> | null>(null)
   const [editorLoaded, setEditorLoaded] = useState(false)
+
+  // ─── Theme ─────────────────────────────────────────────────────────
+  const isDark = editorTheme === "vs-dark"
 
   // ─── Load Monaco Editor dynamically ────────────────────────────────
 
@@ -444,11 +449,9 @@ export function PythonCompiler() {
         setPyodideStatus("loading")
         setLoadProgress(10)
 
-        // Remove old script if retrying
         const existingScript = document.querySelector(`script[src="${PYODIDE_CDN}"]`)
         if (existingScript) existingScript.remove()
 
-        // Load script tag
         await new Promise<void>((resolve, reject) => {
           const script = document.createElement("script")
           script.src = PYODIDE_CDN
@@ -461,22 +464,19 @@ export function PythonCompiler() {
         if (cancelled) return
         setLoadProgress(40)
 
-        // Wait briefly for globalThis.loadPyodide to be available
         const loadPyodideFn = window.loadPyodide
         if (!loadPyodideFn) {
-          throw new Error("window.loadPyodide is undefined after script loaded. CSP may be blocking execution.")
+          throw new Error("window.loadPyodide is undefined after script loaded.")
         }
 
         setLoadProgress(50)
 
-        // Initialize Pyodide runtime
         const pyodide = await loadPyodideFn({
           indexURL: PYODIDE_INDEX_URL,
         })
 
         if (cancelled) return
         setLoadProgress(90)
-
         pyodideRef.current = pyodide
         setLoadProgress(100)
         setPyodideStatus("ready")
@@ -510,6 +510,47 @@ export function PythonCompiler() {
     return () => clearInterval(interval)
   }, [pyodideStatus, loadProgress])
 
+  // ─── Resize panel (mouse + touch) ─────────────────────────────────
+
+  const handleResizeStart = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault()
+    isResizing.current = true
+    document.body.style.cursor = "row-resize"
+    document.body.style.userSelect = "none"
+  }, [])
+
+  useEffect(() => {
+    const getY = (e: MouseEvent | TouchEvent): number => {
+      if ("touches" in e) return e.touches[0]?.clientY ?? 0
+      return e.clientY
+    }
+    const handleMove = (e: MouseEvent | TouchEvent) => {
+      if (!isResizing.current || !containerRef.current) return
+      const rect = containerRef.current.getBoundingClientRect()
+      const statusBarH = 26
+      const y = getY(e)
+      const newHeight = rect.bottom - statusBarH - y
+      setPanelHeight(Math.max(120, Math.min(newHeight, rect.height - 220)))
+    }
+    const handleEnd = () => {
+      if (isResizing.current) {
+        isResizing.current = false
+        document.body.style.cursor = ""
+        document.body.style.userSelect = ""
+      }
+    }
+    document.addEventListener("mousemove", handleMove)
+    document.addEventListener("mouseup", handleEnd)
+    document.addEventListener("touchmove", handleMove, { passive: false })
+    document.addEventListener("touchend", handleEnd)
+    return () => {
+      document.removeEventListener("mousemove", handleMove)
+      document.removeEventListener("mouseup", handleEnd)
+      document.removeEventListener("touchmove", handleMove)
+      document.removeEventListener("touchend", handleEnd)
+    }
+  }, [])
+
   // ─── Run Code ──────────────────────────────────────────────────────
 
   const runCode = useCallback(async () => {
@@ -523,18 +564,19 @@ export function PythonCompiler() {
     setIsRunning(true)
     setOutput([])
     setStats(null)
+    setIsPanelOpen(true)
+    setActivePanel("terminal")
 
     const startTime = performance.now()
     const lines: OutputLine[] = []
 
     lines.push({
-      text: `▶ Running Python...`,
+      text: `\x1b[90m$ python script.py\x1b[0m`,
       type: "system",
       timestamp: Date.now(),
     })
     setOutput([...lines])
 
-    // Redirect stdout/stderr
     pyodide.setStdout({
       batched: (text: string) => {
         lines.push({ text, type: "stdout", timestamp: Date.now() })
@@ -548,7 +590,6 @@ export function PythonCompiler() {
       },
     })
 
-    // Set up stdin for input() support
     const inputLines = stdinInput.trim() ? stdinInput.split("\n") : []
     let inputIndex = 0
 
@@ -557,19 +598,21 @@ export function PythonCompiler() {
         if (inputIndex < inputLines.length) {
           const line = inputLines[inputIndex]
           inputIndex++
-          lines.push({ text: line, type: "input", timestamp: Date.now() })
+          lines.push({ text: `${line}`, type: "input-echo", timestamp: Date.now() })
           setOutput([...lines])
           return line
         }
-        // No more input available
-        lines.push({ text: "\u26a0 No input available \u2014 add values in the Input panel and re-run.", type: "stderr", timestamp: Date.now() })
+        lines.push({
+          text: "\u26a0 No input available — switch to the INPUT tab to add values, then re-run.",
+          type: "input-prompt",
+          timestamp: Date.now(),
+        })
         setOutput([...lines])
         return "\n"
       },
     })
 
     try {
-      // Auto-install packages from imports
       await pyodide.loadPackagesFromImports(currentCode)
       await pyodide.runPythonAsync(currentCode)
     } catch (err) {
@@ -583,7 +626,7 @@ export function PythonCompiler() {
     const outputLines = lines.filter((l) => l.type !== "system").length
 
     lines.push({
-      text: `\n✓ Finished in ${executionTime.toFixed(0)}ms`,
+      text: `\n\u2713 Finished in ${executionTime.toFixed(0)}ms`,
       type: "system",
       timestamp: Date.now(),
     })
@@ -607,10 +650,7 @@ export function PythonCompiler() {
 
   // ─── Actions ───────────────────────────────────────────────────────
 
-  const clearOutput = () => {
-    setOutput([])
-    setStats(null)
-  }
+  const clearOutput = () => { setOutput([]); setStats(null) }
 
   const copyOutput = async () => {
     const text = output.map((l) => l.text).join("\n")
@@ -642,9 +682,7 @@ export function PythonCompiler() {
       const reader = new FileReader()
       reader.onload = (ev) => {
         const text = ev.target?.result
-        if (typeof text === "string") {
-          setCode(text)
-        }
+        if (typeof text === "string") setCode(text)
       }
       reader.readAsText(file)
     }
@@ -669,461 +707,606 @@ export function PythonCompiler() {
 
   const MonacoEditor = MonacoEditorRef.current
 
-  return (
-    <div className={`w-full mx-auto ${isFullscreen ? "fixed inset-0 z-50 bg-background p-2 sm:p-4 overflow-auto" : "max-w-[1400px] px-2 py-3 sm:px-3 sm:py-4 md:p-4"}`}>
-      <Card className="overflow-hidden border-2 border-border/50 shadow-xl" role="region" aria-label="Python Compiler">
-        {/* Header */}
-        <CardHeader className="bg-gradient-to-r from-emerald-500/5 via-green-500/10 to-teal-500/5 border-b px-3 py-3 sm:px-6 sm:py-5">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="p-2.5 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 ring-1 ring-emerald-500/20" aria-hidden="true">
-                  <Code2 className="h-6 w-6 text-emerald-500" />
-                </div>
-                {pyodideStatus === "ready" && (
-                  <div className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-background" />
-                )}
-              </div>
-              <div>
-                <CardTitle className="text-lg sm:text-xl flex items-center gap-2 flex-wrap">
-                  Python Compiler
-                  <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 text-[10px]">
-                    by zamdev
-                  </Badge>
-                </CardTitle>
-                <CardDescription className="mt-0.5">
-                  Write and run Python code directly in your browser — built by zamdev
-                </CardDescription>
-              </div>
-            </div>
+  const inputCount = stdinInput.trim() ? stdinInput.trim().split("\n").length : 0
 
-            {/* Status + Fullscreen */}
-            <div className="flex items-center gap-2">
-              {pyodideStatus === "loading" && (
-                <Badge variant="outline" className="gap-1.5 text-xs animate-pulse">
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                  Loading Engine...
-                </Badge>
-              )}
-              {pyodideStatus === "ready" && (
-                <Badge variant="outline" className="gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 border-emerald-500/30">
-                  <Zap className="h-3 w-3" />
-                  Ready
-                </Badge>
-              )}
-              {pyodideStatus === "error" && (
-                <div className="flex items-center gap-1.5">
-                  <Badge variant="destructive" className="gap-1.5 text-xs">
-                    <AlertCircle className="h-3 w-3" />
-                    Engine Failed
-                  </Badge>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-7 text-xs gap-1"
-                    onClick={() => {
-                      setPyodideStatus("loading")
-                      setLoadProgress(0)
-                      setRetryCount(c => c + 1)
-                    }}
-                  >
-                    <RefreshCw className="h-3 w-3" />
-                    Retry
-                  </Button>
-                </div>
-              )}
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-9 w-9 sm:h-8 sm:w-8"
-                      onClick={() => setIsFullscreen(!isFullscreen)}
-                      aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
-                    >
-                      {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>{isFullscreen ? "Exit Fullscreen" : "Fullscreen"}</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+  return (
+    <div className={`w-full mx-auto ${isFullscreen ? "fixed inset-0 z-50" : "max-w-[1400px] px-2 py-3 sm:px-3 sm:py-4 md:px-4"}`}>
+      <div
+        ref={containerRef}
+        className={`flex flex-col overflow-hidden shadow-2xl ${
+          isFullscreen ? "rounded-none" : "rounded-xl"
+        } ${
+          isDark
+            ? "bg-[#1e1e1e] ring-1 ring-[#3c3c3c]"
+            : "bg-[#ffffff] ring-1 ring-[#d4d4d4]"
+        }`}
+        style={{
+          height: isFullscreen ? "100vh" : undefined,
+          minHeight: isFullscreen ? undefined : "600px",
+          maxHeight: isFullscreen ? undefined : "calc(100vh - 48px)",
+        }}
+        role="region"
+        aria-label="Python IDE"
+      >
+
+        {/* ───────── Title Bar ───────── */}
+        <div
+          className={`flex items-center justify-between px-3 py-[6px] select-none shrink-0 ${
+            isDark
+              ? "bg-[#323233] text-[#cccccc] border-b border-[#252526]"
+              : "bg-[#dddddd] text-[#333333] border-b border-[#c8c8c8]"
+          }`}
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="flex gap-[6px]" aria-hidden="true">
+              <div className="w-[12px] h-[12px] rounded-full bg-[#ff5f57] hover:bg-[#ff5f57]/80 transition-colors" />
+              <div className="w-[12px] h-[12px] rounded-full bg-[#ffbd2e] hover:bg-[#ffbd2e]/80 transition-colors" />
+              <div className="w-[12px] h-[12px] rounded-full bg-[#28c840] hover:bg-[#28c840]/80 transition-colors" />
             </div>
+            <span className="text-[11px] font-medium tracking-wide">
+              script.py — Python Compiler
+            </span>
+            <span className={`text-[10px] ${isDark ? "text-[#666]" : "text-[#999]"}`}>
+              by zamdev
+            </span>
           </div>
 
-          {/* Loading Progress Bar */}
-          {pyodideStatus === "loading" && (
-            <div className="mt-4 space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground flex items-center gap-1.5">
-                  <Cpu className="h-3.5 w-3.5 animate-pulse" />
-                  Initializing zamdev Python Engine...
-                </span>
-                <span className="font-mono text-emerald-500">{loadProgress}%</span>
+          <div className="flex items-center gap-1.5">
+            {/* Engine Status (compact) */}
+            {pyodideStatus === "loading" && (
+              <div className={`flex items-center gap-1 text-[10px] ${isDark ? "text-[#888]" : "text-[#666]"}`}>
+                <Loader2 className="h-3 w-3 animate-spin" />
+                <span className="hidden sm:inline">Loading engine ({loadProgress}%)</span>
               </div>
-              <div className="h-2 rounded-full bg-muted overflow-hidden" role="progressbar" aria-valuenow={loadProgress} aria-valuemin={0} aria-valuemax={100} aria-label={`Loading Python engine: ${loadProgress}%`}>
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300 ease-out"
-                  style={{ width: `${loadProgress}%` }}
-                />
+            )}
+            {pyodideStatus === "ready" && (
+              <div className="flex items-center gap-1 text-[10px] text-[#28c840]">
+                <Zap className="h-3 w-3" />
+                <span className="hidden sm:inline">Ready</span>
               </div>
-              <p className="text-[11px] text-muted-foreground">
-                First load downloads ~15MB of the Python runtime. Subsequent runs will be instant.
-              </p>
-            </div>
-          )}
-        </CardHeader>
+            )}
+            {pyodideStatus === "error" && (
+              <button
+                className="flex items-center gap-1 text-[10px] text-[#f14c4c] hover:text-[#ff6b6b] transition-colors"
+                onClick={() => { setPyodideStatus("loading"); setLoadProgress(0); setRetryCount(c => c + 1) }}
+              >
+                <RefreshCw className="h-3 w-3" />
+                <span>Retry</span>
+              </button>
+            )}
 
-        <CardContent className="p-0">
-          {/* Toolbar */}
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 px-2 py-2 sm:px-4 sm:py-2.5 border-b bg-muted/30" role="toolbar" aria-label="Code editor actions">
-            {/* Run Button */}
-            <Button
-              onClick={runCode}
-              disabled={pyodideStatus !== "ready" || isRunning}
-              className="gap-1.5 sm:gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 font-medium min-h-[36px] sm:min-h-0"
-              size="sm"
-              aria-busy={isRunning}
-              aria-label={isRunning ? "Code is running" : "Run Python code"}
-            >
-              {isRunning ? (
-                <>
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  <span className="hidden xs:inline">Running...</span>
-                  <span className="xs:hidden">Run</span>
-                </>
-              ) : (
-                <>
-                  <Play className="h-3.5 w-3.5" />
-                  Run Code
-                </>
-              )}
-            </Button>
-
-            <div className="h-5 w-px bg-border hidden sm:block" />
-
-            {/* Examples Dropdown */}
-            <Select onValueChange={loadExample}>
-              <SelectTrigger className="w-[120px] sm:w-[160px] h-9 sm:h-8 text-xs" aria-label="Load code example">
-                <div className="flex items-center gap-1.5">
-                  <BookOpen className="h-3.5 w-3.5 shrink-0" />
-                  <SelectValue placeholder="Examples" />
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(CODE_EXAMPLES).map(([key, ex]) => (
-                  <SelectItem key={key} value={key} className="text-xs">
-                    {ex.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <div className="h-5 w-px bg-border hidden sm:block" />
-
-            {/* Action Buttons */}
-            <TooltipProvider>
-              <div className="flex items-center gap-0.5 sm:gap-1">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-9 w-9 sm:h-8 sm:w-8" onClick={uploadCode} aria-label="Upload Python file">
-                      <Upload className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Upload .py file</TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-9 w-9 sm:h-8 sm:w-8" onClick={downloadCode} aria-label="Download as script.py">
-                      <Download className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Download script.py</TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-9 w-9 sm:h-8 sm:w-8" onClick={resetCode} aria-label="Reset code to default">
-                      <RotateCcw className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Reset to default</TooltipContent>
-                </Tooltip>
-
-              </div>
-            </TooltipProvider>
-
-            {/* Spacer */}
-            <div className="flex-1" />
-
-            {/* Font size */}
-            <div className="hidden sm:flex items-center gap-1.5">
-              <span className="text-[11px] text-muted-foreground">Font:</span>
-              <Select value={String(fontSize)} onValueChange={(v) => setFontSize(Number(v))}>
-                <SelectTrigger className="w-[65px] h-7 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {[12, 13, 14, 15, 16, 18, 20].map((s) => (
-                    <SelectItem key={s} value={String(s)} className="text-xs">{s}px</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Theme Toggle */}
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 sm:h-8 sm:w-8"
-                    onClick={() => setEditorTheme(editorTheme === "vs-dark" ? "light" : "vs-dark")}
-                    aria-label={editorTheme === "vs-dark" ? "Switch to light theme" : "Switch to dark theme"}
+                  <button
+                    className={`p-1 rounded transition-colors ${
+                      isDark ? "hover:bg-[#505050]" : "hover:bg-[#c8c8c8]"
+                    }`}
+                    onClick={() => setIsFullscreen(!isFullscreen)}
+                    aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
                   >
-                    {editorTheme === "vs-dark" ? <Sun className="h-4 w-4 sm:h-3.5 sm:w-3.5" /> : <Moon className="h-4 w-4 sm:h-3.5 sm:w-3.5" />}
-                  </Button>
+                    {isFullscreen ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+                  </button>
                 </TooltipTrigger>
-                <TooltipContent>Toggle editor theme</TooltipContent>
+                <TooltipContent side="bottom">{isFullscreen ? "Exit Fullscreen" : "Fullscreen"}</TooltipContent>
               </Tooltip>
             </TooltipProvider>
+          </div>
+        </div>
 
-            {/* Keyboard Shortcut Hint */}
-            <div className="hidden md:flex items-center gap-1 text-[11px] text-muted-foreground">
-              <kbd className="px-1.5 py-0.5 rounded border bg-muted text-[10px] font-mono">Ctrl</kbd>
-              <span>+</span>
-              <kbd className="px-1.5 py-0.5 rounded border bg-muted text-[10px] font-mono">Enter</kbd>
-              <span className="ml-1">to run</span>
+        {/* ───────── Loading Progress Bar ───────── */}
+        {pyodideStatus === "loading" && (
+          <div className={`h-[3px] shrink-0 ${isDark ? "bg-[#252526]" : "bg-[#e0e0e0]"}`}>
+            <div
+              className="h-full bg-[#007acc] transition-all duration-500 ease-out"
+              style={{ width: `${loadProgress}%` }}
+              role="progressbar"
+              aria-valuenow={loadProgress}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            />
+          </div>
+        )}
+
+        {/* ───────── Toolbar ───────── */}
+        <div
+          className={`flex flex-wrap items-center gap-1 px-2 py-[5px] shrink-0 border-b ${
+            isDark
+              ? "bg-[#252526] border-[#1e1e1e] text-[#cccccc]"
+              : "bg-[#f3f3f3] border-[#e0e0e0] text-[#333333]"
+          }`}
+          role="toolbar"
+          aria-label="Editor toolbar"
+        >
+          {/* Run */}
+          <Button
+            onClick={runCode}
+            disabled={pyodideStatus !== "ready" || isRunning}
+            className="gap-1.5 bg-[#28a745] hover:bg-[#22863a] text-white h-[28px] text-[11px] px-3 font-medium shadow-sm border-0"
+            size="sm"
+            aria-label={isRunning ? "Code is running" : "Run Python code (Ctrl+Enter)"}
+          >
+            {isRunning ? (
+              <><Loader2 className="h-3 w-3 animate-spin" />Running</>
+            ) : (
+              <><Play className="h-3 w-3" />Run</>
+            )}
+          </Button>
+
+          <div className={`h-4 w-px mx-0.5 ${isDark ? "bg-[#3c3c3c]" : "bg-[#d0d0d0]"}`} />
+
+          {/* Examples */}
+          <Select onValueChange={loadExample}>
+            <SelectTrigger
+              className={`w-[130px] sm:w-[150px] h-[28px] text-[11px] border ${
+                isDark
+                  ? "bg-[#3c3c3c] border-[#3c3c3c] text-[#cccccc] hover:bg-[#454545]"
+                  : "bg-white border-[#d0d0d0] text-[#333] hover:bg-[#f0f0f0]"
+              }`}
+              aria-label="Load code example"
+            >
+              <BookOpen className="h-3 w-3 mr-1 shrink-0" />
+              <SelectValue placeholder="Examples" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(CODE_EXAMPLES).map(([key, ex]) => (
+                <SelectItem key={key} value={key} className="text-[11px]">{ex.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <div className={`h-4 w-px mx-0.5 ${isDark ? "bg-[#3c3c3c]" : "bg-[#d0d0d0]"}`} />
+
+          {/* File Actions */}
+          <TooltipProvider delayDuration={300}>
+            <div className="flex items-center">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button onClick={uploadCode} className={`p-[5px] rounded transition-colors ${isDark ? "hover:bg-[#3c3c3c]" : "hover:bg-[#e0e0e0]"}`} aria-label="Upload .py file">
+                    <Upload className="h-[14px] w-[14px]" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Upload .py</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button onClick={downloadCode} className={`p-[5px] rounded transition-colors ${isDark ? "hover:bg-[#3c3c3c]" : "hover:bg-[#e0e0e0]"}`} aria-label="Download .py file">
+                    <Download className="h-[14px] w-[14px]" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Download .py</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button onClick={resetCode} className={`p-[5px] rounded transition-colors ${isDark ? "hover:bg-[#3c3c3c]" : "hover:bg-[#e0e0e0]"}`} aria-label="Reset to default code">
+                    <RotateCcw className="h-[14px] w-[14px]" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Reset</TooltipContent>
+              </Tooltip>
             </div>
+          </TooltipProvider>
+
+          <div className="flex-1" />
+
+          {/* Font Size */}
+          <div className="hidden sm:flex items-center gap-1">
+            <span className={`text-[10px] ${isDark ? "text-[#888]" : "text-[#999]"}`}>Font:</span>
+            <Select value={String(fontSize)} onValueChange={(v) => setFontSize(Number(v))}>
+              <SelectTrigger
+                className={`w-[52px] h-[24px] text-[10px] border ${
+                  isDark
+                    ? "bg-[#3c3c3c] border-[#3c3c3c] text-[#ccc]"
+                    : "bg-white border-[#d0d0d0] text-[#333]"
+                }`}
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {[12, 13, 14, 15, 16, 18, 20].map((s) => (
+                  <SelectItem key={s} value={String(s)} className="text-[11px]">{s}px</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
-          {/* Editor + Output Split */}
-          <div className={`grid ${isFullscreen ? "grid-rows-[1fr_1fr] lg:grid-cols-[1fr_1fr] lg:grid-rows-1" : "grid-rows-[minmax(300px,1fr)_minmax(280px,1fr)] lg:grid-cols-[1fr_1fr] lg:grid-rows-1"}`} style={{ minHeight: isFullscreen ? "calc(100vh - 200px)" : "600px" }}>
-            {/* Code Editor Panel */}
-            <div className="relative border-b lg:border-b-0 lg:border-r flex flex-col">
-              {/* Editor Header */}
-              <div className="flex items-center justify-between px-3 py-1.5 border-b bg-muted/20">
-                <div className="flex items-center gap-2">
-                  <div className="flex gap-1.5" aria-hidden="true">
-                    <div className="w-3 h-3 rounded-full bg-red-500/70" />
-                    <div className="w-3 h-3 rounded-full bg-amber-500/70" />
-                    <div className="w-3 h-3 rounded-full bg-emerald-500/70" />
-                  </div>
-                  <span className="text-xs text-muted-foreground font-mono flex items-center gap-1.5">
-                    <FileText className="h-3 w-3" />
-                    script.py
-                  </span>
-                </div>
-                <span className="text-[10px] text-muted-foreground font-mono">
-                  Python 3.11 · zamdev
-                </span>
-              </div>
+          {/* Theme */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  className={`p-[5px] rounded transition-colors ${isDark ? "hover:bg-[#3c3c3c]" : "hover:bg-[#e0e0e0]"}`}
+                  onClick={() => setEditorTheme(isDark ? "light" : "vs-dark")}
+                  aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
+                >
+                  {isDark ? <Sun className="h-[14px] w-[14px]" /> : <Moon className="h-[14px] w-[14px]" />}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Toggle Theme</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
-              {/* Monaco Editor */}
-              <div className="flex-1 min-h-[280px] sm:min-h-[350px]" role="region" aria-label="Python code editor">
-                {editorLoaded && MonacoEditor ? (
-                  <MonacoEditor
-                    height="100%"
-                    defaultLanguage="python"
-                    value={code}
-                    onChange={(value: unknown) => setCode(typeof value === "string" ? value : "")}
-                    theme={editorTheme}
-                    onMount={(editor: unknown) => { editorRef.current = editor }}
-                    options={{
-                      fontSize,
-                      fontFamily: "'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace",
-                      fontLigatures: true,
-                      minimap: { enabled: false },
-                      scrollBeyondLastLine: false,
-                      padding: { top: 12, bottom: 12 },
-                      lineHeight: 1.6,
-                      renderLineHighlight: "all" as const,
-                      smoothScrolling: true,
-                      cursorBlinking: "smooth" as const,
-                      cursorSmoothCaretAnimation: "on" as const,
-                      bracketPairColorization: { enabled: true },
-                      autoClosingBrackets: "always" as const,
-                      autoClosingQuotes: "always" as const,
-                      suggest: {
-                        showKeywords: true,
-                        showSnippets: true,
-                      },
-                      wordWrap: "on" as const,
-                      tabSize: 4,
-                      insertSpaces: true,
-                      lineNumbers: typeof window !== "undefined" && window.innerWidth < 640 ? "off" as const : "on" as const,
-                      folding: typeof window !== "undefined" && window.innerWidth < 640 ? false : true,
-                      glyphMargin: false,
-                      lineDecorationsWidth: typeof window !== "undefined" && window.innerWidth < 640 ? 0 : 10,
-                    }}
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-full" role="status">
-                    <div className="flex flex-col items-center gap-3 text-muted-foreground">
-                      <Loader2 className="h-6 w-6 animate-spin" />
-                      <p className="text-sm">Loading editor...</p>
-                    </div>
-                  </div>
-                )}
+          {/* Shortcut Hint */}
+          <div className={`hidden md:flex items-center gap-[3px] text-[10px] ml-1 ${isDark ? "text-[#666]" : "text-[#aaa]"}`}>
+            <kbd className={`px-[4px] py-[1px] rounded text-[9px] font-mono border ${isDark ? "border-[#555] bg-[#333]" : "border-[#ccc] bg-[#eee]"}`}>Ctrl</kbd>
+            <span>+</span>
+            <kbd className={`px-[4px] py-[1px] rounded text-[9px] font-mono border ${isDark ? "border-[#555] bg-[#333]" : "border-[#ccc] bg-[#eee]"}`}>Enter</kbd>
+          </div>
+        </div>
+
+        {/* ───────── Main Content ───────── */}
+        <div className="flex-1 flex flex-col min-h-0">
+
+          {/* ─── Editor Tab Bar ─── */}
+          <div
+            className={`flex items-center shrink-0 ${
+              isDark
+                ? "bg-[#252526] border-b border-[#1e1e1e]"
+                : "bg-[#ececec] border-b border-[#d4d4d4]"
+            }`}
+          >
+            {/* Active tab */}
+            <div
+              className={`flex items-center gap-1.5 px-3 py-[5px] text-[11px] border-t-[2px] border-t-transparent ${
+                isDark
+                  ? "bg-[#1e1e1e] text-[#ffffff] border-r border-r-[#252526]"
+                  : "bg-[#ffffff] text-[#333333] border-r border-r-[#e0e0e0]"
+              }`}
+              style={{ borderTopColor: "#007acc" }}
+            >
+              <Code2 className="h-3 w-3 text-[#519aba] shrink-0" />
+              <span className="font-medium">script.py</span>
+            </div>
+            <div className="flex-1" />
+            <span className={`text-[10px] pr-3 ${isDark ? "text-[#555]" : "text-[#aaa]"}`}>
+              Python 3.11 &middot; Pyodide
+            </span>
+          </div>
+
+          {/* ─── Monaco Editor ─── */}
+          <div className="flex-1 min-h-[150px]" role="region" aria-label="Python code editor">
+            {editorLoaded && MonacoEditor ? (
+              <MonacoEditor
+                height="100%"
+                defaultLanguage="python"
+                value={code}
+                onChange={(value: unknown) => setCode(typeof value === "string" ? value : "")}
+                theme={editorTheme}
+                onMount={(editor: unknown) => { editorRef.current = editor }}
+                options={{
+                  fontSize,
+                  fontFamily: "'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'SF Mono', Consolas, monospace",
+                  fontLigatures: true,
+                  minimap: { enabled: typeof window !== "undefined" && window.innerWidth > 1024 },
+                  scrollBeyondLastLine: false,
+                  padding: { top: 12, bottom: 12 },
+                  lineHeight: 1.7,
+                  renderLineHighlight: "all" as const,
+                  smoothScrolling: true,
+                  cursorBlinking: "smooth" as const,
+                  cursorSmoothCaretAnimation: "on" as const,
+                  bracketPairColorization: { enabled: true },
+                  autoClosingBrackets: "always" as const,
+                  autoClosingQuotes: "always" as const,
+                  suggest: { showKeywords: true, showSnippets: true },
+                  wordWrap: "on" as const,
+                  tabSize: 4,
+                  insertSpaces: true,
+                  lineNumbers: typeof window !== "undefined" && window.innerWidth < 640 ? "off" as const : "on" as const,
+                  folding: typeof window !== "undefined" && window.innerWidth >= 640,
+                  glyphMargin: false,
+                  lineDecorationsWidth: typeof window !== "undefined" && window.innerWidth < 640 ? 0 : 10,
+                  renderWhitespace: "selection" as const,
+                  guides: {
+                    indentation: true,
+                    bracketPairs: true,
+                  },
+                }}
+              />
+            ) : (
+              <div className={`flex items-center justify-center h-full ${isDark ? "bg-[#1e1e1e]" : "bg-white"}`} role="status">
+                <div className="flex flex-col items-center gap-2">
+                  <Loader2 className={`h-5 w-5 animate-spin ${isDark ? "text-[#555]" : "text-[#ccc]"}`} />
+                  <p className={`text-[11px] ${isDark ? "text-[#555]" : "text-[#aaa]"}`}>Loading editor...</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* ─── Resize Handle ─── */}
+          {isPanelOpen && (
+            <div
+              className={`h-[4px] shrink-0 cursor-row-resize group relative transition-colors ${
+                isDark
+                  ? "bg-[#252526] hover:bg-[#007acc]"
+                  : "bg-[#e0e0e0] hover:bg-[#007acc]"
+              }`}
+              onMouseDown={handleResizeStart}
+              onTouchStart={handleResizeStart}
+              role="separator"
+              aria-orientation="horizontal"
+              aria-label="Resize terminal panel"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "ArrowUp") { e.preventDefault(); setPanelHeight(h => Math.min(h + 20, 600)) }
+                if (e.key === "ArrowDown") { e.preventDefault(); setPanelHeight(h => Math.max(h - 20, 120)) }
+              }}
+            >
+              <div className="absolute inset-x-0 -top-1 -bottom-1" /> {/* larger hit target */}
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <GripHorizontal className="h-3 w-3 text-white" />
               </div>
             </div>
+          )}
 
-            {/* Output Panel */}
-            <div className="flex flex-col bg-[#0d1117] dark:bg-[#0d1117] min-h-[260px] sm:min-h-[350px]">
-              {/* Output Header */}
-              <div className="flex items-center justify-between px-3 py-1.5 border-b border-zinc-800 bg-[#161b22]">
-                <div className="flex items-center gap-2">
-                  <Terminal className="h-3.5 w-3.5 text-emerald-400" />
-                  <span className="text-xs text-zinc-400 font-mono">Output</span>
-                  {output.length > 0 && (
-                    <Badge variant="secondary" className="bg-zinc-800 text-zinc-400 text-[10px] h-4 px-1.5 border-zinc-700">
-                      {output.filter((l) => l.type !== "system").length} lines
-                    </Badge>
-                  )}
+          {/* ─── Terminal Panel ─── */}
+          {isPanelOpen && (
+            <div
+              className={`flex flex-col shrink-0 ${isDark ? "bg-[#1e1e1e]" : "bg-[#f8f8f8]"}`}
+              style={{ height: panelHeight }}
+            >
+              {/* Panel Tab Bar */}
+              <div
+                className={`flex items-center justify-between shrink-0 border-t ${
+                  isDark
+                    ? "bg-[#252526] border-[#1e1e1e]"
+                    : "bg-[#f3f3f3] border-[#e0e0e0]"
+                }`}
+              >
+                <div className="flex">
+                  <button
+                    className={`px-3 py-[4px] text-[11px] uppercase tracking-[0.5px] font-medium border-b-[2px] transition-colors ${
+                      activePanel === "terminal"
+                        ? `${isDark ? "text-[#e0e0e0]" : "text-[#333]"} border-b-[#007acc]`
+                        : `${isDark ? "text-[#888] hover:text-[#bbb]" : "text-[#888] hover:text-[#555]"} border-b-transparent`
+                    }`}
+                    onClick={() => setActivePanel("terminal")}
+                    aria-selected={activePanel === "terminal"}
+                    role="tab"
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <Terminal className="h-3 w-3" />
+                      Terminal
+                      {output.length > 0 && (
+                        <span className={`text-[9px] px-[5px] py-[1px] rounded-full font-normal ${isDark ? "bg-[#3c3c3c] text-[#aaa]" : "bg-[#ddd] text-[#666]"}`}>
+                          {output.filter(l => l.type !== "system").length}
+                        </span>
+                      )}
+                    </span>
+                  </button>
+                  <button
+                    className={`px-3 py-[4px] text-[11px] uppercase tracking-[0.5px] font-medium border-b-[2px] transition-colors ${
+                      activePanel === "input"
+                        ? `${isDark ? "text-[#e0e0e0]" : "text-[#333]"} border-b-[#007acc]`
+                        : `${isDark ? "text-[#888] hover:text-[#bbb]" : "text-[#888] hover:text-[#555]"} border-b-transparent`
+                    }`}
+                    onClick={() => setActivePanel("input")}
+                    aria-selected={activePanel === "input"}
+                    role="tab"
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <Keyboard className="h-3 w-3" />
+                      Input
+                      {inputCount > 0 && (
+                        <span className="text-[9px] px-[5px] py-[1px] rounded-full bg-[#007acc] text-white font-normal">
+                          {inputCount}
+                        </span>
+                      )}
+                    </span>
+                  </button>
                 </div>
-                <div className="flex items-center gap-1">
-                  <TooltipProvider>
+
+                <div className="flex items-center gap-0 pr-1">
+                  <TooltipProvider delayDuration={300}>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 sm:h-7 sm:w-7 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800"
+                        <button
+                          className={`p-[4px] rounded transition-colors ${isDark ? "hover:bg-[#3c3c3c] text-[#888]" : "hover:bg-[#ddd] text-[#999]"}`}
                           onClick={copyOutput}
                           disabled={output.length === 0}
-                          aria-label={copied ? "Output copied" : "Copy output to clipboard"}
+                          aria-label="Copy output"
                         >
-                          {copied ? <Check className="h-3.5 w-3.5 sm:h-3 sm:w-3 text-emerald-400" /> : <Copy className="h-3.5 w-3.5 sm:h-3 sm:w-3" />}
-                        </Button>
+                          {copied ? <Check className="h-3 w-3 text-[#28c840]" /> : <Copy className="h-3 w-3" />}
+                        </button>
                       </TooltipTrigger>
-                      <TooltipContent>Copy output</TooltipContent>
+                      <TooltipContent side="bottom">Copy Output</TooltipContent>
                     </Tooltip>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 sm:h-7 sm:w-7 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800"
+                        <button
+                          className={`p-[4px] rounded transition-colors ${isDark ? "hover:bg-[#3c3c3c] text-[#888]" : "hover:bg-[#ddd] text-[#999]"}`}
                           onClick={clearOutput}
                           disabled={output.length === 0}
-                          aria-label="Clear output"
+                          aria-label="Clear terminal"
                         >
-                          <Trash2 className="h-3.5 w-3.5 sm:h-3 sm:w-3" />
-                        </Button>
+                          <Trash2 className="h-3 w-3" />
+                        </button>
                       </TooltipTrigger>
-                      <TooltipContent>Clear output</TooltipContent>
+                      <TooltipContent side="bottom">Clear</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          className={`p-[4px] rounded transition-colors ${isDark ? "hover:bg-[#3c3c3c] text-[#888]" : "hover:bg-[#ddd] text-[#999]"}`}
+                          onClick={() => setIsPanelOpen(false)}
+                          aria-label="Close panel"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">Close Panel</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </div>
               </div>
 
-              {/* Output Content */}
-              <div
-                ref={outputRef}
-                className="flex-1 overflow-auto p-2.5 sm:p-4 font-mono text-xs sm:text-sm leading-relaxed"
-                style={{ fontSize: Math.max(fontSize - 2, 11) }}
-                role="log"
-                aria-live="polite"
-                aria-label="Program output"
-                tabIndex={0}
-              >
-                {output.length === 0 && !isRunning && (
-                  <div className="flex flex-col items-center justify-center h-full text-zinc-600 gap-3">
-                    <div className="relative">
-                      <Terminal className="h-10 w-10 text-zinc-700" />
-                      <Play className="h-4 w-4 text-emerald-500/60 absolute -bottom-1 -right-1" />
-                    </div>
-                    <div className="text-center">
-                      <p className="text-sm text-zinc-500">Click <strong className="text-zinc-400">Run Code</strong> or press <kbd className="px-1 py-0.5 rounded bg-zinc-800 text-[10px] font-mono text-zinc-400">Ctrl+Enter</kbd></p>
-                      <p className="text-xs text-zinc-600 mt-1">Output will appear here</p>
-                    </div>
-                  </div>
-                )}
-
-                {output.map((line, i) => (
-                  <div key={i} className="whitespace-pre-wrap break-words">
-                    {line.type === "stderr" ? (
-                      <span className="text-red-400">{line.text}</span>
-                    ) : line.type === "system" ? (
-                      <span className="text-zinc-500 italic">{line.text}</span>
-                    ) : line.type === "input" ? (
-                      <span className="text-cyan-300">{line.text}</span>
+              {/* Panel Content */}
+              <div className="flex-1 min-h-0 relative">
+                {activePanel === "terminal" ? (
+                  <div
+                    ref={outputRef}
+                    className={`absolute inset-0 overflow-auto px-3 py-2 font-mono leading-[1.65] ${
+                      isDark ? "bg-[#1e1e1e]" : "bg-[#f8f8f8]"
+                    }`}
+                    style={{ fontSize: Math.max(fontSize - 2, 11) }}
+                    role="log"
+                    aria-live="polite"
+                    aria-label="Program output"
+                    tabIndex={0}
+                  >
+                    {output.length === 0 && !isRunning ? (
+                      <div className="flex items-center h-full justify-center">
+                        <div className={`text-center ${isDark ? "text-[#444]" : "text-[#bbb]"}`}>
+                          <Terminal className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                          <p className="text-[12px]">
+                            Press <strong className={isDark ? "text-[#666]" : "text-[#999]"}>Run</strong> or{" "}
+                            <kbd className={`px-1 py-0.5 rounded text-[10px] font-mono border ${isDark ? "border-[#444] bg-[#2a2a2a]" : "border-[#ddd] bg-[#eee]"}`}>Ctrl+Enter</kbd>
+                            {" "}to execute
+                          </p>
+                          <p className="text-[10px] mt-1 opacity-60">Output will appear here</p>
+                        </div>
+                      </div>
                     ) : (
-                      <span className="text-emerald-300">{line.text}</span>
+                      <>
+                        {output.map((line, i) => (
+                          <div key={i} className="whitespace-pre-wrap break-words min-h-[1.65em]">
+                            {line.type === "stderr" ? (
+                              <span className="text-[#f14c4c]">{line.text}</span>
+                            ) : line.type === "system" ? (
+                              <span className={isDark ? "text-[#555] italic" : "text-[#aaa] italic"}>{line.text}</span>
+                            ) : line.type === "input-echo" ? (
+                              <span className="text-[#3dc9b0]">
+                                <span className={isDark ? "text-[#555]" : "text-[#aaa]"}>{"›"} </span>
+                                {line.text}
+                              </span>
+                            ) : line.type === "input-prompt" ? (
+                              <span className="text-[#cca700]">{line.text}</span>
+                            ) : (
+                              <span className={isDark ? "text-[#d4d4d4]" : "text-[#1e1e1e]"}>{line.text}</span>
+                            )}
+                          </div>
+                        ))}
+                        {isRunning && (
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="inline-block w-[6px] h-[14px] bg-[#007acc] animate-pulse" />
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
-                ))}
-
-                {isRunning && (
-                  <div className="flex items-center gap-2 mt-1">
-                    <Loader2 className="h-3 w-3 animate-spin text-emerald-400" />
-                    <span className="text-zinc-500 text-xs">Executing...</span>
+                ) : (
+                  <div className={`absolute inset-0 overflow-auto p-3 flex flex-col gap-2.5 ${isDark ? "bg-[#1e1e1e]" : "bg-[#f8f8f8]"}`}>
+                    <div className={`flex items-start gap-2 text-[11px] ${isDark ? "text-[#888]" : "text-[#666]"}`}>
+                      <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-[1px] text-[#007acc]" />
+                      <div>
+                        <p>
+                          Pre-fill values for <code className={`px-1 py-[1px] rounded text-[10px] ${isDark ? "bg-[#007acc]/15 text-[#3dc9b0]" : "bg-[#007acc]/10 text-[#007acc]"}`}>input()</code> calls.
+                          One value per line, consumed in order when the program runs.
+                        </p>
+                        {inputCount > 0 && (
+                          <p className="mt-1 text-[#28c840]">
+                            {inputCount} input{inputCount > 1 ? "s" : ""} ready
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <textarea
+                      value={stdinInput}
+                      onChange={(e) => setStdinInput(e.target.value)}
+                      placeholder={"Alice\n25\nBlue"}
+                      className={`flex-1 w-full px-3 py-2 rounded font-mono text-[12px] leading-relaxed resize-none focus:outline-none focus:ring-1 focus:ring-[#007acc] transition-colors ${
+                        isDark
+                          ? "bg-[#0d1117] text-[#d4d4d4] placeholder:text-[#333] border border-[#30363d]"
+                          : "bg-white text-[#333] placeholder:text-[#ccc] border border-[#d0d0d0]"
+                      }`}
+                      spellCheck={false}
+                      aria-label="Standard input values"
+                    />
                   </div>
                 )}
-              </div>
-
-              {/* Terminal Input */}
-              <div className="border-t border-zinc-800 bg-[#161b22]">
-                <div className="flex items-center justify-between px-3 py-1.5">
-                  <label htmlFor="stdin-input" className="text-[11px] text-zinc-400 font-mono flex items-center gap-1.5">
-                    <Keyboard className="h-3 w-3 text-cyan-400" />
-                    Input
-                  </label>
-                  <span className="text-[10px] text-zinc-600">One value per line &middot; Used by input() calls</span>
-                </div>
-                <div className="px-3 pb-2">
-                  <textarea
-                    id="stdin-input"
-                    value={stdinInput}
-                    onChange={(e) => setStdinInput(e.target.value)}
-                    placeholder={"Enter input values, one per line\nAlice\n25\nBlue"}
-                    className="w-full h-[52px] px-2.5 py-1.5 rounded border border-zinc-700/80 bg-[#0d1117] text-emerald-300 font-mono text-xs leading-relaxed resize-y min-h-[40px] max-h-[140px] focus:outline-none focus:ring-1 focus:ring-cyan-500/40 placeholder:text-zinc-600"
-                    spellCheck={false}
-                  />
-                </div>
               </div>
 
               {/* Stats Bar */}
-              {stats && (
-                <div className="flex flex-wrap items-center gap-3 sm:gap-4 px-3 py-2 border-t border-zinc-800 bg-[#161b22] text-[11px] text-zinc-500 font-mono">
-                  <span className="flex items-center gap-1.5">
-                    <Clock className="h-3 w-3 text-emerald-500/60" />
+              {stats && activePanel === "terminal" && (
+                <div
+                  className={`flex items-center gap-4 px-3 py-[3px] shrink-0 border-t text-[10px] font-mono ${
+                    isDark
+                      ? "border-[#252526] text-[#555] bg-[#1e1e1e]"
+                      : "border-[#e0e0e0] text-[#aaa] bg-[#f8f8f8]"
+                  }`}
+                >
+                  <span className="flex items-center gap-1">
+                    <Clock className="h-[10px] w-[10px]" />
                     {stats.executionTime.toFixed(0)}ms
                   </span>
-                  <span className="flex items-center gap-1.5">
-                    <Code2 className="h-3 w-3 text-blue-500/60" />
+                  <span className="flex items-center gap-1">
+                    <Code2 className="h-[10px] w-[10px]" />
                     {stats.linesOfCode} lines
                   </span>
-                  <span className="flex items-center gap-1.5">
-                    <Terminal className="h-3 w-3 text-amber-500/60" />
+                  <span className="flex items-center gap-1">
+                    <Terminal className="h-[10px] w-[10px]" />
                     {stats.outputLines} output
                   </span>
                 </div>
               )}
             </div>
-          </div>
+          )}
+        </div>
 
-          {/* Feature Bar */}
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-6 px-3 py-2.5 sm:px-4 sm:py-3 border-t bg-muted/20 text-[11px] sm:text-xs text-muted-foreground" role="contentinfo" aria-label="Compiler features">
-            <span className="flex items-center gap-1.5">
-              <Cpu className="h-3.5 w-3.5 text-emerald-500" />
-              100% Client-Side
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Package className="h-3.5 w-3.5 text-blue-500" />
-              Python 3.11 + stdlib
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Zap className="h-3.5 w-3.5 text-amber-500" />
-              Built by zamdev
-            </span>
-            <span className="flex items-center gap-1.5">
-              <FileText className="h-3.5 w-3.5 text-purple-500" />
-              Upload & Download .py
-            </span>
+        {/* ───────── Status Bar ───────── */}
+        <div
+          className={`flex items-center justify-between px-3 py-[3px] shrink-0 text-[11px] text-white select-none ${
+            pyodideStatus === "error"
+              ? "bg-[#cc6633]"
+              : isRunning
+                ? "bg-[#89632a]"
+                : "bg-[#007acc]"
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            {pyodideStatus === "ready" && !isRunning && (
+              <span className="flex items-center gap-1">
+                <Zap className="h-3 w-3" />
+                Ready
+              </span>
+            )}
+            {pyodideStatus === "ready" && isRunning && (
+              <span className="flex items-center gap-1">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Running...
+              </span>
+            )}
+            {pyodideStatus === "loading" && (
+              <span className="flex items-center gap-1">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Loading Engine...
+              </span>
+            )}
+            {pyodideStatus === "error" && (
+              <span className="flex items-center gap-1">
+                <AlertCircle className="h-3 w-3" />
+                Engine Error
+              </span>
+            )}
+            {!isPanelOpen && (
+              <button
+                className="flex items-center gap-1 hover:opacity-80 transition-opacity ml-1"
+                onClick={() => setIsPanelOpen(true)}
+                aria-label="Show terminal panel"
+              >
+                <PanelBottom className="h-3 w-3" />
+                <span className="hidden sm:inline">Terminal</span>
+              </button>
+            )}
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex items-center gap-3">
+            <span className="hidden sm:inline">100% Client-Side</span>
+            <span>Python 3.11</span>
+            <span className="hidden sm:inline">UTF-8</span>
+            <span className="hidden md:inline">Pyodide WASM</span>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
