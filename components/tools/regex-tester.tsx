@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useMemo } from "react"
-import DOMPurify from "dompurify"
+import { sanitizeHtml } from "@/lib/sanitize"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
@@ -168,7 +168,7 @@ export function RegexTester() {
             </div>
             <div
               className="min-h-24 p-3 border rounded-lg bg-muted/50 font-mono text-sm whitespace-pre-wrap break-all"
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(results.highlighted, { ALLOWED_TAGS: ['mark', 'span'], ALLOWED_ATTR: ['class'] }) }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(results.highlighted, { ALLOWED_TAGS: ['mark', 'span'], ALLOWED_ATTR: ['class'] }) }}
             />
           </div>
 

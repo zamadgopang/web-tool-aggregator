@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useMemo } from "react"
-import DOMPurify from "dompurify"
+import { sanitizeHtml } from "@/lib/sanitize"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
@@ -168,7 +168,7 @@ export function MarkdownPreview() {
 
   const renderedHTML = useMemo(() => {
     const rawHtml = parseMarkdown(input)
-    return DOMPurify.sanitize(rawHtml, {
+    return sanitizeHtml(rawHtml, {
       ALLOWED_TAGS: ['h1','h2','h3','h4','h5','h6','p','br','hr','strong','em','del','a','img','pre','code','blockquote','ul','ol','li','table','thead','tbody','tr','th','td','mark','span','div'],
       ALLOWED_ATTR: ['class','href','src','alt','target','rel','style'],
       ALLOW_DATA_ATTR: false,

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useCallback, useState } from "react"
-import DOMPurify from "dompurify"
+import { sanitizeHtml } from "@/lib/sanitize"
 
 interface CodeEditorProps {
   value: string
@@ -172,7 +172,7 @@ export function CodeEditor({ value, onChange, readOnly = false }: CodeEditorProp
           ref={highlightRef}
           className="absolute inset-0 p-3 overflow-auto pointer-events-none whitespace-pre leading-6"
           aria-hidden="true"
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(highlightPython(value), { ALLOWED_TAGS: ['span'], ALLOWED_ATTR: ['class'] }) }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(highlightPython(value), { ALLOWED_TAGS: ['span'], ALLOWED_ATTR: ['class'] }) }}
         />
         
         {/* Textarea (input layer) */}
