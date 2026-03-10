@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: ToolPageProps): Promise<Metad
   return {
     title,
     description,
+    keywords: tool.keywords,
     openGraph: {
       title,
       description,
@@ -52,5 +53,52 @@ export default async function ToolPage({ params }: ToolPageProps) {
     notFound()
   }
 
-  return <ToolPageClient toolId={id} />
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: tool.title,
+    description: tool.description,
+    url: `${siteConfig.url}/tools/${tool.id}`,
+    applicationCategory: "UtilitiesApplication",
+    operatingSystem: "Any",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    author: {
+      "@type": "Organization",
+      name: "ZamDev",
+      url: "https://zamdev.me",
+    },
+  }
+
+  const faqJsonLd = tool.faqItems.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: tool.faqItems.map((faq) => ({
+      "@type": "Question",
+      name: faq.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.a,
+      },
+    })),
+  } : null
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
+      <ToolPageClient toolId={id} tool={tool} />
+    </>
+  )
 }

@@ -14,7 +14,7 @@ const inter = Inter({
 const siteUrl = "https://tools.zamdev.me"
 const siteName = "Tools by ZamDev"
 const siteDescription =
-  "30+ free, lightning-fast browser tools for developers and designers. Convert images, format JSON, generate passwords, QR codes, and more — all running 100% client-side with zero server delays. Your files never leave your device."
+  "30+ free browser tools for developers & designers. Convert images, format JSON, generate passwords & more — 100% client-side, no uploads."
 
 export const viewport: Viewport = {
   themeColor: [
