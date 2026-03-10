@@ -47,7 +47,7 @@ export function Toolbar({
             <span className="text-primary-foreground font-bold text-xs sm:text-sm">Py</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-semibold text-foreground">PyRun</span>
+            <span className="text-sm font-semibold text-foreground">ZamPy</span>
             <span className="text-xs text-muted-foreground hidden sm:block">Online Python Compiler</span>
           </div>
         </div>

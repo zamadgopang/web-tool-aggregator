@@ -13,12 +13,12 @@ import { useToast } from "@/hooks/use-toast"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 
-const DEFAULT_CODE = `# Welcome to PyRun - Python Online Compiler
+const DEFAULT_CODE = `# Welcome to ZamPy - Python Online Compiler
 # Write your Python code here and press Run (or Ctrl+Enter)
 
 # Example 1: Simple greeting with user input
 name = input("What is your name? ")
-print(f"Hello, {name}! Welcome to PyRun.")
+print(f"Hello, {name}! Welcome to ZamPy.")
 
 # Example 2: Interactive calculator
 print("\\n--- Simple Calculator ---")
@@ -41,7 +41,7 @@ try:
 except ValueError:
     print("Please enter a valid year!")
 
-print("\\nThanks for using PyRun!")
+print("\nThanks for using ZamPy!")
 `
 
 function generateId(): string {
