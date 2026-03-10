@@ -18,7 +18,7 @@ interface CategoryFilterProps {
 
 export function CategoryFilter({ activeCategory, onCategoryChange }: CategoryFilterProps) {
   return (
-    <div className="flex flex-wrap gap-2 p-1.5 bg-white/40 dark:bg-black/40 backdrop-blur-2xl dark:backdrop-blur-2xl backdrop-saturate-150 dark:backdrop-saturate-150 border border-white/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] rounded-2xl w-fit" role="tablist" aria-label="Filter tools by category">
+    <div className="flex flex-wrap gap-2 p-1.5 bg-white/40 dark:bg-black/40 backdrop-blur-2xl backdrop-saturate-150 border border-black/[0.08] dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] rounded-2xl w-fit" role="tablist" aria-label="Filter tools by category">
       {categories.map((category) => {
         const Icon = category.icon
         return (

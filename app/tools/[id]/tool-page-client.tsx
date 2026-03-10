@@ -21,7 +21,13 @@ export function ToolPageClient({ toolId, tool }: ToolPageClientProps) {
       <Header onSearchClick={() => setSearchOpen(true)} />
       <CommandSearch open={searchOpen} onOpenChange={setSearchOpen} />
 
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <main className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Ambient color blobs — give the glass cards something to refract */}
+        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+          <div className="absolute -top-20 -left-20 h-96 w-96 rounded-full bg-blue-400/10 dark:bg-blue-500/10 blur-[120px]" />
+          <div className="absolute top-1/3 -right-20 h-80 w-80 rounded-full bg-violet-400/10 dark:bg-violet-500/10 blur-[120px]" />
+          <div className="absolute bottom-1/4 left-1/4 h-72 w-72 rounded-full bg-rose-400/8 dark:bg-rose-500/8 blur-[120px]" />
+        </div>
         {/* H1 Heading for SEO */}
         <div className="pt-8 pb-2 max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
@@ -39,7 +45,7 @@ export function ToolPageClient({ toolId, tool }: ToolPageClientProps) {
 
       <AgencyCTA />
 
-      <footer className="border-t border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl dark:backdrop-blur-2xl backdrop-saturate-150 dark:backdrop-saturate-150 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] py-8" role="contentinfo">
+      <footer className="border-t border-black/[0.08] dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl backdrop-saturate-150 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] py-8" role="contentinfo">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
             <p>All tools run 100% in your browser. Your files never leave your device.</p>
