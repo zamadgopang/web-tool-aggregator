@@ -7,7 +7,7 @@ export function Hero() {
         <div className="absolute top-20 left-1/4 w-100 h-75 bg-linear-to-br from-ring/4 to-transparent rounded-full blur-3xl" />
       </div>
       <div className="flex flex-col items-center text-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/50 backdrop-blur-md px-4 py-1.5 text-sm text-muted-foreground mb-6">
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/25 dark:border-white/10 bg-white/50 dark:bg-white/[0.06] backdrop-blur-xl px-4 py-1.5 text-sm text-muted-foreground mb-6">
           <span className="h-2 w-2 rounded-full bg-foreground animate-pulse" />
           30+ free tools &mdash; no sign-up required
         </div>
@@ -20,15 +20,15 @@ export function Hero() {
           Powerful utilities that run instantly in your browser. No uploads, no waiting, no server delays. Your files never leave your device.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <div className="flex items-center gap-2 rounded-full border border-border bg-card/50 backdrop-blur-md px-4 py-2 text-sm font-medium text-foreground">
+          <div className="flex items-center gap-2 rounded-full border border-white/25 dark:border-white/10 bg-white/50 dark:bg-white/[0.06] backdrop-blur-xl px-4 py-2 text-sm font-medium text-foreground">
             <span className="h-2 w-2 rounded-full bg-foreground" />
             100% Client-side
           </div>
-          <div className="flex items-center gap-2 rounded-full border border-border bg-card/50 backdrop-blur-md px-4 py-2 text-sm font-medium text-foreground">
+          <div className="flex items-center gap-2 rounded-full border border-white/25 dark:border-white/10 bg-white/50 dark:bg-white/[0.06] backdrop-blur-xl px-4 py-2 text-sm font-medium text-foreground">
             <span className="h-2 w-2 rounded-full bg-foreground" />
             Privacy First
           </div>
-          <div className="flex items-center gap-2 rounded-full border border-border bg-card/50 backdrop-blur-md px-4 py-2 text-sm font-medium text-foreground">
+          <div className="flex items-center gap-2 rounded-full border border-white/25 dark:border-white/10 bg-white/50 dark:bg-white/[0.06] backdrop-blur-xl px-4 py-2 text-sm font-medium text-foreground">
             <span className="h-2 w-2 rounded-full bg-foreground" />
             Zero Latency
           </div>

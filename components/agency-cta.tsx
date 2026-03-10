@@ -7,7 +7,7 @@ export function AgencyCTA() {
   return (
     <section className="relative overflow-hidden" aria-label="Custom development services">
       {/* Top section — dark in light mode, light in dark mode */}
-      <div className="bg-foreground/95 backdrop-blur-xl py-20">
+      <div className="bg-foreground/90 backdrop-blur-2xl py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <div className="inline-flex items-center gap-2 rounded-full border border-background/20 bg-background/10 px-4 py-1.5 text-sm font-medium text-background/80 mb-6">

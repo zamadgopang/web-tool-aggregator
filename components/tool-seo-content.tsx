@@ -19,9 +19,9 @@ function FaqAccordionItem({ question, answer }: { question: string; answer: stri
     const [open, setOpen] = useState(false)
 
     return (
-        <div className="border border-border rounded-lg overflow-hidden bg-card/40 backdrop-blur-md">
+        <div className="border border-white/20 dark:border-white/[0.08] rounded-xl overflow-hidden bg-white/40 dark:bg-white/[0.04] backdrop-blur-xl">
             <button
-                className="flex w-full items-center justify-between gap-3 sm:gap-4 px-3 sm:px-5 py-3 sm:py-4 text-left text-sm sm:text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
+                className="flex w-full items-center justify-between gap-3 sm:gap-4 px-3 sm:px-5 py-3 sm:py-4 text-left text-sm sm:text-base font-medium text-foreground hover:bg-white/30 dark:hover:bg-white/[0.04] transition-colors"
                 onClick={() => setOpen(!open)}
                 aria-expanded={open}
             >
@@ -48,7 +48,7 @@ export function ToolSeoContent({ tool }: ToolSeoContentProps) {
     return (
         <section className="mt-8 sm:mt-12 mb-12 sm:mb-16 max-w-4xl mx-auto px-3 sm:px-4 space-y-8 sm:space-y-12" aria-label={`About ${tool.title}`}>
             {/* Tool illustration with icon */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 p-4 sm:p-6 rounded-xl bg-card/40 backdrop-blur-lg border border-border">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 p-4 sm:p-6 rounded-2xl bg-white/45 dark:bg-white/[0.05] backdrop-blur-xl border border-white/20 dark:border-white/[0.08]">
                 <div className="flex h-12 w-12 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-xl bg-foreground/5">
                     <ToolIcon iconName={tool.iconName} className="h-6 w-6 sm:h-8 sm:w-8 text-foreground" />
                 </div>
@@ -68,7 +68,7 @@ export function ToolSeoContent({ tool }: ToolSeoContentProps) {
                     <h2 className="text-lg font-semibold text-foreground mb-4">How It Works</h2>
                     <ol className="space-y-2 sm:space-y-3">
                         {seoContent.howItWorks.map((step, index) => (
-                            <li key={index} className="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-card/30 backdrop-blur-md border border-border">
+                            <li key={index} className="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl bg-white/35 dark:bg-white/[0.04] backdrop-blur-lg border border-white/15 dark:border-white/[0.06]">
                                 <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-foreground/10 text-xs font-semibold text-foreground">
                                     {index + 1}
                                 </span>
@@ -83,7 +83,7 @@ export function ToolSeoContent({ tool }: ToolSeoContentProps) {
             <div>
                 <h2 className="text-lg font-semibold text-foreground mb-4">Key Features</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                    <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg bg-card/30 backdrop-blur-md border border-border">
+                    <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl bg-white/35 dark:bg-white/[0.04] backdrop-blur-lg border border-white/15 dark:border-white/[0.06]">
                         <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-foreground/10">
                             <LucideIcons.Zap className="h-3.5 w-3.5 text-foreground" aria-hidden="true" />
                         </div>
@@ -92,7 +92,7 @@ export function ToolSeoContent({ tool }: ToolSeoContentProps) {
                             <p className="text-xs text-muted-foreground">Processes instantly with zero server delays</p>
                         </div>
                     </div>
-                    <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg bg-card/30 backdrop-blur-md border border-border">
+                    <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl bg-white/35 dark:bg-white/[0.04] backdrop-blur-lg border border-white/15 dark:border-white/[0.06]">
                         <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-foreground/10">
                             <LucideIcons.Shield className="h-3.5 w-3.5 text-foreground" aria-hidden="true" />
                         </div>
@@ -101,7 +101,7 @@ export function ToolSeoContent({ tool }: ToolSeoContentProps) {
                             <p className="text-xs text-muted-foreground">Your data never leaves your device</p>
                         </div>
                     </div>
-                    <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg bg-card/30 backdrop-blur-md border border-border">
+                    <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl bg-white/35 dark:bg-white/[0.04] backdrop-blur-lg border border-white/15 dark:border-white/[0.06]">
                         <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-foreground/10">
                             <LucideIcons.Globe className="h-3.5 w-3.5 text-foreground" aria-hidden="true" />
                         </div>
@@ -110,7 +110,7 @@ export function ToolSeoContent({ tool }: ToolSeoContentProps) {
                             <p className="text-xs text-muted-foreground">Use this tool instantly — completely free</p>
                         </div>
                     </div>
-                    <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg bg-card/30 backdrop-blur-md border border-border">
+                    <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl bg-white/35 dark:bg-white/[0.04] backdrop-blur-lg border border-white/15 dark:border-white/[0.06]">
                         <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-foreground/10">
                             <LucideIcons.Monitor className="h-3.5 w-3.5 text-foreground" aria-hidden="true" />
                         </div>
@@ -157,7 +157,7 @@ export function ToolSeoContent({ tool }: ToolSeoContentProps) {
                     {keywords.map((keyword, index) => (
                         <span
                             key={index}
-                            className="inline-flex items-center rounded-full bg-card/40 backdrop-blur-sm border border-border px-3 py-1 text-xs text-muted-foreground"
+                            className="inline-flex items-center rounded-full bg-white/40 dark:bg-white/[0.05] backdrop-blur-lg border border-white/20 dark:border-white/[0.08] px-3 py-1 text-xs text-muted-foreground"
                         >
                             {keyword}
                         </span>

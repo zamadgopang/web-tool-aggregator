@@ -6,7 +6,7 @@ export function SkeletonCard() {
   return (
     <div
       className={cn(
-        "flex flex-col items-start gap-4 rounded-xl border border-border bg-card/40 backdrop-blur-md p-6",
+        "flex flex-col items-start gap-4 rounded-2xl border border-white/20 dark:border-white/[0.08] bg-white/40 dark:bg-white/[0.05] backdrop-blur-xl p-6",
         "animate-pulse"
       )}
       aria-hidden="true"
