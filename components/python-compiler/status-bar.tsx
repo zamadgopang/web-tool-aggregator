@@ -1,6 +1,6 @@
 "use client"
 
-import { Circle, CheckCircle2, Loader2 } from "lucide-react"
+import { Circle, CheckCircle2, Loader2, AlertCircle, RefreshCw } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface StatusBarProps {
@@ -8,6 +8,8 @@ interface StatusBarProps {
   loadingProgress: number
   cursorPosition: { line: number; column: number }
   fileSize: number
+  loadError?: boolean
+  onRetry?: () => void
 }
 
 export function StatusBar({
@@ -15,6 +17,8 @@ export function StatusBar({
   loadingProgress,
   cursorPosition,
   fileSize,
+  loadError = false,
+  onRetry,
 }: StatusBarProps) {
   return (
     <div className="flex items-center justify-between px-4 py-1.5 bg-secondary/50 border-t border-border text-xs text-muted-foreground">
@@ -25,6 +29,20 @@ export function StatusBar({
             <>
               <CheckCircle2 className="w-3 h-3 text-primary" />
               <span>Python Ready</span>
+            </>
+          ) : loadError ? (
+            <>
+              <AlertCircle className="w-3 h-3 text-destructive" />
+              <span className="text-destructive">Load Failed</span>
+              {onRetry && (
+                <button
+                  onClick={onRetry}
+                  className="ml-1 inline-flex items-center gap-1 text-primary hover:underline"
+                >
+                  <RefreshCw className="w-3 h-3" />
+                  Retry
+                </button>
+              )}
             </>
           ) : (
             <>
@@ -37,9 +55,9 @@ export function StatusBar({
         <div className="hidden sm:flex items-center gap-1.5">
           <Circle className={cn(
             "w-2 h-2",
-            isPyodideReady ? "fill-primary text-primary" : "fill-amber-400 text-amber-400"
+            isPyodideReady ? "fill-primary text-primary" : loadError ? "fill-destructive text-destructive" : "fill-amber-400 text-amber-400"
           )} />
-          <span>Pyodide v0.27.4</span>
+          <span>Pyodide v0.26.4</span>
         </div>
       </div>
       

@@ -59,11 +59,13 @@ export function PythonIDE() {
     output,
     executionTime,
     loadingProgress,
+    loadError,
     inputHistory,
     runCode,
     stopExecution,
     clearOutput,
     submitInput,
+    retryLoad,
   } = usePythonRunner()
   
   const [files, setFiles] = useState<FileTab[]>([
@@ -299,6 +301,8 @@ export function PythonIDE() {
                 inputPrompt={inputPrompt}
                 inputHistory={inputHistory}
                 onSubmitInput={submitInput}
+                loadError={loadError}
+                onRetry={retryLoad}
               />
             </div>
           </ResizablePanel>
@@ -310,6 +314,8 @@ export function PythonIDE() {
         loadingProgress={loadingProgress}
         cursorPosition={cursorPosition}
         fileSize={new Blob([currentCode]).size}
+        loadError={loadError}
+        onRetry={retryLoad}
       />
     </div>
   )

@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useEffect } from "react"
-import { Terminal, AlertCircle, CheckCircle2, Clock, ChevronRight } from "lucide-react"
+import { Terminal, AlertCircle, CheckCircle2, Clock, ChevronRight, RefreshCw } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { InputTerminal } from "./input-terminal"
 import type { InputHistoryEntry } from "@/hooks/use-python-runner"
@@ -20,6 +20,8 @@ interface OutputPanelProps {
   inputPrompt?: string
   inputHistory?: InputHistoryEntry[]
   onSubmitInput?: (value: string) => void
+  loadError?: boolean
+  onRetry?: () => void
 }
 
 export function OutputPanel({ 
@@ -30,6 +32,8 @@ export function OutputPanel({
   inputPrompt = "",
   inputHistory = [],
   onSubmitInput,
+  loadError = false,
+  onRetry,
 }: OutputPanelProps) {
   const outputRef = useRef<HTMLDivElement>(null)
   
@@ -112,6 +116,15 @@ export function OutputPanel({
                 <span>{line.content}</span>
               </div>
             ))}
+            {loadError && onRetry && (
+              <button
+                onClick={onRetry}
+                className="mt-3 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Retry
+              </button>
+            )}
           </div>
         )}
       </div>
