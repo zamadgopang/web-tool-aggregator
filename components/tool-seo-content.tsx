@@ -43,6 +43,7 @@ function FaqAccordionItem({ question, answer }: { question: string; answer: stri
 export function ToolSeoContent({ tool }: ToolSeoContentProps) {
     const faqItems = tool.faqItems || []
     const keywords = tool.keywords || []
+    const seoContent = tool.seoContent
 
     return (
         <section className="mt-12 mb-16 max-w-4xl mx-auto px-4 space-y-12" aria-label={`About ${tool.title}`}>
@@ -56,10 +57,27 @@ export function ToolSeoContent({ tool }: ToolSeoContentProps) {
                         About {tool.title}
                     </h2>
                     <p className="mt-1 text-muted-foreground leading-relaxed">
-                        {tool.description} This tool runs entirely in your browser — no data is uploaded to any server, ensuring complete privacy and instant results.
+                        {seoContent?.longDescription || `${tool.description} This tool runs entirely in your browser — no data is uploaded to any server, ensuring complete privacy and instant results.`}
                     </p>
                 </div>
             </div>
+
+            {/* How It Works */}
+            {seoContent?.howItWorks && seoContent.howItWorks.length > 0 && (
+                <div>
+                    <h2 className="text-lg font-semibold text-foreground mb-4">How It Works</h2>
+                    <ol className="space-y-3">
+                        {seoContent.howItWorks.map((step, index) => (
+                            <li key={index} className="flex items-start gap-3 p-3 rounded-lg bg-muted/20 border border-border">
+                                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-foreground/10 text-xs font-semibold text-foreground">
+                                    {index + 1}
+                                </span>
+                                <span className="text-sm text-muted-foreground leading-relaxed">{step}</span>
+                            </li>
+                        ))}
+                    </ol>
+                </div>
+            )}
 
             {/* Key Features */}
             <div>
@@ -104,6 +122,21 @@ export function ToolSeoContent({ tool }: ToolSeoContentProps) {
                 </div>
             </div>
 
+            {/* Use Cases */}
+            {seoContent?.useCases && seoContent.useCases.length > 0 && (
+                <div>
+                    <h2 className="text-lg font-semibold text-foreground mb-4">Common Use Cases</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {seoContent.useCases.map((useCase, index) => (
+                            <div key={index} className="flex items-start gap-2 p-3 rounded-lg">
+                                <LucideIcons.CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-foreground/60" aria-hidden="true" />
+                                <span className="text-sm text-muted-foreground leading-relaxed">{useCase}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
             {/* FAQ Section */}
             {faqItems.length > 0 && (
                 <div>
@@ -118,7 +151,7 @@ export function ToolSeoContent({ tool }: ToolSeoContentProps) {
                 </div>
             )}
 
-            {/* SEO Keywords as tags (hidden visually but available to crawlers) */}
+            {/* SEO Keywords as tags */}
             {keywords.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                     {keywords.map((keyword, index) => (

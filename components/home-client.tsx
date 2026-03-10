@@ -100,6 +100,39 @@ export function HomeClient() {
           </div>
         </section>
 
+        {/* Who Is This For Section */}
+        <section className="pb-16" aria-label="Who is this for">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground text-center mb-8">
+            Built for Everyone
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="p-5 rounded-xl border border-border bg-card">
+              <h3 className="font-semibold text-foreground mb-2">Developers</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Format JSON, decode JWTs, test regex, generate TypeScript interfaces, parse cron expressions, and hash data — all essential developer utilities in one place.
+              </p>
+            </div>
+            <div className="p-5 rounded-xl border border-border bg-card">
+              <h3 className="font-semibold text-foreground mb-2">Designers</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Convert and resize images, generate color palettes, create CSS gradients and shadows, calculate aspect ratios, and export SVGs — design workflow essentials.
+              </p>
+            </div>
+            <div className="p-5 rounded-xl border border-border bg-card">
+              <h3 className="font-semibold text-foreground mb-2">Marketers</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Audit SEO performance, generate meta tags, create QR codes, convert documents to PDF, and optimize images for web — tools that boost your digital presence.
+              </p>
+            </div>
+            <div className="p-5 rounded-xl border border-border bg-card">
+              <h3 className="font-semibold text-foreground mb-2">Students</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Run Python code in the browser, convert units, generate passwords, compare text differences, and learn Markdown — study and project helpers with zero setup.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Home Page FAQ Section */}
         <section className="pb-16 max-w-3xl mx-auto" aria-label="Frequently asked questions">
           <h2 className="text-2xl font-bold tracking-tight text-foreground text-center mb-8">
@@ -126,19 +159,56 @@ export function HomeClient() {
               question="Can I use these tools offline?"
               answer="ZamDev Tools is a Progressive Web App (PWA). After your first visit, you can install it and many tools will work offline since they don't require any server communication."
             />
+            <HomeFaqItem
+              question="What does 'client-side' mean?"
+              answer="Client-side means the tool runs entirely in your web browser using JavaScript, WebAssembly, or the HTML5 Canvas API. Your data is processed on your device — nothing is sent to a remote server. This makes the tools faster, more private, and usable even without a stable internet connection."
+            />
+            <HomeFaqItem
+              question="How is ZamDev Tools different from other online tool websites?"
+              answer="Most online tool websites upload your files to their servers for processing, which raises privacy concerns and adds latency. ZamDev Tools process everything locally in your browser — your files never leave your device. There are also no ads, no sign-up walls, and no usage limits."
+            />
+            <HomeFaqItem
+              question="Can I use these tools for commercial projects?"
+              answer="Yes. All tools are free for personal and commercial use. There are no restrictions on how you use the output — generated passwords, converted images, formatted code, and all other results are yours to use however you like."
+            />
+            <HomeFaqItem
+              question="Do you track my usage or collect analytics?"
+              answer="We use minimal, privacy-respecting analytics (Vercel Analytics) to understand overall traffic patterns. We never track individual tool usage, never record the data you enter into any tool, and never sell any user data."
+            />
+            <HomeFaqItem
+              question="How do I install ZamDev Tools as an app?"
+              answer="On desktop Chrome or Edge, click the install icon in the address bar. On mobile, use 'Add to Home Screen' from the browser menu. Once installed, ZamDev Tools appears as a standalone app with offline support for many tools."
+            />
+            <HomeFaqItem
+              question="Are the tools open source?"
+              answer="Yes. ZamDev Tools is open source. You can review the code, suggest improvements, or contribute new tools via the GitHub repository."
+            />
+            <HomeFaqItem
+              question="What technology powers these tools?"
+              answer="ZamDev Tools is built with Next.js 14, React, TypeScript, and Tailwind CSS. Individual tools use modern browser APIs including the Web Crypto API, Canvas API, WebAssembly (for Python), and the File API for local processing."
+            />
           </div>
         </section>
 
         {/* About / SEO paragraph */}
         <section className="pb-16 max-w-3xl mx-auto text-center" aria-label="About ZamDev Tools">
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            ZamDev Tools is a collection of 30+ free, open-source browser tools built for developers, designers, and everyday users.
-            From image conversion and JSON formatting to password generation and color palette creation, every tool is designed to be
+          <h2 className="text-lg font-semibold text-foreground mb-4">About ZamDev Tools</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+            ZamDev Tools is a comprehensive collection of 30+ free, open-source browser tools built for developers, designers, marketers, and everyday users.
+            From image conversion and JSON formatting to password generation, color palette creation, and full SEO auditing, every tool is designed to be
             fast, private, and easy to use. Built with Next.js and modern web technologies, all tools run entirely client-side — your
-            files never leave your device. Created and maintained by{" "}
+            files never leave your device.
+          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+            Unlike other online tool websites that upload your data to servers, ZamDev Tools processes everything in your browser using modern APIs
+            like the Web Crypto API, HTML5 Canvas, and WebAssembly. This means zero latency, complete privacy, and tools that work even with limited
+            internet connectivity. No accounts, no watermarks, no usage limits — just powerful utilities that respect your time and your data.
+          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Created and maintained by{" "}
             <a href="https://zamdev.me" className="text-foreground underline underline-offset-4 hover:text-foreground/80" target="_blank" rel="noopener noreferrer">
               ZamDev
-            </a>.
+            </a>. New tools and improvements are added regularly. Bookmark this page and come back whenever you need a fast, private, free online tool.
           </p>
         </section>
       </main>

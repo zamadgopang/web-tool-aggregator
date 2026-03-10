@@ -1181,10 +1181,32 @@ export const tools: ToolMeta[] = [
     tag: "New",
     category: "image",
     iconName: "Image",
-    keywords: ["svg to png", "convert svg to png", "svg converter", "svg to image", "svg to png online"],
+    keywords: ["svg to png", "convert svg to png", "svg converter", "svg to image", "svg to png online", "svg to raster", "svg export png", "vector to png", "svg to bitmap", "high resolution svg export"],
+    seoContent: {
+      longDescription: "The ZamDev SVG to PNG Converter transforms scalable vector graphics into high-quality PNG raster images at any resolution. Upload an SVG file, set your desired output dimensions, and download a crisp PNG — perfect for social media, email, or any context where SVG isn't supported. The converter preserves transparency, colors, and all visual elements. Everything processes in your browser with no server upload.",
+      howItWorks: [
+        "Upload or paste your SVG file into the converter.",
+        "Set the desired output width and height in pixels.",
+        "The tool renders the SVG at your specified dimensions.",
+        "Preview the PNG output to verify quality.",
+        "Download the high-resolution PNG image."
+      ],
+      useCases: [
+        "Converting SVG logos to PNG for social media profiles",
+        "Creating high-resolution icon exports from SVG icon libraries",
+        "Exporting SVG illustrations as PNG for email newsletters",
+        "Converting SVG charts and graphs to images for reports",
+        "Creating favicon PNGs from SVG source files",
+        "Generating app store icons at specific pixel dimensions from SVG"
+      ],
+    },
     faqItems: [
       { q: "Can I set custom dimensions for the PNG?", a: "Yes. You can specify the exact width and height in pixels for the output PNG, allowing you to create high-resolution exports from scalable SVG files." },
       { q: "Does it preserve transparency?", a: "Yes. PNG supports transparency, so any transparent areas in your SVG will remain transparent in the converted PNG output." },
+      { q: "Why convert SVG to PNG?", a: "While SVG is ideal for web, many platforms (social media, email clients, older apps) don't support SVG. PNG provides universal compatibility with lossless quality and transparency support." },
+      { q: "What resolution should I use?", a: "For web use, 1x or 2x your display size (e.g., 200px display = 400px export for retina). For print, use at least 300 DPI equivalent. The tool lets you set exact pixel dimensions." },
+      { q: "Can I convert SVG code pasted as text?", a: "Yes. You can either upload an .svg file or paste SVG markup directly. The converter handles both methods and renders the SVG for conversion." },
+      { q: "Does it handle complex SVGs with filters and gradients?", a: "Yes. The converter uses the browser's native SVG rendering engine, which handles gradients, filters, masks, clip paths, and all standard SVG features." },
     ],
   },
   {
@@ -1195,11 +1217,34 @@ export const tools: ToolMeta[] = [
     category: "developer",
     popular: true,
     iconName: "Globe",
-    keywords: ["seo auditor", "website performance checker", "lighthouse scores", "core web vitals", "seo checker", "page speed test", "website seo analysis"],
+    keywords: ["seo auditor", "website performance checker", "lighthouse scores", "core web vitals", "seo checker", "page speed test", "website seo analysis", "website audit tool", "google pagespeed test", "web performance analyzer", "site speed checker", "accessibility checker"],
+    seoContent: {
+      longDescription: "The ZamDev SEO & Performance Auditor provides a comprehensive analysis of any website using real Google Lighthouse data. Get performance, SEO, accessibility, and best practices scores along with detailed Core Web Vitals metrics (FCP, LCP, TBT, CLS). The tool also performs deep on-page analysis including heading structure, meta tags, Open Graph tags, security headers, structured data validation, and image optimization checks. Identify exactly what to fix to improve your search rankings, page speed, and user experience.",
+      howItWorks: [
+        "Enter the URL of the website you want to audit.",
+        "The tool fetches real Lighthouse data via the Google PageSpeed Insights API.",
+        "View performance scores and Core Web Vitals metrics.",
+        "Review detailed SEO checks: meta tags, headings, Open Graph, structured data.",
+        "Get actionable recommendations to improve your website's score."
+      ],
+      useCases: [
+        "Auditing your website before launch to catch SEO issues",
+        "Monitoring Core Web Vitals for Google ranking factors",
+        "Comparing performance scores before and after optimizations",
+        "Checking competitor websites for SEO benchmark insights",
+        "Validating accessibility compliance for WCAG standards",
+        "Verifying Open Graph and structured data for social sharing"
+      ],
+    },
     faqItems: [
       { q: "What does the SEO Auditor check?", a: "It analyzes Google Lighthouse scores (Performance, SEO, Accessibility, Best Practices), Core Web Vitals (FCP, LCP, TBT, CLS), security headers, Open Graph tags, structured data, heading structure, meta tags, and more." },
       { q: "Does it use Google's API?", a: "Yes. The tool uses the Google PageSpeed Insights API to fetch real Lighthouse audit data, giving you the same scores you'd see in Chrome DevTools." },
       { q: "Can I audit any website?", a: "You can audit any publicly accessible website. Simply enter the URL and the tool will fetch and analyze the page's SEO health, performance metrics, and accessibility scores." },
+      { q: "What are Core Web Vitals?", a: "Core Web Vitals are Google's key metrics for user experience: Largest Contentful Paint (LCP) measures loading speed, First Input Delay (FID) / Total Blocking Time (TBT) measures interactivity, and Cumulative Layout Shift (CLS) measures visual stability. These directly affect Google search rankings." },
+      { q: "How often should I audit my website?", a: "Audit after every major deployment, and do regular monthly checks. Performance can degrade over time as content and third-party scripts are added. Regular auditing catches issues before they affect rankings." },
+      { q: "What is a good Lighthouse performance score?", a: "Scores are 0-100. 90-100 is excellent (green), 50-89 is needs improvement (orange), 0-49 is poor (red). Aim for 90+ on all four categories: Performance, SEO, Accessibility, and Best Practices." },
+      { q: "Why are mobile and desktop scores different?", a: "Mobile scores are typically lower because Lighthouse simulates a mid-range mobile device on a slower network. Desktop has more CPU and bandwidth. Google uses mobile-first indexing, so mobile scores are more important for SEO." },
+      { q: "Does it check for structured data (schema markup)?", a: "Yes. The auditor checks for JSON-LD structured data on the page and validates common schema types like Organization, WebSite, Article, and BreadcrumbList." },
     ],
   },
 ]
