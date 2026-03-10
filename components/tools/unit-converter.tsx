@@ -76,8 +76,8 @@ export function UnitConverter() {
 
   const calculate = () => {
     const value = parseFloat(inputValue) || 0
-    const fromUnitData = currentCategory.units[fromUnit as keyof typeof currentCategory.units]
-    const toUnitData = currentCategory.units[toUnit as keyof typeof currentCategory.units]
+    const fromUnitData = currentCategory.units[fromUnit as keyof typeof currentCategory.units] as { name: string; toBase: (v: number) => number } | undefined
+    const toUnitData = currentCategory.units[toUnit as keyof typeof currentCategory.units] as { name: string; toBase: (v: number) => number } | undefined
 
     if (!fromUnitData || !toUnitData) return "0"
 

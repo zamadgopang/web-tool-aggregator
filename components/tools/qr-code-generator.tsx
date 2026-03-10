@@ -131,7 +131,7 @@ export function QRCodeGenerator() {
                     key={level.value}
                     variant={errorLevel === level.value ? "default" : "outline"}
                     size="sm"
-                    onClick={() => setErrorLevel(level.value)}
+                    onClick={() => setErrorLevel(level.value as "L" | "M" | "Q" | "H")}
                     className="text-xs h-auto py-2 flex flex-col"
                   >
                     <span className="font-medium">{level.value}</span>

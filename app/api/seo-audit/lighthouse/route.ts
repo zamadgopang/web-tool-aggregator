@@ -6,7 +6,42 @@ export const maxDuration = 60
 function isValidUrl(str: string): boolean {
   try {
     const url = new URL(str)
-    return url.protocol === "http:" || url.protocol === "https:"
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false
+
+    const hostname = url.hostname.toLowerCase()
+
+    // Block private/internal IP ranges and special hostnames
+    const blockedPatterns = [
+      /^localhost$/i,
+      /^127\./,
+      /^10\./,
+      /^172\.(1[6-9]|2[0-9]|3[01])\./,
+      /^192\.168\./,
+      /^169\.254\./,
+      /^0\./,
+      /^255\./,
+      /^\[::1\]$/,
+      /^\[fc00:/i,
+      /^\[fd/i,
+      /^\[fe80:/i,
+      /^::1$/,
+      /\.local$/i,
+      /\.internal$/i,
+      /\.localhost$/i,
+    ]
+
+    if (blockedPatterns.some(pattern => pattern.test(hostname))) return false
+
+    const ipv4Match = hostname.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/)
+    if (ipv4Match) {
+      const [, a, b] = ipv4Match.map(Number)
+      if (a === 0 || a === 10 || a === 127 || a === 255) return false
+      if (a === 172 && b >= 16 && b <= 31) return false
+      if (a === 192 && b === 168) return false
+      if (a === 169 && b === 254) return false
+    }
+
+    return true
   } catch {
     return false
   }
@@ -17,7 +52,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { url, strategy } = body
 
-    if (!url || typeof url !== "string" || !isValidUrl(url.trim())) {
+    if (!url || typeof url !== "string" || url.trim().length > 2048 || !isValidUrl(url.trim())) {
       return NextResponse.json(
         { error: "A valid URL is required." },
         { status: 400 }
@@ -42,14 +77,16 @@ export async function POST(request: NextRequest) {
       })
 
       if (!response.ok) {
-        const errorText = await response.text().catch(() => "")
+        console.error(`PageSpeed API HTTP ${response.status}`)
         return NextResponse.json({
           performance: null,
           seo: null,
           accessibility: null,
           strategy: deviceStrategy,
           isQuotaError: response.status === 429,
-          error: `PageSpeed API returned HTTP ${response.status}. ${errorText.slice(0, 200)}`,
+          error: response.status === 429
+            ? "Rate limit exceeded. Please try again later."
+            : "PageSpeed API request failed. Please try again.",
         })
       }
 
@@ -57,12 +94,13 @@ export async function POST(request: NextRequest) {
 
       // Check for API-level errors
       if (data.error) {
+        console.error("PageSpeed API error:", data.error)
         return NextResponse.json({
           performance: null,
           seo: null,
           accessibility: null,
           strategy: deviceStrategy,
-          error: `PageSpeed API error: ${data.error.message || JSON.stringify(data.error)}`,
+          error: "PageSpeed API encountered an error. Please check the URL and try again.",
         })
       }
 
@@ -112,37 +150,14 @@ export async function POST(request: NextRequest) {
       clearTimeout(timeout)
     }
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
-      return NextResponse.json({
-        performance: null,
-        seo: null,
-        accessibility: null,
-        error: "PageSpeed API request timed out. Try again or check the URL.",
-      })
-    }
-
+    console.error("Lighthouse API Error:", error)
     return NextResponse.json({
       performance: null,
       seo: null,
       accessibility: null,
-      error: error instanceof Error ? `Server error: ${error.message}` : "Failed to fetch Lighthouse scores.",
+      error: error instanceof Error && error.name === "AbortError"
+        ? "PageSpeed API request timed out. Try again or check the URL."
+        : "Failed to fetch Lighthouse scores. Please try again.",
     })
   }
-}
-
-// Also support GET for simple testing
-export async function GET(request: NextRequest) {
-  const url = request.nextUrl.searchParams.get("url")
-  if (!url) {
-    return NextResponse.json({ error: "Provide ?url= parameter" }, { status: 400 })
-  }
-
-  // Reuse POST logic
-  const fakeRequest = new Request(request.url, {
-    method: "POST",
-    body: JSON.stringify({ url }),
-    headers: { "Content-Type": "application/json" },
-  })
-
-  return POST(fakeRequest as NextRequest)
 }

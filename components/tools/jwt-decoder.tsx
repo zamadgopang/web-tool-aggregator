@@ -158,8 +158,8 @@ export function JWTDecoder() {
                   {JSON.stringify(decoded.header, null, 2)}
                 </pre>
                 <div className="flex gap-2 flex-wrap">
-                  {decoded.header.alg && <Badge variant="secondary">Algorithm: {String(decoded.header.alg)}</Badge>}
-                  {decoded.header.typ && <Badge variant="secondary">Type: {String(decoded.header.typ)}</Badge>}
+                  {decoded.header.alg ? <Badge variant="secondary">Algorithm: {String(decoded.header.alg)}</Badge> : null}
+                  {decoded.header.typ ? <Badge variant="secondary">Type: {String(decoded.header.typ)}</Badge> : null}
                 </div>
               </div>
 
@@ -179,11 +179,11 @@ export function JWTDecoder() {
                   {JSON.stringify(decoded.payload, null, 2)}
                 </pre>
                 <div className="flex gap-2 flex-wrap">
-                  {decoded.payload.iss && <Badge variant="outline">Issuer: {String(decoded.payload.iss)}</Badge>}
-                  {decoded.payload.sub && <Badge variant="outline">Subject: {String(decoded.payload.sub)}</Badge>}
-                  {decoded.payload.aud && <Badge variant="outline">Audience: {String(decoded.payload.aud)}</Badge>}
-                  {decoded.payload.iat && <Badge variant="outline">Issued: {formatTimestamp(decoded.payload.iat as number)}</Badge>}
-                  {decoded.payload.exp && <Badge variant="outline">Expires: {formatTimestamp(decoded.payload.exp as number)}</Badge>}
+                  {decoded.payload.iss ? <Badge variant="outline">Issuer: {String(decoded.payload.iss)}</Badge> : null}
+                  {decoded.payload.sub ? <Badge variant="outline">Subject: {String(decoded.payload.sub)}</Badge> : null}
+                  {decoded.payload.aud ? <Badge variant="outline">Audience: {String(decoded.payload.aud)}</Badge> : null}
+                  {decoded.payload.iat ? <Badge variant="outline">Issued: {formatTimestamp(decoded.payload.iat as number)}</Badge> : null}
+                  {decoded.payload.exp ? <Badge variant="outline">Expires: {formatTimestamp(decoded.payload.exp as number)}</Badge> : null}
                 </div>
               </div>
 

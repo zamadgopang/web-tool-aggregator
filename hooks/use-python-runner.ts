@@ -53,6 +53,7 @@ export function usePythonRunner() {
           script.id = "pyodide-script"
           script.src = "https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"
           script.async = true
+          script.crossOrigin = "anonymous"
           document.head.appendChild(script)
           
           await new Promise<void>((resolve, reject) => {

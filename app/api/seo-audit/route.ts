@@ -39,7 +39,43 @@ interface HtmlData {
 function isValidUrl(str: string): boolean {
   try {
     const url = new URL(str)
-    return url.protocol === "http:" || url.protocol === "https:"
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false
+
+    const hostname = url.hostname.toLowerCase()
+
+    // Block private/internal IP ranges and special hostnames
+    const blockedPatterns = [
+      /^localhost$/i,
+      /^127\./,
+      /^10\./,
+      /^172\.(1[6-9]|2[0-9]|3[01])\./,
+      /^192\.168\./,
+      /^169\.254\./,
+      /^0\./,
+      /^255\./,
+      /^\[::1\]$/,
+      /^\[fc00:/i,
+      /^\[fd/i,
+      /^\[fe80:/i,
+      /^::1$/,
+      /\.local$/i,
+      /\.internal$/i,
+      /\.localhost$/i,
+    ]
+
+    if (blockedPatterns.some(pattern => pattern.test(hostname))) return false
+
+    // Block bare IPs that resolve to private ranges (basic numeric check)
+    const ipv4Match = hostname.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/)
+    if (ipv4Match) {
+      const [, a, b] = ipv4Match.map(Number)
+      if (a === 0 || a === 10 || a === 127 || a === 255) return false
+      if (a === 172 && b >= 16 && b <= 31) return false
+      if (a === 192 && b === 168) return false
+      if (a === 169 && b === 254) return false
+    }
+
+    return true
   } catch {
     return false
   }
@@ -81,13 +117,19 @@ async function fetchHtmlData(url: string): Promise<HtmlData> {
           "Mozilla/5.0 (compatible; SEOAuditor/1.0; +https://tools.zamdev.me)",
         Accept: "text/html",
       },
-      redirect: "follow",
+      redirect: "error",
     })
 
     const responseTimeMs = Date.now() - startTime
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    // Verify content type is HTML
+    const contentType = response.headers.get("content-type") || ""
+    if (!contentType.includes("text/html") && !contentType.includes("application/xhtml")) {
+      throw new Error("Response is not an HTML document")
     }
 
     // Security headers
@@ -99,6 +141,12 @@ async function fetchHtmlData(url: string): Promise<HtmlData> {
     }
 
     const html = await response.text()
+
+    // Limit response size to prevent memory exhaustion (max 5MB)
+    if (html.length > 5 * 1024 * 1024) {
+      throw new Error("Page content too large to audit")
+    }
+
     const contentLength = html.length
 
     // Title
@@ -261,6 +309,13 @@ export async function POST(request: NextRequest) {
 
     const trimmedUrl = url.trim()
 
+    if (trimmedUrl.length > 2048) {
+      return NextResponse.json(
+        { error: "URL is too long. Maximum 2048 characters." },
+        { status: 400 }
+      )
+    }
+
     if (!isValidUrl(trimmedUrl)) {
       return NextResponse.json(
         { error: "Invalid URL. Please provide a full URL starting with http:// or https://." },
@@ -275,8 +330,7 @@ export async function POST(request: NextRequest) {
       htmlData,
     })
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "An unexpected error occurred."
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error("SEO Audit Error:", error)
+    return NextResponse.json({ error: "Failed to audit website. Please check the URL and try again." }, { status: 500 })
   }
 }

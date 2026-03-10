@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useRef } from "react"
+import DOMPurify from "dompurify"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
@@ -36,6 +37,7 @@ function loadScript(id: string, srcs: string | string[]): Promise<void> {
       const s = document.createElement("script")
       s.id = id
       s.src = urls[attempt]
+      s.crossOrigin = "anonymous"
       s.onload = () => { s.dataset.loaded = "true"; resolve() }
       s.onerror = () => { s.remove(); attempt++; tryLoad() }
       document.head.appendChild(s)
@@ -177,7 +179,8 @@ async function generatePdf(
     if (!iframeDoc) throw new Error("Failed to create rendering context")
 
     iframeDoc.open()
-    iframeDoc.write(`<!DOCTYPE html><html><head><style>${DOC_STYLES}</style></head><body><div class="doc-render">${html}</div></body></html>`)
+    const sanitizedHtml = DOMPurify.sanitize(html, { ADD_TAGS: ['style'], ADD_ATTR: ['style', 'class'] })
+    iframeDoc.write(`<!DOCTYPE html><html><head><style>${DOC_STYLES}</style></head><body><div class="doc-render">${sanitizedHtml}</div></body></html>`)
     iframeDoc.close()
 
     const contentEl = iframeDoc.querySelector(".doc-render") as HTMLElement
@@ -434,7 +437,7 @@ export function DocToPdfConverter() {
                       <div
                         className="mx-auto"
                         style={{ width: 794, padding: "56px 72px", fontFamily: "Calibri, 'Segoe UI', sans-serif", fontSize: "11pt", lineHeight: 1.5, color: "#1a1a1a" }}
-                        dangerouslySetInnerHTML={{ __html: previewHtml }}
+                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(previewHtml, { ADD_TAGS: ['style'], ADD_ATTR: ['style'] }) }}
                       />
                     </div>
                   </div>
