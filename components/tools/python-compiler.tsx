@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/tooltip"
 import {
   Play,
-  Square,
   Trash2,
   Download,
   Upload,
@@ -43,7 +42,6 @@ import {
   Minimize2,
   Sun,
   Moon,
-  ChevronDown,
   Package,
   BookOpen,
   Keyboard,
@@ -60,7 +58,7 @@ const CODE_EXAMPLES: Record<string, { label: string; code: string }> = {
   input_demo: {
     label: "User Input Demo",
     code: `# 🎤 User Input Demo — Try entering inputs!
-# Add your inputs in the "Standard Input" panel (click the keyboard icon)
+# Add your inputs in the Input panel below the terminal
 # Enter one value per line before running
 
 name = input("What is your name? ")
@@ -415,7 +413,6 @@ export function PythonCompiler() {
   const [stats, setStats] = useState<ExecutionStats | null>(null)
   const [fontSize, setFontSize] = useState(14)
   const [stdinInput, setStdinInput] = useState("")
-  const [showStdin, setShowStdin] = useState(false)
   const [retryCount, setRetryCount] = useState(0)
 
   const pyodideRef = useRef<PyodideInterface | null>(null)
@@ -552,7 +549,7 @@ export function PythonCompiler() {
     })
 
     // Set up stdin for input() support
-    const inputLines = stdinInput.split("\n")
+    const inputLines = stdinInput.trim() ? stdinInput.split("\n") : []
     let inputIndex = 0
 
     pyodide.setStdin({
@@ -560,15 +557,14 @@ export function PythonCompiler() {
         if (inputIndex < inputLines.length) {
           const line = inputLines[inputIndex]
           inputIndex++
-          lines.push({ text: `📥 ${line}`, type: "input", timestamp: Date.now() })
+          lines.push({ text: line, type: "input", timestamp: Date.now() })
           setOutput([...lines])
           return line
         }
-        // Fallback: prompt user when pre-entered inputs run out
-        const userInput = window.prompt("Python is requesting input:") ?? ""
-        lines.push({ text: `📥 ${userInput}`, type: "input", timestamp: Date.now() })
+        // No more input available
+        lines.push({ text: "\u26a0 No input available \u2014 add values in the Input panel and re-run.", type: "stderr", timestamp: Date.now() })
         setOutput([...lines])
-        return userInput
+        return "\n"
       },
     })
 
@@ -660,10 +656,6 @@ export function PythonCompiler() {
       setCode(CODE_EXAMPLES[key].code)
       setOutput([])
       setStats(null)
-      // Auto-show stdin panel for input-based examples
-      if (key === "input_demo" || key === "calculator") {
-        setShowStdin(true)
-      }
     }
   }
 
@@ -856,20 +848,7 @@ export function PythonCompiler() {
                   </TooltipTrigger>
                   <TooltipContent>Reset to default</TooltipContent>
                 </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant={showStdin ? "secondary" : "ghost"}
-                      size="icon"
-                      className="h-9 w-9 sm:h-8 sm:w-8"
-                      onClick={() => setShowStdin(!showStdin)}
-                      aria-label="Toggle standard input"
-                    >
-                      <Keyboard className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Standard Input (stdin)</TooltipContent>
-                </Tooltip>
+
               </div>
             </TooltipProvider>
 
@@ -917,27 +896,6 @@ export function PythonCompiler() {
               <span className="ml-1">to run</span>
             </div>
           </div>
-
-          {/* Stdin Input Section */}
-          {showStdin && (
-            <div className="px-3 py-2.5 sm:px-4 sm:py-3 border-b bg-muted/20">
-              <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor="stdin-input" className="text-xs font-medium flex items-center gap-1.5">
-                  <Keyboard className="h-3.5 w-3.5 text-cyan-500" />
-                  Standard Input (stdin)
-                </label>
-                <span className="text-[10px] text-muted-foreground">One input per line &bull; Used by input() calls</span>
-              </div>
-              <textarea
-                id="stdin-input"
-                value={stdinInput}
-                onChange={(e) => setStdinInput(e.target.value)}
-                placeholder={"Enter input values here, one per line...\nExample:\nAlice\n25\nBlue"}
-                className="w-full h-20 px-3 py-2 rounded-md border bg-background font-mono text-sm resize-y min-h-[60px] max-h-[200px] focus:outline-none focus:ring-2 focus:ring-cyan-500/50 placeholder:text-muted-foreground/50"
-                spellCheck={false}
-              />
-            </div>
-          )}
 
           {/* Editor + Output Split */}
           <div className={`grid ${isFullscreen ? "grid-rows-[1fr_1fr] lg:grid-cols-[1fr_1fr] lg:grid-rows-1" : "grid-rows-[minmax(300px,1fr)_minmax(280px,1fr)] lg:grid-cols-[1fr_1fr] lg:grid-rows-1"}`} style={{ minHeight: isFullscreen ? "calc(100vh - 200px)" : "600px" }}>
@@ -1102,6 +1060,27 @@ export function PythonCompiler() {
                     <span className="text-zinc-500 text-xs">Executing...</span>
                   </div>
                 )}
+              </div>
+
+              {/* Terminal Input */}
+              <div className="border-t border-zinc-800 bg-[#161b22]">
+                <div className="flex items-center justify-between px-3 py-1.5">
+                  <label htmlFor="stdin-input" className="text-[11px] text-zinc-400 font-mono flex items-center gap-1.5">
+                    <Keyboard className="h-3 w-3 text-cyan-400" />
+                    Input
+                  </label>
+                  <span className="text-[10px] text-zinc-600">One value per line &middot; Used by input() calls</span>
+                </div>
+                <div className="px-3 pb-2">
+                  <textarea
+                    id="stdin-input"
+                    value={stdinInput}
+                    onChange={(e) => setStdinInput(e.target.value)}
+                    placeholder={"Enter input values, one per line\nAlice\n25\nBlue"}
+                    className="w-full h-[52px] px-2.5 py-1.5 rounded border border-zinc-700/80 bg-[#0d1117] text-emerald-300 font-mono text-xs leading-relaxed resize-y min-h-[40px] max-h-[140px] focus:outline-none focus:ring-1 focus:ring-cyan-500/40 placeholder:text-zinc-600"
+                    spellCheck={false}
+                  />
+                </div>
               </div>
 
               {/* Stats Bar */}
