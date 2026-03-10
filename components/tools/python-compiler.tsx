@@ -53,7 +53,8 @@ import {
 
 // ─── Constants ────────────────────────────────────────────────────────
 
-const PYODIDE_CDN = "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"
+const PYODIDE_CDN = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"
+const PYODIDE_INDEX_URL = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/"
 
 const CODE_EXAMPLES: Record<string, { label: string; code: string }> = {
   input_demo: {
@@ -441,41 +442,47 @@ export function PythonCompiler() {
   useEffect(() => {
     let cancelled = false
 
-    async function loadPyodide() {
+    async function initPyodide() {
       try {
+        setPyodideStatus("loading")
         setLoadProgress(10)
 
         // Remove old script if retrying
         const existingScript = document.querySelector(`script[src="${PYODIDE_CDN}"]`)
         if (existingScript) existingScript.remove()
 
-        // Load script
+        // Load script tag
         await new Promise<void>((resolve, reject) => {
           const script = document.createElement("script")
           script.src = PYODIDE_CDN
+          script.crossOrigin = "anonymous"
           script.onload = () => resolve()
-          script.onerror = () => reject(new Error("Failed to load Pyodide script from CDN"))
+          script.onerror = (e) => reject(new Error(`Failed to load Pyodide script from CDN: ${e}`))
           document.head.appendChild(script)
         })
 
         if (cancelled) return
         setLoadProgress(40)
 
-        // Initialize Pyodide
-        if (window.loadPyodide) {
-          const pyodide = await window.loadPyodide({
-            indexURL: "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/",
-          })
-          if (cancelled) return
-          setLoadProgress(90)
-
-          pyodideRef.current = pyodide
-          setLoadProgress(100)
-          setPyodideStatus("ready")
-        } else {
-          console.error("window.loadPyodide is not available after script load")
-          setPyodideStatus("error")
+        // Wait briefly for globalThis.loadPyodide to be available
+        const loadPyodideFn = window.loadPyodide
+        if (!loadPyodideFn) {
+          throw new Error("window.loadPyodide is undefined after script loaded. CSP may be blocking execution.")
         }
+
+        setLoadProgress(50)
+
+        // Initialize Pyodide runtime
+        const pyodide = await loadPyodideFn({
+          indexURL: PYODIDE_INDEX_URL,
+        })
+
+        if (cancelled) return
+        setLoadProgress(90)
+
+        pyodideRef.current = pyodide
+        setLoadProgress(100)
+        setPyodideStatus("ready")
       } catch (err) {
         if (!cancelled) {
           console.error("Pyodide load error:", err)
@@ -484,7 +491,7 @@ export function PythonCompiler() {
       }
     }
 
-    loadPyodide()
+    initPyodide()
     return () => { cancelled = true }
   }, [retryCount])
 
