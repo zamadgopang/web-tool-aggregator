@@ -18,8 +18,8 @@ export function ToolCard({ id, title, description, icon, tag, category }: ToolCa
     <Link
       href={`/tools/${id}`}
       className={cn(
-        "group relative flex flex-col items-start gap-4 rounded-xl border border-border bg-card p-6 text-left transition-all duration-200 w-full",
-        "hover:border-foreground/20 hover:shadow-md hover:-translate-y-0.5",
+        "group relative flex flex-col items-start gap-4 rounded-xl border border-border bg-card/60 backdrop-blur-lg p-6 text-left transition-all duration-300 w-full",
+        "hover:border-ring/30 hover:shadow-lg hover:shadow-ring/5 hover:-translate-y-1 hover:bg-card/80",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         "active:scale-[0.98]"
       )}

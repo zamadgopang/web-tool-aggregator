@@ -17,7 +17,7 @@ export function ToolPageClient({ toolId, tool }: ToolPageClientProps) {
   const [searchOpen, setSearchOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background bg-glass-gradient">
       <Header onSearchClick={() => setSearchOpen(true)} />
       <CommandSearch open={searchOpen} onOpenChange={setSearchOpen} />
 
@@ -39,7 +39,7 @@ export function ToolPageClient({ toolId, tool }: ToolPageClientProps) {
 
       <AgencyCTA />
 
-      <footer className="border-t border-border py-8" role="contentinfo">
+      <footer className="border-t border-border bg-card/30 backdrop-blur-xl py-8" role="contentinfo">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
             <p>All tools run 100% in your browser. Your files never leave your device.</p>

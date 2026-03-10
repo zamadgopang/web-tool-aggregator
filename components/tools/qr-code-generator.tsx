@@ -86,9 +86,11 @@ export function QRCodeGenerator() {
               <img
                 src={dataUrl}
                 alt="QR Code"
+                className="object-contain"
                 style={{
                   width: `${Math.min(size, 300)}px`,
                   height: `${Math.min(size, 300)}px`,
+                  imageRendering: "pixelated",
                 }}
               />
               <Button onClick={handleDownload} className="w-full">
@@ -122,20 +124,20 @@ export function QRCodeGenerator() {
               <Label>Error Correction</Label>
               <div className="grid grid-cols-4 gap-2">
                 {[
-                  { value: "L", label: "Low (7%)", desc: "7% recovery" },
-                  { value: "M", label: "Medium (15%)", desc: "15% recovery" },
-                  { value: "Q", label: "High (25%)", desc: "25% recovery" },
-                  { value: "H", label: "Very High (30%)", desc: "30% recovery" },
+                  { value: "L", desc: "7%" },
+                  { value: "M", desc: "15%" },
+                  { value: "Q", desc: "25%" },
+                  { value: "H", desc: "30%" },
                 ].map((level) => (
                   <Button
                     key={level.value}
                     variant={errorLevel === level.value ? "default" : "outline"}
                     size="sm"
                     onClick={() => setErrorLevel(level.value as "L" | "M" | "Q" | "H")}
-                    className="text-xs h-auto py-2 flex flex-col"
+                    className="text-xs h-auto py-2.5 px-2 flex flex-col items-center justify-center gap-0.5 min-w-0 overflow-hidden"
                   >
-                    <span className="font-medium">{level.value}</span>
-                    <span className="text-xs opacity-70">{level.desc}</span>
+                    <span className="font-semibold text-sm leading-tight">{level.value}</span>
+                    <span className="text-[10px] opacity-70 leading-tight whitespace-nowrap">{level.desc} recovery</span>
                   </Button>
                 ))}
               </div>

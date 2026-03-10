@@ -19,7 +19,7 @@ export function Header({ onSearchClick }: HeaderProps) {
   }, [])
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-xl" role="banner">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/60 backdrop-blur-2xl backdrop-saturate-150" role="banner">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2" aria-label="ZamDev Tools — Go to homepage">
@@ -49,7 +49,7 @@ export function Header({ onSearchClick }: HeaderProps) {
         <button
           onClick={onSearchClick}
           aria-label="Search tools (Ctrl+K)"
-          className="hidden sm:flex items-center gap-3 rounded-lg border border-border bg-secondary/50 px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground hover:border-muted-foreground/30 w-72"
+          className="hidden sm:flex items-center gap-3 rounded-lg border border-border bg-card/50 backdrop-blur-md px-4 py-2 text-sm text-muted-foreground transition-all hover:bg-card/80 hover:text-foreground hover:border-muted-foreground/30 hover:shadow-sm w-72"
         >
           <Command className="h-4 w-4" aria-hidden="true" />
           <span>Search tools...</span>
