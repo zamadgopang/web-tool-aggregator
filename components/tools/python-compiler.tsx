@@ -423,24 +423,19 @@ export function PythonCompiler() {
   const MonacoEditorRef = useRef<React.ComponentType<Record<string, unknown>> | null>(null)
   const editorContainerRef = useRef<HTMLDivElement>(null)
   const [editorLoaded, setEditorLoaded] = useState(false)
-  const [editorHeight, setEditorHeight] = useState(300)
+  const [isMobile, setIsMobile] = useState(false)
 
   // ─── Theme ─────────────────────────────────────────────────────────
   const isDark = editorTheme === "vs-dark"
 
-  // ─── Measure editor container for pixel-exact Monaco height ────────
+  // ─── Responsive breakpoint detection ────────────────────────────────
 
   useEffect(() => {
-    const el = editorContainerRef.current
-    if (!el) return
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const h = Math.floor(entry.contentRect.height)
-        if (h > 0) setEditorHeight(h)
-      }
-    })
-    ro.observe(el)
-    return () => ro.disconnect()
+    const mq = window.matchMedia("(max-width: 639px)")
+    const handler = (e: MediaQueryListEvent | MediaQueryList) => setIsMobile(e.matches)
+    handler(mq)
+    mq.addEventListener("change", handler)
+    return () => mq.removeEventListener("change", handler)
   }, [])
 
   // ─── Load Monaco Editor dynamically ────────────────────────────────
@@ -956,26 +951,29 @@ export function PythonCompiler() {
 
           {/* ─── Editor Tab Bar ─── */}
           <div
-            className={`flex items-center shrink-0 ${
+            className={`flex items-center shrink-0 h-[35px] ${
               isDark
-                ? "bg-[#252526] border-b border-[#1e1e1e]"
-                : "bg-[#ececec] border-b border-[#d4d4d4]"
+                ? "bg-[#252526]"
+                : "bg-[#ececec]"
             }`}
           >
             {/* Active tab */}
             <div
-              className={`flex items-center gap-1.5 px-3 py-[5px] text-[11px] border-t-[2px] border-t-transparent ${
+              className={`flex items-center gap-1.5 h-full px-3 text-[11px] border-t-[2px] ${
                 isDark
                   ? "bg-[#1e1e1e] text-[#ffffff] border-r border-r-[#252526]"
                   : "bg-[#ffffff] text-[#333333] border-r border-r-[#e0e0e0]"
               }`}
               style={{ borderTopColor: "#007acc" }}
+              role="tab"
+              aria-selected
+              aria-label="script.py - active file"
             >
-              <Code2 className="h-3 w-3 text-[#519aba] shrink-0" />
+              <Code2 className="h-3 w-3 text-[#519aba] shrink-0" aria-hidden="true" />
               <span className="font-medium">script.py</span>
             </div>
             <div className="flex-1" />
-            <span className={`text-[10px] pr-3 ${isDark ? "text-[#555]" : "text-[#aaa]"}`}>
+            <span className={`text-[10px] pr-3 ${isDark ? "text-[#555]" : "text-[#aaa]"}`} aria-label="Python version">
               Python 3.11 &middot; Pyodide
             </span>
           </div>
@@ -983,13 +981,13 @@ export function PythonCompiler() {
           {/* ─── Monaco Editor ─── */}
           <div
             ref={editorContainerRef}
-            className={`flex-1 min-h-0 overflow-hidden ${isDark ? "bg-[#1e1e1e]" : "bg-white"}`}
+            className={`flex-1 min-h-0 relative ${isDark ? "bg-[#1e1e1e]" : "bg-white"}`}
             role="region"
-            aria-label="Python code editor"
+            aria-label="Python code editor — use Tab to interact with the editor, Escape to exit"
           >
             {editorLoaded && MonacoEditor ? (
               <MonacoEditor
-                height={editorHeight}
+                height="100%"
                 defaultLanguage="python"
                 value={code}
                 onChange={(value: unknown) => setCode(typeof value === "string" ? value : "")}
@@ -999,9 +997,10 @@ export function PythonCompiler() {
                   fontSize,
                   fontFamily: "'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'SF Mono', Consolas, monospace",
                   fontLigatures: true,
-                  minimap: { enabled: typeof window !== "undefined" && window.innerWidth > 1024 },
+                  minimap: { enabled: !isMobile },
                   scrollBeyondLastLine: false,
-                  lineHeight: 22,
+                  lineHeight: Math.round(fontSize * 1.6),
+                  padding: { top: 8, bottom: 8 },
                   renderLineHighlight: "all" as const,
                   smoothScrolling: true,
                   cursorBlinking: "smooth" as const,
@@ -1014,21 +1013,23 @@ export function PythonCompiler() {
                   wordWrap: "on" as const,
                   tabSize: 4,
                   insertSpaces: true,
-                  lineNumbers: typeof window !== "undefined" && window.innerWidth < 640 ? "off" as const : "on" as const,
-                  folding: typeof window !== "undefined" && window.innerWidth >= 640,
+                  lineNumbers: "on" as const,
+                  folding: !isMobile,
                   glyphMargin: false,
-                  lineDecorationsWidth: typeof window !== "undefined" && window.innerWidth < 640 ? 0 : 10,
+                  lineDecorationsWidth: isMobile ? 0 : 10,
                   renderWhitespace: "selection" as const,
                   guides: {
                     indentation: true,
                     bracketPairs: true,
                   },
+                  accessibilitySupport: "on" as const,
+                  ariaLabel: "Python code editor",
                 }}
               />
             ) : (
-              <div className="flex items-center justify-center h-full" role="status">
+              <div className="flex items-center justify-center h-full" role="status" aria-live="polite">
                 <div className="flex flex-col items-center gap-2">
-                  <Loader2 className={`h-5 w-5 animate-spin ${isDark ? "text-[#555]" : "text-[#ccc]"}`} />
+                  <Loader2 className={`h-5 w-5 animate-spin ${isDark ? "text-[#555]" : "text-[#ccc]"}`} aria-hidden="true" />
                   <p className={`text-[11px] ${isDark ? "text-[#555]" : "text-[#aaa]"}`}>Loading editor...</p>
                 </div>
               </div>
@@ -1047,7 +1048,10 @@ export function PythonCompiler() {
               onTouchStart={handleResizeStart}
               role="separator"
               aria-orientation="horizontal"
-              aria-label="Resize terminal panel"
+              aria-label="Resize terminal panel. Use Up and Down arrow keys to resize."
+              aria-valuemin={120}
+              aria-valuemax={600}
+              aria-valuenow={panelHeight}
               tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === "ArrowUp") { e.preventDefault(); setPanelHeight(h => Math.min(h + 20, 600)) }
@@ -1075,7 +1079,7 @@ export function PythonCompiler() {
                     : "bg-[#f3f3f3] border-[#e0e0e0]"
                 }`}
               >
-                <div className="flex">
+                <div className="flex" role="tablist" aria-label="Terminal panel tabs">
                   <button
                     className={`px-3 py-[4px] text-[11px] uppercase tracking-[0.5px] font-medium border-b-[2px] transition-colors ${
                       activePanel === "terminal"
@@ -1084,7 +1088,9 @@ export function PythonCompiler() {
                     }`}
                     onClick={() => setActivePanel("terminal")}
                     aria-selected={activePanel === "terminal"}
+                    aria-controls="panel-terminal"
                     role="tab"
+                    id="tab-terminal"
                   >
                     <span className="flex items-center gap-1.5">
                       <Terminal className="h-3 w-3" />
@@ -1104,7 +1110,9 @@ export function PythonCompiler() {
                     }`}
                     onClick={() => setActivePanel("input")}
                     aria-selected={activePanel === "input"}
+                    aria-controls="panel-input"
                     role="tab"
+                    id="tab-input"
                   >
                     <span className="flex items-center gap-1.5">
                       <Keyboard className="h-3 w-3" />
@@ -1167,11 +1175,13 @@ export function PythonCompiler() {
                 {activePanel === "terminal" ? (
                   <div
                     ref={outputRef}
+                    id="panel-terminal"
+                    role="tabpanel"
+                    aria-labelledby="tab-terminal"
                     className={`absolute inset-0 overflow-auto px-3 py-2 font-mono leading-[1.65] ${
                       isDark ? "bg-[#1e1e1e]" : "bg-[#f8f8f8]"
                     }`}
                     style={{ fontSize: Math.max(fontSize - 2, 11) }}
-                    role="log"
                     aria-live="polite"
                     aria-label="Program output"
                     tabIndex={0}
@@ -1217,7 +1227,12 @@ export function PythonCompiler() {
                     )}
                   </div>
                 ) : (
-                  <div className={`absolute inset-0 overflow-auto p-3 flex flex-col gap-2.5 ${isDark ? "bg-[#1e1e1e]" : "bg-[#f8f8f8]"}`}>
+                  <div
+                    id="panel-input"
+                    role="tabpanel"
+                    aria-labelledby="tab-input"
+                    className={`absolute inset-0 overflow-auto p-3 flex flex-col gap-2.5 ${isDark ? "bg-[#1e1e1e]" : "bg-[#f8f8f8]"}`}
+                  >
                     <div className={`flex items-start gap-2 text-[11px] ${isDark ? "text-[#888]" : "text-[#666]"}`}>
                       <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-[1px] text-[#007acc]" />
                       <div>
