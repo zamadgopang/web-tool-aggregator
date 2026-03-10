@@ -10,6 +10,8 @@ import { StatusBar } from "./status-bar"
 import { ExamplesPanel } from "./examples-panel"
 import { usePythonRunner } from "@/hooks/use-python-runner"
 import { useToast } from "@/hooks/use-toast"
+import { useIsMobile } from "@/hooks/use-mobile"
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 
 const DEFAULT_CODE = `# Welcome to PyRun - Python Online Compiler
 # Write your Python code here and press Run (or Ctrl+Enter)
@@ -47,6 +49,7 @@ function generateId(): string {
 }
 
 export function PythonIDE() {
+  const isMobile = useIsMobile()
   const { toast } = useToast()
   const {
     isReady,
@@ -219,7 +222,7 @@ export function PythonIDE() {
   }, [updateFileContent, clearOutput, toast])
   
   return (
-    <div className="h-[calc(100vh-120px)] min-h-125 flex flex-col bg-background rounded-lg border border-border overflow-hidden">
+    <div className="h-[calc(100vh-120px)] min-h-80 md:min-h-125 flex flex-col bg-background rounded-lg border border-border overflow-hidden">
       <Toolbar
         onRun={handleRun}
         onStop={stopExecution}
@@ -234,17 +237,37 @@ export function PythonIDE() {
         showExamples={showExamples}
       />
       
+      {/* Examples Sheet for Mobile */}
+      {isMobile && (
+        <Sheet open={showExamples} onOpenChange={setShowExamples}>
+          <SheetContent side="bottom" className="h-[70vh] rounded-t-xl">
+            <SheetHeader>
+              <SheetTitle>Code Examples</SheetTitle>
+            </SheetHeader>
+            <div className="flex-1 overflow-y-auto mt-4">
+              <ExamplesPanel onSelectExample={(code) => {
+                handleSelectExample(code)
+                setShowExamples(false)
+              }} />
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
+      
       <div className="flex-1 overflow-hidden flex">
-        {/* Examples Sidebar */}
-        {showExamples && (
+        {/* Examples Sidebar - Desktop only */}
+        {!isMobile && showExamples && (
           <div className="w-72 border-r border-border p-2 shrink-0">
             <ExamplesPanel onSelectExample={handleSelectExample} />
           </div>
         )}
         
-        <ResizablePanelGroup direction="horizontal" className="h-full flex-1">
+        <ResizablePanelGroup
+          direction={isMobile ? "vertical" : "horizontal"}
+          className="h-full flex-1"
+        >
           {/* Code Editor Panel */}
-          <ResizablePanel defaultSize={55} minSize={30}>
+          <ResizablePanel defaultSize={isMobile ? 55 : 55} minSize={25}>
             <div className="h-full flex flex-col">
               <FileTabs
                 files={files}
@@ -254,7 +277,7 @@ export function PythonIDE() {
                 onNewFile={handleNewFile}
                 onRenameFile={handleRenameFile}
               />
-              <div className="flex-1 p-2 overflow-hidden">
+              <div className="flex-1 p-1 md:p-2 overflow-hidden">
                 <CodeEditor
                   value={currentCode}
                   onChange={updateFileContent}
@@ -266,8 +289,8 @@ export function PythonIDE() {
           <ResizableHandle withHandle className="bg-border" />
           
           {/* Output Panel */}
-          <ResizablePanel defaultSize={45} minSize={25}>
-            <div className="h-full p-2">
+          <ResizablePanel defaultSize={isMobile ? 45 : 45} minSize={20}>
+            <div className="h-full p-1 md:p-2">
               <OutputPanel
                 output={output}
                 isRunning={isRunning}
