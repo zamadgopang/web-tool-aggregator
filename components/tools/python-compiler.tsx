@@ -411,7 +411,7 @@ export function PythonCompiler() {
 
   // Panel state
   const [activePanel, setActivePanel] = useState<"terminal" | "input">("terminal")
-  const [panelHeight, setPanelHeight] = useState(280)
+  const [panelHeight, setPanelHeight] = useState(220)
   const [isPanelOpen, setIsPanelOpen] = useState(true)
 
   // Refs
@@ -721,9 +721,9 @@ export function PythonCompiler() {
             : "bg-[#ffffff] ring-1 ring-[#d4d4d4]"
         }`}
         style={{
-          height: isFullscreen ? "100vh" : undefined,
-          minHeight: isFullscreen ? undefined : "600px",
-          maxHeight: isFullscreen ? undefined : "calc(100vh - 48px)",
+          height: isFullscreen ? "100vh" : "calc(100vh - 80px)",
+          minHeight: "500px",
+          maxHeight: isFullscreen ? undefined : "900px",
         }}
         role="region"
         aria-label="Python IDE"
@@ -964,7 +964,8 @@ export function PythonCompiler() {
           </div>
 
           {/* ─── Monaco Editor ─── */}
-          <div className="flex-1 min-h-[150px]" role="region" aria-label="Python code editor">
+          <div className="flex-1 relative min-h-0" role="region" aria-label="Python code editor">
+            <div className="absolute inset-0">
             {editorLoaded && MonacoEditor ? (
               <MonacoEditor
                 height="100%"
@@ -980,7 +981,7 @@ export function PythonCompiler() {
                   minimap: { enabled: typeof window !== "undefined" && window.innerWidth > 1024 },
                   scrollBeyondLastLine: false,
                   padding: { top: 12, bottom: 12 },
-                  lineHeight: 1.7,
+                  lineHeight: 22,
                   renderLineHighlight: "all" as const,
                   smoothScrolling: true,
                   cursorBlinking: "smooth" as const,
@@ -1011,6 +1012,7 @@ export function PythonCompiler() {
                 </div>
               </div>
             )}
+            </div>
           </div>
 
           {/* ─── Resize Handle ─── */}
