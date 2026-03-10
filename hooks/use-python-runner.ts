@@ -6,7 +6,7 @@ import type { OutputLine } from "@/components/python-compiler/output-panel"
 const PYODIDE_VERSION = "0.26.4"
 const PYODIDE_CDNS = [
   `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full`,
-  `https://pyodide-cdn2.iodide.io/v${PYODIDE_VERSION}/full`,
+  `https://cdnjs.cloudflare.com/ajax/libs/pyodide/${PYODIDE_VERSION}/`,
 ]
 const LOAD_TIMEOUT_MS = 180_000 // 3 minutes max
 
