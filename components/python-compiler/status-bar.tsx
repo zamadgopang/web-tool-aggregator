@@ -39,7 +39,7 @@ export function StatusBar({
             "w-2 h-2",
             isPyodideReady ? "fill-primary text-primary" : "fill-amber-400 text-amber-400"
           )} />
-          <span>Pyodide v0.24.1</span>
+          <span>Pyodide v0.27.4</span>
         </div>
       </div>
       

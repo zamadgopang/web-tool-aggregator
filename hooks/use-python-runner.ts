@@ -3,6 +3,10 @@
 import { useState, useCallback, useRef, useEffect } from "react"
 import type { OutputLine } from "@/components/python-compiler/output-panel"
 
+const PYODIDE_VERSION = "0.27.4"
+const PYODIDE_CDN = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full`
+const LOAD_TIMEOUT_MS = 120_000 // 2 minutes max
+
 interface PyodideInterface {
   runPythonAsync: (code: string) => Promise<unknown>
   setStdout: (options: { batched: (text: string) => void }) => void
@@ -15,7 +19,7 @@ interface PyodideInterface {
 
 declare global {
   interface Window {
-    loadPyodide: () => Promise<PyodideInterface>
+    loadPyodide: (config?: { indexURL?: string }) => Promise<PyodideInterface>
   }
 }
 
@@ -42,51 +46,90 @@ export function usePythonRunner() {
   // Load Pyodide on mount
   useEffect(() => {
     let cancelled = false
+    let timeoutId: ReturnType<typeof setTimeout> | undefined
     
     const loadPyodide = async () => {
       try {
-        setLoadingProgress(10)
+        setLoadingProgress(5)
         
-        // Load Pyodide script
-        if (!document.getElementById("pyodide-script")) {
-          const script = document.createElement("script")
-          script.id = "pyodide-script"
-          script.src = "https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"
-          script.async = true
-          script.crossOrigin = "anonymous"
-          document.head.appendChild(script)
+        // Set up a timeout for the entire loading process
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          timeoutId = setTimeout(
+            () => reject(new Error("Loading timed out. Please refresh the page to try again.")),
+            LOAD_TIMEOUT_MS
+          )
+        })
+        
+        const doLoad = async () => {
+          // Load Pyodide script
+          if (!document.getElementById("pyodide-script")) {
+            setLoadingProgress(10)
+            const script = document.createElement("script")
+            script.id = "pyodide-script"
+            script.src = `${PYODIDE_CDN}/pyodide.js`
+            script.async = true
+            script.crossOrigin = "anonymous"
+            document.head.appendChild(script)
+            
+            await new Promise<void>((resolve, reject) => {
+              script.onload = () => resolve()
+              script.onerror = () => {
+                script.remove()
+                reject(new Error("Failed to load Pyodide script from CDN. Check your internet connection."))
+              }
+            })
+          }
           
-          await new Promise<void>((resolve, reject) => {
-            script.onload = () => resolve()
-            script.onerror = () => reject(new Error("Failed to load Pyodide"))
-          })
+          if (cancelled) return
+          setLoadingProgress(30)
+          
+          // Simulate progress while WASM downloads (the real bottleneck)
+          let fakeProgress = 30
+          const progressInterval = setInterval(() => {
+            if (cancelled) { clearInterval(progressInterval); return }
+            // Gradually increase from 30 to 85 during WASM download
+            fakeProgress = Math.min(85, fakeProgress + (85 - fakeProgress) * 0.04)
+            setLoadingProgress(Math.round(fakeProgress))
+          }, 500)
+          
+          try {
+            // Initialize Pyodide with explicit indexURL
+            const pyodide = await window.loadPyodide({
+              indexURL: PYODIDE_CDN,
+            })
+            
+            clearInterval(progressInterval)
+            
+            if (cancelled) return
+            
+            pyodideRef.current = pyodide
+            setLoadingProgress(100)
+            setIsReady(true)
+            
+            setOutput([{
+              type: "system",
+              content: "Python environment ready. You can now run your code."
+            }])
+          } catch (initError) {
+            clearInterval(progressInterval)
+            throw initError
+          }
         }
         
-        setLoadingProgress(40)
+        // Race: loading vs timeout
+        await Promise.race([doLoad(), timeoutPromise])
         
-        if (cancelled) return
-        
-        // Initialize Pyodide
-        const pyodide = await window.loadPyodide()
-        
-        setLoadingProgress(80)
-        
-        if (cancelled) return
-        
-        pyodideRef.current = pyodide
-        setLoadingProgress(100)
-        setIsReady(true)
-        
-        setOutput([{
-          type: "system",
-          content: "Python environment ready. You can now run your code."
-        }])
       } catch (error) {
+        if (cancelled) return
         console.error("Failed to load Pyodide:", error)
+        const message = error instanceof Error ? error.message : "Unknown error"
+        setLoadingProgress(0)
         setOutput([{
           type: "error",
-          content: `Failed to load Python environment: ${error instanceof Error ? error.message : "Unknown error"}`
+          content: `Failed to load Python environment: ${message}\n\nPlease refresh the page to try again. If the issue persists, check your internet connection or try a different browser.`
         }])
+      } finally {
+        if (timeoutId) clearTimeout(timeoutId)
       }
     }
     
@@ -94,6 +137,7 @@ export function usePythonRunner() {
     
     return () => {
       cancelled = true
+      if (timeoutId) clearTimeout(timeoutId)
     }
   }, [])
   
