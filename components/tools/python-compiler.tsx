@@ -421,10 +421,27 @@ export function PythonCompiler() {
   const containerRef = useRef<HTMLDivElement>(null)
   const isResizing = useRef(false)
   const MonacoEditorRef = useRef<React.ComponentType<Record<string, unknown>> | null>(null)
+  const editorContainerRef = useRef<HTMLDivElement>(null)
   const [editorLoaded, setEditorLoaded] = useState(false)
+  const [editorHeight, setEditorHeight] = useState(300)
 
   // ─── Theme ─────────────────────────────────────────────────────────
   const isDark = editorTheme === "vs-dark"
+
+  // ─── Measure editor container for pixel-exact Monaco height ────────
+
+  useEffect(() => {
+    const el = editorContainerRef.current
+    if (!el) return
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const h = Math.floor(entry.contentRect.height)
+        if (h > 0) setEditorHeight(h)
+      }
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
 
   // ─── Load Monaco Editor dynamically ────────────────────────────────
 
@@ -964,11 +981,15 @@ export function PythonCompiler() {
           </div>
 
           {/* ─── Monaco Editor ─── */}
-          <div className="flex-1 relative min-h-0" role="region" aria-label="Python code editor">
-            <div className="absolute inset-0">
+          <div
+            ref={editorContainerRef}
+            className={`flex-1 min-h-0 overflow-hidden ${isDark ? "bg-[#1e1e1e]" : "bg-white"}`}
+            role="region"
+            aria-label="Python code editor"
+          >
             {editorLoaded && MonacoEditor ? (
               <MonacoEditor
-                height="100%"
+                height={editorHeight}
                 defaultLanguage="python"
                 value={code}
                 onChange={(value: unknown) => setCode(typeof value === "string" ? value : "")}
@@ -980,7 +1001,6 @@ export function PythonCompiler() {
                   fontLigatures: true,
                   minimap: { enabled: typeof window !== "undefined" && window.innerWidth > 1024 },
                   scrollBeyondLastLine: false,
-                  padding: { top: 12, bottom: 12 },
                   lineHeight: 22,
                   renderLineHighlight: "all" as const,
                   smoothScrolling: true,
@@ -989,6 +1009,7 @@ export function PythonCompiler() {
                   bracketPairColorization: { enabled: true },
                   autoClosingBrackets: "always" as const,
                   autoClosingQuotes: "always" as const,
+                  automaticLayout: true,
                   suggest: { showKeywords: true, showSnippets: true },
                   wordWrap: "on" as const,
                   tabSize: 4,
@@ -1005,14 +1026,13 @@ export function PythonCompiler() {
                 }}
               />
             ) : (
-              <div className={`flex items-center justify-center h-full ${isDark ? "bg-[#1e1e1e]" : "bg-white"}`} role="status">
+              <div className="flex items-center justify-center h-full" role="status">
                 <div className="flex flex-col items-center gap-2">
                   <Loader2 className={`h-5 w-5 animate-spin ${isDark ? "text-[#555]" : "text-[#ccc]"}`} />
                   <p className={`text-[11px] ${isDark ? "text-[#555]" : "text-[#aaa]"}`}>Loading editor...</p>
                 </div>
               </div>
             )}
-            </div>
           </div>
 
           {/* ─── Resize Handle ─── */}
