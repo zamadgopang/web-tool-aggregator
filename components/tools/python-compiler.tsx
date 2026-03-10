@@ -46,6 +46,9 @@ import {
   ChevronDown,
   Package,
   BookOpen,
+  Keyboard,
+  RefreshCw,
+  AlertCircle,
 } from "lucide-react"
 
 // ─── Constants ────────────────────────────────────────────────────────
@@ -53,6 +56,46 @@ import {
 const PYODIDE_CDN = "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"
 
 const CODE_EXAMPLES: Record<string, { label: string; code: string }> = {
+  input_demo: {
+    label: "User Input Demo",
+    code: `# 🎤 User Input Demo — Try entering inputs!
+# Add your inputs in the "Standard Input" panel (click the keyboard icon)
+# Enter one value per line before running
+
+name = input("What is your name? ")
+age = input("How old are you? ")
+color = input("What is your favorite color? ")
+
+print(f"\\nHello, {name}! 👋")
+print(f"You are {age} years old.")
+print(f"Your favorite color is {color}.")
+print(f"\\nIn 10 years, you'll be {int(age) + 10} years old! 🎂")
+`,
+  },
+  calculator: {
+    label: "Input Calculator",
+    code: `# 🧮 Simple Calculator with Input
+print("=== Simple Calculator ===")
+print("Operations: +, -, *, /")
+
+a = float(input("Enter first number: "))
+op = input("Enter operation (+, -, *, /): ")
+b = float(input("Enter second number: "))
+
+if op == "+":
+    result = a + b
+elif op == "-":
+    result = a - b
+elif op == "*":
+    result = a * b
+elif op == "/":
+    result = a / b if b != 0 else "Error: Division by zero"
+else:
+    result = "Invalid operation"
+
+print(f"\\n{a} {op} {b} = {result}")
+`,
+  },
   hello: {
     label: "Hello World",
     code: `# 👋 Hello World — Your first Python program
@@ -347,6 +390,7 @@ interface PyodideInterface {
   runPythonAsync: (code: string) => Promise<unknown>
   setStdout: (options: { batched: (text: string) => void }) => void
   setStderr: (options: { batched: (text: string) => void }) => void
+  setStdin: (options: { stdin: () => string }) => void
   loadPackagesFromImports: (code: string) => Promise<void>
 }
 
@@ -369,6 +413,9 @@ export function PythonCompiler() {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [stats, setStats] = useState<ExecutionStats | null>(null)
   const [fontSize, setFontSize] = useState(14)
+  const [stdinInput, setStdinInput] = useState("")
+  const [showStdin, setShowStdin] = useState(false)
+  const [retryCount, setRetryCount] = useState(0)
 
   const pyodideRef = useRef<PyodideInterface | null>(null)
   const editorRef = useRef<unknown>(null)
@@ -398,16 +445,18 @@ export function PythonCompiler() {
       try {
         setLoadProgress(10)
 
+        // Remove old script if retrying
+        const existingScript = document.querySelector(`script[src="${PYODIDE_CDN}"]`)
+        if (existingScript) existingScript.remove()
+
         // Load script
-        if (!document.querySelector(`script[src="${PYODIDE_CDN}"]`)) {
-          await new Promise<void>((resolve, reject) => {
-            const script = document.createElement("script")
-            script.src = PYODIDE_CDN
-            script.onload = () => resolve()
-            script.onerror = () => reject(new Error("Failed to load Pyodide script"))
-            document.head.appendChild(script)
-          })
-        }
+        await new Promise<void>((resolve, reject) => {
+          const script = document.createElement("script")
+          script.src = PYODIDE_CDN
+          script.onload = () => resolve()
+          script.onerror = () => reject(new Error("Failed to load Pyodide script from CDN"))
+          document.head.appendChild(script)
+        })
 
         if (cancelled) return
         setLoadProgress(40)
@@ -423,6 +472,9 @@ export function PythonCompiler() {
           pyodideRef.current = pyodide
           setLoadProgress(100)
           setPyodideStatus("ready")
+        } else {
+          console.error("window.loadPyodide is not available after script load")
+          setPyodideStatus("error")
         }
       } catch (err) {
         if (!cancelled) {
@@ -434,7 +486,7 @@ export function PythonCompiler() {
 
     loadPyodide()
     return () => { cancelled = true }
-  }, [])
+  }, [retryCount])
 
   // ─── Auto-scroll output ────────────────────────────────────────────
 
@@ -492,6 +544,27 @@ export function PythonCompiler() {
       },
     })
 
+    // Set up stdin for input() support
+    const inputLines = stdinInput.split("\n")
+    let inputIndex = 0
+
+    pyodide.setStdin({
+      stdin: () => {
+        if (inputIndex < inputLines.length) {
+          const line = inputLines[inputIndex]
+          inputIndex++
+          lines.push({ text: `📥 ${line}`, type: "input", timestamp: Date.now() })
+          setOutput([...lines])
+          return line
+        }
+        // Fallback: prompt user when pre-entered inputs run out
+        const userInput = window.prompt("Python is requesting input:") ?? ""
+        lines.push({ text: `📥 ${userInput}`, type: "input", timestamp: Date.now() })
+        setOutput([...lines])
+        return userInput
+      },
+    })
+
     try {
       // Auto-install packages from imports
       await pyodide.loadPackagesFromImports(currentCode)
@@ -514,7 +587,7 @@ export function PythonCompiler() {
     setOutput([...lines])
     setStats({ executionTime, linesOfCode, outputLines })
     setIsRunning(false)
-  }, [code, isRunning])
+  }, [code, isRunning, stdinInput])
 
   // ─── Keyboard shortcut ─────────────────────────────────────────────
 
@@ -580,6 +653,10 @@ export function PythonCompiler() {
       setCode(CODE_EXAMPLES[key].code)
       setOutput([])
       setStats(null)
+      // Auto-show stdin panel for input-based examples
+      if (key === "input_demo" || key === "calculator") {
+        setShowStdin(true)
+      }
     }
   }
 
@@ -636,9 +713,25 @@ export function PythonCompiler() {
                 </Badge>
               )}
               {pyodideStatus === "error" && (
-                <Badge variant="destructive" className="gap-1.5 text-xs">
-                  Engine Failed
-                </Badge>
+                <div className="flex items-center gap-1.5">
+                  <Badge variant="destructive" className="gap-1.5 text-xs">
+                    <AlertCircle className="h-3 w-3" />
+                    Engine Failed
+                  </Badge>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 text-xs gap-1"
+                    onClick={() => {
+                      setPyodideStatus("loading")
+                      setLoadProgress(0)
+                      setRetryCount(c => c + 1)
+                    }}
+                  >
+                    <RefreshCw className="h-3 w-3" />
+                    Retry
+                  </Button>
+                </div>
               )}
               <TooltipProvider>
                 <Tooltip>
@@ -756,6 +849,20 @@ export function PythonCompiler() {
                   </TooltipTrigger>
                   <TooltipContent>Reset to default</TooltipContent>
                 </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant={showStdin ? "secondary" : "ghost"}
+                      size="icon"
+                      className="h-9 w-9 sm:h-8 sm:w-8"
+                      onClick={() => setShowStdin(!showStdin)}
+                      aria-label="Toggle standard input"
+                    >
+                      <Keyboard className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Standard Input (stdin)</TooltipContent>
+                </Tooltip>
               </div>
             </TooltipProvider>
 
@@ -803,6 +910,27 @@ export function PythonCompiler() {
               <span className="ml-1">to run</span>
             </div>
           </div>
+
+          {/* Stdin Input Section */}
+          {showStdin && (
+            <div className="px-3 py-2.5 sm:px-4 sm:py-3 border-b bg-muted/20">
+              <div className="flex items-center justify-between mb-1.5">
+                <label htmlFor="stdin-input" className="text-xs font-medium flex items-center gap-1.5">
+                  <Keyboard className="h-3.5 w-3.5 text-cyan-500" />
+                  Standard Input (stdin)
+                </label>
+                <span className="text-[10px] text-muted-foreground">One input per line &bull; Used by input() calls</span>
+              </div>
+              <textarea
+                id="stdin-input"
+                value={stdinInput}
+                onChange={(e) => setStdinInput(e.target.value)}
+                placeholder={"Enter input values here, one per line...\nExample:\nAlice\n25\nBlue"}
+                className="w-full h-20 px-3 py-2 rounded-md border bg-background font-mono text-sm resize-y min-h-[60px] max-h-[200px] focus:outline-none focus:ring-2 focus:ring-cyan-500/50 placeholder:text-muted-foreground/50"
+                spellCheck={false}
+              />
+            </div>
+          )}
 
           {/* Editor + Output Split */}
           <div className={`grid ${isFullscreen ? "grid-rows-[1fr_1fr] lg:grid-cols-[1fr_1fr] lg:grid-rows-1" : "grid-rows-[minmax(300px,1fr)_minmax(280px,1fr)] lg:grid-cols-[1fr_1fr] lg:grid-rows-1"}`} style={{ minHeight: isFullscreen ? "calc(100vh - 200px)" : "600px" }}>
@@ -953,6 +1081,8 @@ export function PythonCompiler() {
                       <span className="text-red-400">{line.text}</span>
                     ) : line.type === "system" ? (
                       <span className="text-zinc-500 italic">{line.text}</span>
+                    ) : line.type === "input" ? (
+                      <span className="text-cyan-300">{line.text}</span>
                     ) : (
                       <span className="text-emerald-300">{line.text}</span>
                     )}
