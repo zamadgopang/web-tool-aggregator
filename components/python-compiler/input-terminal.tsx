@@ -67,13 +67,13 @@ export function InputTerminal({
   }
   
   return (
-    <div className="border-t border-border bg-secondary/30">
+    <div className="border-b border-border bg-secondary/30 shrink-0">
       {/* Input history display */}
       {inputHistory.length > 0 && (
-        <div className="px-4 py-2 space-y-1 border-b border-border/50 max-h-24 overflow-y-auto">
+        <div className="px-3 sm:px-4 py-2 space-y-1 border-b border-border/50 max-h-24 overflow-y-auto">
           {inputHistory.map((entry, index) => (
             <div key={index} className="flex items-center gap-2 text-sm font-mono">
-              <span className="text-muted-foreground">{entry.prompt}</span>
+              <span className="text-muted-foreground truncate">{entry.prompt}</span>
               <span className="text-primary">{entry.value}</span>
             </div>
           ))}
@@ -82,19 +82,19 @@ export function InputTerminal({
       
       {/* Input field */}
       <div className={cn(
-        "flex items-center gap-2 px-4 py-2",
-        isWaitingForInput && "bg-primary/5 animate-pulse"
+        "flex items-center gap-2 px-3 sm:px-4 py-2 min-w-0",
+        isWaitingForInput && "bg-primary/5 ring-1 ring-inset ring-primary/30"
       )}>
-        <div className="flex items-center gap-2 text-muted-foreground">
+        <div className="flex items-center shrink-0">
           {isWaitingForInput ? (
             <ChevronRight className="w-4 h-4 text-primary animate-bounce" />
           ) : (
-            <Terminal className="w-4 h-4" />
+            <Terminal className="w-4 h-4 text-muted-foreground" />
           )}
         </div>
         
         {isWaitingForInput && inputPrompt && (
-          <span className="text-sm text-foreground font-mono whitespace-pre">
+          <span className="text-sm text-foreground font-mono whitespace-pre shrink-0 max-w-[40%] truncate">
             {inputPrompt}
           </span>
         )}
@@ -108,7 +108,7 @@ export function InputTerminal({
           disabled={!isWaitingForInput}
           placeholder={isWaitingForInput ? "Type input and press Enter..." : "Waiting for input() call..."}
           className={cn(
-            "flex-1 bg-transparent text-sm font-mono outline-none placeholder:text-muted-foreground/50",
+            "flex-1 min-w-0 bg-transparent text-sm font-mono outline-none placeholder:text-muted-foreground/50",
             isWaitingForInput ? "text-foreground" : "text-muted-foreground"
           )}
           aria-label="Program input"
@@ -119,7 +119,7 @@ export function InputTerminal({
           variant={isWaitingForInput ? "default" : "ghost"}
           onClick={handleSubmit}
           disabled={!isWaitingForInput}
-          className="gap-1.5 h-7 px-2"
+          className="gap-1.5 h-7 px-2 shrink-0"
         >
           <CornerDownLeft className="w-3.5 h-3.5" />
           <span className="hidden sm:inline text-xs">Enter</span>
@@ -127,7 +127,7 @@ export function InputTerminal({
       </div>
       
       {isWaitingForInput && (
-        <div className="px-4 pb-2">
+        <div className="px-3 sm:px-4 pb-2">
           <p className="text-xs text-muted-foreground">
             Program is waiting for input. Type your response and press Enter.
           </p>

@@ -69,6 +69,16 @@ export function OutputPanel({
         </div>
       </div>
       
+      {/* Input terminal - on top of output when waiting */}
+      {onSubmitInput && (
+        <InputTerminal
+          isWaitingForInput={isWaitingForInput}
+          inputPrompt={inputPrompt}
+          onSubmitInput={onSubmitInput}
+          inputHistory={inputHistory}
+        />
+      )}
+      
       {/* Output content */}
       <div 
         ref={outputRef}
@@ -105,16 +115,6 @@ export function OutputPanel({
           </div>
         )}
       </div>
-      
-      {/* Input terminal - always visible when running or waiting for input */}
-      {onSubmitInput && (
-        <InputTerminal
-          isWaitingForInput={isWaitingForInput}
-          inputPrompt={inputPrompt}
-          onSubmitInput={onSubmitInput}
-          inputHistory={inputHistory}
-        />
-      )}
     </div>
   )
 }
