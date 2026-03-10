@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
+import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from '@/components/theme-provider'
 import { PWARegister } from '@/components/pwa-register'
+import { tools } from '@/lib/tools-data'
 import './globals.css'
 
 const inter = Inter({
@@ -14,7 +16,7 @@ const inter = Inter({
 const siteUrl = "https://tools.zamdev.me"
 const siteName = "Tools by ZamDev"
 const siteDescription =
-  "30+ free browser tools for developers & designers. Convert images, format JSON, generate passwords & more — 100% client-side, no uploads."
+  "30+ free, lightning-fast browser tools for developers and designers. Convert images, format JSON, generate passwords, QR codes, audit SEO performance, and more — all running 100% client-side with zero server delays. Your files never leave your device."
 
 export const viewport: Viewport = {
   themeColor: [
@@ -50,6 +52,16 @@ export const metadata: Metadata = {
     "UUID generator",
     "client-side tools",
     "privacy-first tools",
+    "SEO auditor",
+    "website performance checker",
+    "Lighthouse scores",
+    "Core Web Vitals",
+    "markdown preview",
+    "DOCX to PDF",
+    "meta tag generator",
+    "cron parser",
+    "SQL formatter",
+    "text diff checker",
     "ZamDev",
   ],
   authors: [{ name: "ZamDev", url: "https://zamdev.me" }],
@@ -110,6 +122,7 @@ export default function RootLayout({
     description: siteDescription,
     applicationCategory: "UtilitiesApplication",
     operatingSystem: "Any",
+    browserRequirements: "Requires JavaScript. Works in all modern browsers.",
     offers: {
       "@type": "Offer",
       price: "0",
@@ -120,20 +133,81 @@ export default function RootLayout({
       name: "ZamDev",
       url: "https://zamdev.me",
     },
-    featureList: [
-      "JSON Formatter",
-      "Image Converter",
-      "Password Generator",
-      "QR Code Generator",
-      "Color Converter",
-      "Hash Generator",
-      "Regex Tester",
-      "JWT Decoder",
-      "Base64 Converter",
-      "Unit Converter",
-      "UUID Generator",
-      "CSS Gradient Generator",
+    featureList: tools.map((t) => t.title),
+  }
+
+  // ItemList schema for tool discovery (GEO)
+  const toolListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Free Browser Tools by ZamDev",
+    description: "A curated collection of 30+ free browser-based developer and designer tools.",
+    numberOfItems: tools.length,
+    itemListElement: tools.map((tool, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: tool.title,
+      description: tool.description,
+      url: `${siteUrl}/tools/${tool.id}`,
+    })),
+  }
+
+  // FAQ schema for GEO — helps AI engines understand common questions
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Are these tools really free?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, all 30+ tools on Tools by ZamDev are completely free to use with no sign-up, no ads, and no usage limits.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Is my data safe when using these tools?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Absolutely. Most tools run 100% client-side in your browser. Your files and data never leave your device. No data is uploaded to any server for processing.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What is the SEO & Performance Auditor tool?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "The SEO & Performance Auditor analyzes any website's SEO health, Google Lighthouse scores (Performance, SEO, Accessibility), Core Web Vitals (FCP, LCP, TBT, CLS), security headers, Open Graph tags, structured data, and heading structure. It uses the Google PageSpeed Insights API for Lighthouse data.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do I need to install anything?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "No installation required. All tools work directly in your web browser. You can also install it as a Progressive Web App (PWA) for offline access.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What tools are available for developers?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Developer tools include JSON Formatter, Regex Tester, JWT Decoder, JSON to TypeScript converter, YAML/JSON converter, Cron Parser, SQL Formatter, HTML Entity Encoder, Meta Tag Generator, Chmod Calculator, Python Compiler, and SEO & Performance Auditor.",
+        },
+      },
     ],
+  }
+
+  // Organization schema
+  const orgSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "ZamDev",
+    url: "https://zamdev.me",
+    logo: `${siteUrl}/ZamDev_light_logo.png`,
+    sameAs: [],
   }
 
   return (
@@ -144,6 +218,18 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(toolListSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
         />
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
@@ -157,6 +243,18 @@ export default function RootLayout({
         </ThemeProvider>
         <PWARegister />
         <Analytics />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-M997853FSJ"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-M997853FSJ');
+          `}
+        </Script>
       </body>
     </html>
   )

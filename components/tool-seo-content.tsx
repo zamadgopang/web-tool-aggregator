@@ -10,7 +10,7 @@ interface ToolSeoContentProps {
 }
 
 function ToolIcon({ iconName, className }: { iconName: string; className?: string }) {
-    const Icon = (LucideIcons as Record<string, React.ComponentType<{ className?: string }>>)[iconName]
+    const Icon = (LucideIcons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[iconName]
     if (!Icon) return null
     return <Icon className={className} />
 }
@@ -41,6 +41,9 @@ function FaqAccordionItem({ question, answer }: { question: string; answer: stri
 }
 
 export function ToolSeoContent({ tool }: ToolSeoContentProps) {
+    const faqItems = tool.faqItems || []
+    const keywords = tool.keywords || []
+
     return (
         <section className="mt-12 mb-16 max-w-4xl mx-auto px-4 space-y-12" aria-label={`About ${tool.title}`}>
             {/* Tool illustration with icon */}
@@ -102,13 +105,13 @@ export function ToolSeoContent({ tool }: ToolSeoContentProps) {
             </div>
 
             {/* FAQ Section */}
-            {tool.faqItems.length > 0 && (
+            {faqItems.length > 0 && (
                 <div>
                     <h2 className="text-lg font-semibold text-foreground mb-4">
                         Frequently Asked Questions
                     </h2>
                     <div className="space-y-2">
-                        {tool.faqItems.map((faq, index) => (
+                        {faqItems.map((faq, index) => (
                             <FaqAccordionItem key={index} question={faq.q} answer={faq.a} />
                         ))}
                     </div>
@@ -116,9 +119,9 @@ export function ToolSeoContent({ tool }: ToolSeoContentProps) {
             )}
 
             {/* SEO Keywords as tags (hidden visually but available to crawlers) */}
-            {tool.keywords.length > 0 && (
+            {keywords.length > 0 && (
                 <div className="flex flex-wrap gap-2">
-                    {tool.keywords.map((keyword, index) => (
+                    {keywords.map((keyword, index) => (
                         <span
                             key={index}
                             className="inline-flex items-center rounded-full bg-muted/50 px-3 py-1 text-xs text-muted-foreground"

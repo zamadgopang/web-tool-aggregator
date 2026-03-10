@@ -11,12 +11,27 @@ export interface ToolMeta {
   category: "developer" | "image" | "text" | "utility"
   popular?: boolean
   iconName: string
-  keywords: string[]
-  faqItems: FaqItem[]
+  keywords?: string[]
+  faqItems?: FaqItem[]
 }
 
 export const tools: ToolMeta[] = [
   // Top Featured Tools
+  {
+    id: "python-compiler",
+    title: "Python Compiler",
+    description: "Write and run Python code directly in your browser — powered by WebAssembly. Full Python 3.11 with stdlib, Monaco editor, and instant execution.",
+    tag: "Hot",
+    category: "developer",
+    popular: true,
+    iconName: "Code2",
+    keywords: ["python compiler", "run python online", "python editor", "online python IDE", "python in browser", "python playground"],
+    faqItems: [
+      { q: "How does Python run in the browser?", a: "The compiler uses Pyodide, a Python distribution compiled to WebAssembly. It runs a full Python 3.11 interpreter directly in your browser with no server needed." },
+      { q: "Does it support Python packages?", a: "Yes. The standard library is fully available, and many popular packages like numpy and pandas can be loaded on demand via micropip." },
+      { q: "Is my code saved anywhere?", a: "No. Your code stays in your browser session only. Nothing is uploaded or stored on any server. When you close the tab, the code is gone unless you copy it." },
+    ],
+  },
   {
     id: "image-converter",
     title: "Image Converter",
@@ -62,8 +77,8 @@ export const tools: ToolMeta[] = [
   },
   {
     id: "doc-to-pdf-converter",
-    title: "DOC to PDF Converter",
-    description: "Convert Word documents to PDF with formatting, tables, and images preserved.",
+    title: "DOCX to PDF Converter",
+    description: "Convert DOCX files to PDF with Word formatting, tables, colors, and images preserved.",
     tag: "Hot",
     category: "utility",
     popular: true,
@@ -451,6 +466,21 @@ export const tools: ToolMeta[] = [
     faqItems: [
       { q: "Can I set custom dimensions for the PNG?", a: "Yes. You can specify the exact width and height in pixels for the output PNG, allowing you to create high-resolution exports from scalable SVG files." },
       { q: "Does it preserve transparency?", a: "Yes. PNG supports transparency, so any transparent areas in your SVG will remain transparent in the converted PNG output." },
+    ],
+  },
+  {
+    id: "seo-performance-auditor",
+    title: "SEO & Performance Auditor",
+    description: "Audit any website's SEO, performance, and accessibility with Google Lighthouse scores, Core Web Vitals, and detailed on-page HTML analysis.",
+    tag: "Hot",
+    category: "developer",
+    popular: true,
+    iconName: "Globe",
+    keywords: ["seo auditor", "website performance checker", "lighthouse scores", "core web vitals", "seo checker", "page speed test", "website seo analysis"],
+    faqItems: [
+      { q: "What does the SEO Auditor check?", a: "It analyzes Google Lighthouse scores (Performance, SEO, Accessibility, Best Practices), Core Web Vitals (FCP, LCP, TBT, CLS), security headers, Open Graph tags, structured data, heading structure, meta tags, and more." },
+      { q: "Does it use Google's API?", a: "Yes. The tool uses the Google PageSpeed Insights API to fetch real Lighthouse audit data, giving you the same scores you'd see in Chrome DevTools." },
+      { q: "Can I audit any website?", a: "You can audit any publicly accessible website. Simply enter the URL and the tool will fetch and analyze the page's SEO health, performance metrics, and accessibility scores." },
     ],
   },
 ]
