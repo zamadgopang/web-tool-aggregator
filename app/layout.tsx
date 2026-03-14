@@ -13,7 +13,7 @@ const inter = Inter({
   display: "swap",
 });
 
-const siteUrl = "https://tools.zamdev.me"
+const siteUrl = "https://tools.zamdevai.com"
 const siteName = "Tools by ZamDev"
 const siteDescription =
   "30+ free, lightning-fast browser tools for developers and designers. Convert images, format JSON, generate passwords, QR codes, audit SEO performance, and more — all running 100% client-side with zero server delays. Your files never leave your device."

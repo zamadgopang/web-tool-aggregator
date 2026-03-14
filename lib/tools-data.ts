@@ -1148,7 +1148,7 @@ export function getToolsByCategory(category: string): ToolMeta[] {
 }
 
 export const siteConfig = {
-  url: "https://tools.zamdev.me",
+  url: "https://tools.zamdevai.com",
   name: "Tools by ZamDev",
   description:
     "30+ free browser tools for developers & designers. Convert images, format JSON, generate passwords & more — 100% client-side, no uploads.",

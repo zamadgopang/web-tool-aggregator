@@ -64,7 +64,7 @@ export function ToolSeoContent({ tool }: ToolSeoContentProps) {
 
             {/* How It Works */}
             {seoContent?.howItWorks && seoContent.howItWorks.length > 0 && (
-                <div>
+                <section aria-label="How it works">
                     <h2 className="text-lg font-semibold text-foreground mb-4">How It Works</h2>
                     <ol className="space-y-2 sm:space-y-3">
                         {seoContent.howItWorks.map((step, index) => (
@@ -76,11 +76,12 @@ export function ToolSeoContent({ tool }: ToolSeoContentProps) {
                             </li>
                         ))}
                     </ol>
-                </div>
+                </section>
             )}
 
+
             {/* Key Features */}
-            <div>
+            <section aria-label="Key features">
                 <h2 className="text-lg font-semibold text-foreground mb-4">Key Features</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                     <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl bg-white/60 dark:bg-white/10 backdrop-blur-md border border-black/[0.06] dark:border-white/20 shadow-sm">
@@ -120,7 +121,7 @@ export function ToolSeoContent({ tool }: ToolSeoContentProps) {
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
             {/* Use Cases */}
             {seoContent?.useCases && seoContent.useCases.length > 0 && (

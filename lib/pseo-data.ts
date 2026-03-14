@@ -1,0 +1,1842 @@
+export interface PseoVariant {
+  slug: string
+  toolId: string
+  keyword: string
+  metaTitle: string
+  metaDescription: string
+  intro: string
+  faq: { q: string; a: string }[]
+  featureRows: string[][]
+  relatedSlugs: string[]
+}
+
+export const pseoVariants: PseoVariant[] = [
+  {
+    "slug": "word-counter-for-essays",
+    "toolId": "text-minifier",
+    "keyword": "Word Counter for Essays",
+    "metaTitle": "Word Counter for Essays — Free Online Tool",
+    "metaDescription": "Count words, characters, and sentences in your essays instantly. Free browser-based word counter with readability stats.",
+    "intro": "Whether you are writing a college essay with a strict word limit or drafting a blog post that needs to hit a target length, a dedicated word counter removes the guesswork. This tool processes your text entirely in your browser — no uploads, no sign-ups. Paste your essay and instantly see word count, character count, sentence count, and average word length. Perfect for students, freelance writers, and content creators who need precise control over document length.",
+    "faq": [
+      {
+        "q": "How accurate is the word count?",
+        "a": "The counter uses the same whitespace-splitting algorithm as Microsoft Word, so counts match what your professor or editor will see."
+      },
+      {
+        "q": "Does it count hyphenated words as one or two?",
+        "a": "Hyphenated compounds like 'well-known' are counted as a single word, matching standard editorial convention."
+      },
+      {
+        "q": "Can I check word count for multiple paragraphs?",
+        "a": "Yes. Paste your entire essay and the tool counts all words across every paragraph, heading, and footnote."
+      }
+    ],
+    "featureRows": [
+      [
+        "Real-time counting",
+        "✓"
+      ],
+      [
+        "Character count",
+        "✓"
+      ],
+      [
+        "Sentence count",
+        "✓"
+      ],
+      [
+        "Reading time estimate",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "text-minifier-for-html",
+      "lorem-ipsum-for-web-design"
+    ]
+  },
+  {
+    "slug": "text-minifier-for-html",
+    "toolId": "text-minifier",
+    "keyword": "HTML Minifier Online",
+    "metaTitle": "HTML Minifier Online — Compress HTML Code Free",
+    "metaDescription": "Minify HTML code instantly in your browser. Remove whitespace and comments to reduce file size by up to 60%.",
+    "intro": "Page speed directly impacts search rankings and user experience. Minifying your HTML removes unnecessary whitespace, comments, and redundant attributes — shrinking file sizes by 20–60 percent without changing functionality. This browser-based HTML minifier processes your code locally, so proprietary markup never leaves your machine. Paste your HTML, click Minify, and copy the optimized output for production deployment.",
+    "faq": [
+      {
+        "q": "Will minifying break my HTML?",
+        "a": "No. The minifier only removes whitespace and comments. All tags, attributes, and content remain intact."
+      },
+      {
+        "q": "How much smaller will my file be?",
+        "a": "Typical savings range from 20% to 60%, depending on how much whitespace and commenting your source contains."
+      },
+      {
+        "q": "Does it minify inline CSS and JavaScript too?",
+        "a": "The tool focuses on HTML structure. For CSS and JS minification, use the dedicated CSS and JavaScript modes in the Text Minifier tool."
+      }
+    ],
+    "featureRows": [
+      [
+        "HTML minification",
+        "✓"
+      ],
+      [
+        "CSS minification",
+        "✓"
+      ],
+      [
+        "JS minification",
+        "✓"
+      ],
+      [
+        "Preserves functionality",
+        "✓"
+      ],
+      [
+        "Server upload",
+        "None — 100% local"
+      ]
+    ],
+    "relatedSlugs": [
+      "word-counter-for-essays",
+      "css-minifier-online"
+    ]
+  },
+  {
+    "slug": "css-minifier-online",
+    "toolId": "text-minifier",
+    "keyword": "CSS Minifier Online",
+    "metaTitle": "CSS Minifier Online — Compress CSS Files Free",
+    "metaDescription": "Minify CSS code instantly. Remove whitespace and comments to optimize stylesheets for production. 100% browser-based.",
+    "intro": "Large CSS files slow down page rendering and hurt Core Web Vitals scores. This CSS minifier strips comments, collapses whitespace, and shortens color values — all inside your browser. No data is uploaded. Simply paste your stylesheet, click Minify, and copy the compressed output ready for production.",
+    "faq": [
+      {
+        "q": "Does minification affect CSS specificity?",
+        "a": "No. Only whitespace and comments are removed. Selectors, properties, and values remain identical."
+      },
+      {
+        "q": "Can I minify multiple CSS files?",
+        "a": "Paste all your CSS into the editor. The tool processes the entire input as one block. For individual file control, minify each file separately."
+      },
+      {
+        "q": "Is the output production-ready?",
+        "a": "Yes. The minified CSS is valid and ready for deployment. Many teams pipe this output directly into their build pipeline."
+      }
+    ],
+    "featureRows": [
+      [
+        "Whitespace removal",
+        "✓"
+      ],
+      [
+        "Comment stripping",
+        "✓"
+      ],
+      [
+        "Color shortening",
+        "✓"
+      ],
+      [
+        "Output size reduction",
+        "20-50%"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "text-minifier-for-html",
+      "css-gradient-generator-tool"
+    ]
+  },
+  {
+    "slug": "json-formatter-online",
+    "toolId": "json-formatter",
+    "keyword": "JSON Formatter Online",
+    "metaTitle": "JSON Formatter Online — Pretty Print & Validate JSON Free",
+    "metaDescription": "Format, validate, and beautify JSON data instantly. Free online JSON formatter with syntax highlighting and error detection.",
+    "intro": "Debugging API responses, inspecting webhook payloads, or reviewing configuration files — all require clean, readable JSON. This online JSON formatter transforms minified or messy JSON into beautifully indented output with syntax highlighting. Built-in validation catches errors instantly, pointing you to the exact line and character. Everything runs in your browser, so sensitive payloads never touch a server.",
+    "faq": [
+      {
+        "q": "Can I format very large JSON files?",
+        "a": "Yes. The formatter handles files up to several megabytes. Performance depends on your device, but most JSON under 5 MB formats instantly."
+      },
+      {
+        "q": "Does it support JSONC (JSON with comments)?",
+        "a": "Standard JSON does not allow comments. The validator will flag them as errors. Remove comments first or use the YAML converter for commented configs."
+      },
+      {
+        "q": "Can I switch between 2-space and 4-space indentation?",
+        "a": "The formatter uses 2-space indentation by default — the most common standard for JSON files."
+      }
+    ],
+    "featureRows": [
+      [
+        "Pretty-print",
+        "✓"
+      ],
+      [
+        "Minify",
+        "✓"
+      ],
+      [
+        "Syntax validation",
+        "✓"
+      ],
+      [
+        "Error location",
+        "Line & character"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "json-to-typescript-converter",
+      "yaml-to-json-converter"
+    ]
+  },
+  {
+    "slug": "json-validator-tool",
+    "toolId": "json-formatter",
+    "keyword": "JSON Validator Tool",
+    "metaTitle": "JSON Validator Tool — Check JSON Syntax Free Online",
+    "metaDescription": "Validate JSON syntax instantly. Find and fix errors in API responses, config files, and data exports with precise error messages.",
+    "intro": "A single missing comma or extra bracket can break an entire API integration. This JSON validator checks your data against the JSON specification and highlights the exact location of any syntax errors. Perfect for debugging REST API responses, validating configuration files before deployment, or checking database exports. All processing happens locally in your browser.",
+    "faq": [
+      {
+        "q": "What errors does it catch?",
+        "a": "Missing commas, unmatched brackets, trailing commas, single quotes instead of double quotes, and all other JSON specification violations."
+      },
+      {
+        "q": "Can I validate JSON from an API response?",
+        "a": "Yes. Copy the response body from your browser's DevTools or Postman and paste it directly into the validator."
+      },
+      {
+        "q": "Does it fix errors automatically?",
+        "a": "The tool identifies errors but does not auto-fix them, as automatic correction could change your data's intent. It shows you the exact location so you can fix issues yourself."
+      }
+    ],
+    "featureRows": [
+      [
+        "Syntax checking",
+        "✓"
+      ],
+      [
+        "Error location",
+        "Line & character"
+      ],
+      [
+        "Real-time validation",
+        "✓"
+      ],
+      [
+        "Large file support",
+        "Up to 5MB+"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "json-formatter-online",
+      "json-to-typescript-converter"
+    ]
+  },
+  {
+    "slug": "json-to-typescript-converter",
+    "toolId": "json-to-typescript",
+    "keyword": "JSON to TypeScript Converter",
+    "metaTitle": "JSON to TypeScript Converter — Generate Interfaces Free",
+    "metaDescription": "Convert JSON to TypeScript interfaces automatically. Generate typed definitions from API responses and data objects instantly.",
+    "intro": "Manually writing TypeScript interfaces from API responses is tedious and error-prone. This converter analyzes your JSON structure and generates clean, properly typed interfaces with correct handling of nested objects, arrays, and optional fields. Paste any JSON — from REST APIs, GraphQL responses, or database exports — and get production-ready TypeScript types in seconds.",
+    "faq": [
+      {
+        "q": "Does it handle deeply nested objects?",
+        "a": "Yes. The generator recursively processes nested objects and creates separate named interfaces for each level."
+      },
+      {
+        "q": "How does it handle arrays of mixed types?",
+        "a": "If an array contains mixed types, the tool generates a union type (e.g., string | number)."
+      },
+      {
+        "q": "Can I customize the root interface name?",
+        "a": "The root interface is named 'Root' by default. You can rename it after copying the output into your project."
+      }
+    ],
+    "featureRows": [
+      [
+        "Nested object support",
+        "✓"
+      ],
+      [
+        "Array type inference",
+        "✓"
+      ],
+      [
+        "Union types",
+        "✓"
+      ],
+      [
+        "PascalCase naming",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "json-formatter-online",
+      "json-validator-tool"
+    ]
+  },
+  {
+    "slug": "yaml-to-json-converter",
+    "toolId": "yaml-json-converter",
+    "keyword": "YAML to JSON Converter",
+    "metaTitle": "YAML to JSON Converter — Transform Config Files Free",
+    "metaDescription": "Convert YAML to JSON instantly. Perfect for Kubernetes, Docker Compose, and CI/CD configuration files. Free browser tool.",
+    "intro": "Kubernetes manifests, Docker Compose files, and GitHub Actions workflows use YAML, but many tools and APIs require JSON. This converter transforms YAML configuration into valid JSON with a single click — preserving all data types, nested structures, and arrays. Errors in YAML indentation are caught and reported with line numbers so you can fix issues quickly.",
+    "faq": [
+      {
+        "q": "Does it preserve YAML anchors and aliases?",
+        "a": "Yes. YAML anchors (&) and aliases (*) are resolved during conversion, and the resulting JSON contains the fully expanded data."
+      },
+      {
+        "q": "Can I convert multi-document YAML?",
+        "a": "Convert each document separately for best results. Multi-document YAML with --- separators should be split before conversion."
+      },
+      {
+        "q": "Does it handle YAML flow style?",
+        "a": "Yes. Both block-style and flow-style YAML are supported and correctly converted to JSON."
+      }
+    ],
+    "featureRows": [
+      [
+        "YAML → JSON",
+        "✓"
+      ],
+      [
+        "JSON → YAML",
+        "✓"
+      ],
+      [
+        "Error reporting",
+        "Line numbers"
+      ],
+      [
+        "Nested structures",
+        "Full support"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "json-formatter-online",
+      "json-to-typescript-converter"
+    ]
+  },
+  {
+    "slug": "image-converter-jpg-to-png",
+    "toolId": "image-converter",
+    "keyword": "JPG to PNG Converter",
+    "metaTitle": "JPG to PNG Converter — Free Online Image Format Converter",
+    "metaDescription": "Convert JPG images to PNG format instantly in your browser. Lossless conversion with transparency support. No upload required.",
+    "intro": "Need a PNG version of a JPG photo? Whether you need transparency support, lossless quality, or simply a different format for your project, this browser-based converter handles JPG to PNG conversion instantly. Your images never leave your device — everything is processed locally using the HTML5 Canvas API. Just drop your JPG, click convert, and download the PNG.",
+    "faq": [
+      {
+        "q": "Will converting to PNG increase file size?",
+        "a": "Usually yes. PNG is lossless, so it stores more data than JPEG. The tradeoff is perfect quality with no compression artifacts."
+      },
+      {
+        "q": "Does the PNG support transparency?",
+        "a": "Yes. PNG supports alpha transparency. However, converting from JPG won't add transparency — the original JPG background remains."
+      },
+      {
+        "q": "Is there a resolution limit?",
+        "a": "No hard limit. Very large images (50MP+) may take a moment depending on your device."
+      }
+    ],
+    "featureRows": [
+      [
+        "JPG to PNG",
+        "✓"
+      ],
+      [
+        "PNG to JPG",
+        "✓"
+      ],
+      [
+        "WebP support",
+        "✓"
+      ],
+      [
+        "Quality control",
+        "Adjustable"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "image-converter-webp",
+      "image-cropper-for-social-media"
+    ]
+  },
+  {
+    "slug": "image-converter-webp",
+    "toolId": "image-converter",
+    "keyword": "WebP Image Converter",
+    "metaTitle": "WebP Image Converter — Convert Images to WebP Free",
+    "metaDescription": "Convert JPG and PNG images to WebP format for faster websites. Reduce image sizes by 25-35% with no visible quality loss.",
+    "intro": "WebP delivers 25–35 percent smaller file sizes than JPEG at equivalent visual quality, making it the go-to format for web performance. This converter transforms your JPG, PNG, or BMP images to WebP instantly in your browser. Control the quality slider to balance size and fidelity, then download optimized images ready for your website or CDN.",
+    "faq": [
+      {
+        "q": "Do all browsers support WebP?",
+        "a": "Yes. All modern browsers including Chrome, Firefox, Safari, and Edge fully support WebP. Legacy browsers like IE11 do not."
+      },
+      {
+        "q": "Can I convert WebP back to JPG?",
+        "a": "Yes. The tool supports bidirectional conversion between all supported formats."
+      },
+      {
+        "q": "How much smaller are WebP files?",
+        "a": "Typically 25-35% smaller than equivalent JPEGs, with no perceptible difference in visual quality."
+      }
+    ],
+    "featureRows": [
+      [
+        "WebP conversion",
+        "✓"
+      ],
+      [
+        "Quality slider",
+        "✓"
+      ],
+      [
+        "Batch-ready",
+        "One at a time"
+      ],
+      [
+        "Transparency",
+        "Supported"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "image-converter-jpg-to-png",
+      "image-cropper-for-social-media"
+    ]
+  },
+  {
+    "slug": "image-cropper-for-social-media",
+    "toolId": "image-cropper-resizer",
+    "keyword": "Image Cropper for Social Media",
+    "metaTitle": "Image Cropper for Social Media — Resize Photos Free",
+    "metaDescription": "Crop and resize images for Instagram, Facebook, Twitter, and LinkedIn. Preset dimensions for every platform. Free browser tool.",
+    "intro": "Every social media platform has different image dimension requirements. This tool provides preset crop sizes for Instagram posts, Facebook covers, Twitter headers, LinkedIn banners, and more. Select your platform, adjust the crop area, and download a perfectly sized image — all without uploading to any server.",
+    "faq": [
+      {
+        "q": "What social media presets are available?",
+        "a": "Presets include Instagram (1080×1080, 1080×1350), Facebook Cover (820×312), Twitter Header (1500×500), LinkedIn Banner (1584×396), and more."
+      },
+      {
+        "q": "Can I crop to a custom size?",
+        "a": "Yes. Enter any custom width and height in pixels alongside the social media presets."
+      },
+      {
+        "q": "Does cropping reduce quality?",
+        "a": "No. Cropping selects a region of the original image without re-compression, preserving full pixel quality."
+      }
+    ],
+    "featureRows": [
+      [
+        "Social presets",
+        "✓"
+      ],
+      [
+        "Custom dimensions",
+        "✓"
+      ],
+      [
+        "Rotate/Flip",
+        "✓"
+      ],
+      [
+        "Live preview",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "image-converter-jpg-to-png",
+      "image-converter-webp"
+    ]
+  },
+  {
+    "slug": "password-generator-secure",
+    "toolId": "password-generator",
+    "keyword": "Secure Password Generator",
+    "metaTitle": "Secure Password Generator — Cryptographic Passwords Free",
+    "metaDescription": "Generate cryptographically secure passwords using Web Crypto API. Customize length and character sets. Nothing stored or transmitted.",
+    "intro": "Weak passwords remain the number-one cause of account breaches. This generator uses the Web Crypto API — the same cryptographic standard used by banking applications — to produce truly random passwords. Customize length from 8 to 128 characters, choose character sets, and check the real-time strength meter. Generated passwords never leave your browser.",
+    "faq": [
+      {
+        "q": "How random are the passwords?",
+        "a": "They use crypto.getRandomValues(), which is a cryptographically secure pseudo-random number generator (CSPRNG) — far superior to Math.random()."
+      },
+      {
+        "q": "What length should I use?",
+        "a": "16 characters minimum for most accounts. 20+ characters for high-security use like master passwords or API keys."
+      },
+      {
+        "q": "Can I exclude confusing characters?",
+        "a": "Yes. You can exclude ambiguous characters like 0/O and l/1/I that are hard to distinguish when typing manually."
+      }
+    ],
+    "featureRows": [
+      [
+        "Crypto API",
+        "Web Crypto"
+      ],
+      [
+        "Length range",
+        "8–128 chars"
+      ],
+      [
+        "Character sets",
+        "Uppercase, lowercase, numbers, symbols"
+      ],
+      [
+        "Strength meter",
+        "Real-time"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "hash-generator-sha256",
+      "uuid-generator-online"
+    ]
+  },
+  {
+    "slug": "hash-generator-sha256",
+    "toolId": "hash-generator",
+    "keyword": "SHA-256 Hash Generator",
+    "metaTitle": "SHA-256 Hash Generator — Generate Checksums Free Online",
+    "metaDescription": "Generate SHA-256 hashes instantly in your browser. Verify file integrity, create checksums, and learn about cryptographic hashing.",
+    "intro": "SHA-256 is the gold standard for cryptographic hashing — used in Bitcoin, SSL certificates, and data integrity verification worldwide. This tool generates SHA-256 hashes from any text input instantly using the Web Crypto API. Compare checksums to verify file integrity, create deterministic identifiers, or learn about hash functions. No data ever leaves your device.",
+    "faq": [
+      {
+        "q": "Is SHA-256 still secure?",
+        "a": "Yes. SHA-256 is considered cryptographically secure with no known practical attacks. It is recommended by NIST and used in critical security applications."
+      },
+      {
+        "q": "Can the same input produce different hashes?",
+        "a": "No. SHA-256 is deterministic — the same input always produces the exact same 64-character hex output."
+      },
+      {
+        "q": "What is the output length?",
+        "a": "SHA-256 always produces a 256-bit (64 hexadecimal character) hash, regardless of input length."
+      }
+    ],
+    "featureRows": [
+      [
+        "SHA-256",
+        "✓"
+      ],
+      [
+        "SHA-512",
+        "✓"
+      ],
+      [
+        "SHA-1",
+        "✓ (legacy)"
+      ],
+      [
+        "Real-time hashing",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "password-generator-secure",
+      "base64-encoder-decoder"
+    ]
+  },
+  {
+    "slug": "qr-code-generator-free",
+    "toolId": "qr-code-generator",
+    "keyword": "Free QR Code Generator",
+    "metaTitle": "Free QR Code Generator — Create QR Codes Online",
+    "metaDescription": "Create QR codes from URLs, text, or contact info for free. Download as high-resolution PNG. No sign-up, no watermarks.",
+    "intro": "QR codes bridge the physical and digital worlds — scannable from business cards, product packaging, restaurant menus, and event tickets. This generator creates high-quality QR codes from any text or URL instantly. Download as PNG for print or digital use. No watermarks, no account required, and your data never touches a server.",
+    "faq": [
+      {
+        "q": "Are these QR codes truly free?",
+        "a": "Yes. Generate unlimited QR codes with no watermarks, no account, and no hidden fees."
+      },
+      {
+        "q": "What resolution are the downloads?",
+        "a": "QR codes are generated at high resolution suitable for both print and digital use."
+      },
+      {
+        "q": "Do the QR codes expire?",
+        "a": "No. Static QR codes never expire. The encoded data is embedded directly in the pattern."
+      }
+    ],
+    "featureRows": [
+      [
+        "Text/URL encoding",
+        "✓"
+      ],
+      [
+        "PNG download",
+        "High-res"
+      ],
+      [
+        "Error correction",
+        "Adjustable"
+      ],
+      [
+        "Watermarks",
+        "None"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "base64-encoder-decoder",
+      "url-encoder-decoder-tool"
+    ]
+  },
+  {
+    "slug": "base64-encoder-decoder",
+    "toolId": "base64-converter",
+    "keyword": "Base64 Encoder Decoder",
+    "metaTitle": "Base64 Encoder & Decoder — Convert Text & Files Free",
+    "metaDescription": "Encode and decode Base64 strings instantly. Convert text, data URIs, and binary data in your browser. Free online tool.",
+    "intro": "Base64 encoding is essential for embedding images in CSS, transmitting binary data in JSON APIs, and handling email attachments. This tool encodes text to Base64 and decodes Base64 back to readable text instantly. Supports both standard and URL-safe Base64 variants. All processing happens in your browser — no data is transmitted.",
+    "faq": [
+      {
+        "q": "What is Base64 used for?",
+        "a": "Base64 converts binary data into ASCII text for safe transmission in text-based protocols like JSON APIs, email (MIME), and CSS data URIs."
+      },
+      {
+        "q": "Does encoding increase size?",
+        "a": "Yes. Base64 encoding increases data size by approximately 33%. This is the tradeoff for safe text-channel transmission."
+      },
+      {
+        "q": "Can I encode files?",
+        "a": "This tool works with text input. For file-to-Base64, read the file and paste its content."
+      }
+    ],
+    "featureRows": [
+      [
+        "Encode",
+        "✓"
+      ],
+      [
+        "Decode",
+        "✓"
+      ],
+      [
+        "URL-safe variant",
+        "✓"
+      ],
+      [
+        "Real-time",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "url-encoder-decoder-tool",
+      "hash-generator-sha256"
+    ]
+  },
+  {
+    "slug": "url-encoder-decoder-tool",
+    "toolId": "url-encoder-decoder",
+    "keyword": "URL Encoder Decoder Tool",
+    "metaTitle": "URL Encoder & Decoder — Encode Special Characters Free",
+    "metaDescription": "Encode and decode URL components instantly. Handle special characters, query parameters, and Unicode in URLs. Free browser tool.",
+    "intro": "URLs cannot contain spaces, special characters, or non-ASCII text without encoding. This tool converts special characters to their percent-encoded equivalents and decodes encoded URLs back to readable form. Essential for building API query strings, debugging redirect URLs, and handling internationalized domain names.",
+    "faq": [
+      {
+        "q": "What characters need URL encoding?",
+        "a": "Spaces, ampersands (&), equals (=), question marks (?), hash (#), and non-ASCII characters like accented letters and emoji."
+      },
+      {
+        "q": "What is the difference between encodeURI and encodeURIComponent?",
+        "a": "encodeURI preserves URL structure characters (://?#) while encodeURIComponent encodes everything — use the latter for query parameter values."
+      },
+      {
+        "q": "Can I decode a full URL with query parameters?",
+        "a": "Yes. Paste the entire URL and the decoder will convert all percent-encoded sequences back to readable characters."
+      }
+    ],
+    "featureRows": [
+      [
+        "Encode",
+        "✓"
+      ],
+      [
+        "Decode",
+        "✓"
+      ],
+      [
+        "Full URL support",
+        "✓"
+      ],
+      [
+        "Unicode support",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "base64-encoder-decoder",
+      "html-entity-encoder-tool"
+    ]
+  },
+  {
+    "slug": "html-entity-encoder-tool",
+    "toolId": "html-entity-encoder",
+    "keyword": "HTML Entity Encoder Online",
+    "metaTitle": "HTML Entity Encoder & Decoder — Convert Special Characters Free",
+    "metaDescription": "Encode and decode HTML entities instantly. Prevent XSS attacks and render special characters safely in web pages.",
+    "intro": "Special characters like <, >, and & have specific meanings in HTML — displaying them literally requires entity encoding. This tool converts special characters to HTML entities and decodes entities back to characters. Essential for preventing XSS vulnerabilities, displaying code snippets, and embedding special symbols in web content.",
+    "faq": [
+      {
+        "q": "What is XSS and how does encoding help?",
+        "a": "XSS (Cross-Site Scripting) injects malicious scripts via user input. Encoding < and > as &lt; and &gt; prevents input from being interpreted as HTML tags."
+      },
+      {
+        "q": "Should I use named or numeric entities?",
+        "a": "Named entities like &amp; are more readable. Numeric entities like &#38; are more universally supported. Both render identically in browsers."
+      },
+      {
+        "q": "Does it handle Unicode entities?",
+        "a": "Yes. Characters outside the ASCII range are converted to numeric entities for safe HTML embedding."
+      }
+    ],
+    "featureRows": [
+      [
+        "Encode",
+        "✓"
+      ],
+      [
+        "Decode",
+        "✓"
+      ],
+      [
+        "Reference table",
+        "200+ entities"
+      ],
+      [
+        "XSS prevention",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "url-encoder-decoder-tool",
+      "meta-tag-generator-seo"
+    ]
+  },
+  {
+    "slug": "color-converter-hex-to-rgb",
+    "toolId": "color-converter",
+    "keyword": "HEX to RGB Converter",
+    "metaTitle": "HEX to RGB Converter — Color Code Converter Free",
+    "metaDescription": "Convert HEX color codes to RGB values instantly. Live color preview, CSS-ready output. Free browser-based color converter.",
+    "intro": "Web designers regularly switch between HEX and RGB color formats. This converter translates colors between HEX, RGB, and HSL instantly with a live color preview swatch. Every output is valid CSS — copy and paste directly into your stylesheets. Perfect for matching brand colors across design tools and code.",
+    "faq": [
+      {
+        "q": "Can I convert from RGB back to HEX?",
+        "a": "Yes. The tool converts bidirectionally between all three formats: HEX, RGB, and HSL."
+      },
+      {
+        "q": "Does it support alpha transparency?",
+        "a": "The current tool handles opaque colors. For alpha, manually append the alpha value (e.g., rgba(59,130,246,0.5))."
+      },
+      {
+        "q": "Are the outputs valid CSS?",
+        "a": "Yes. All outputs are formatted as valid CSS color values that can be pasted directly into stylesheets."
+      }
+    ],
+    "featureRows": [
+      [
+        "HEX ↔ RGB",
+        "✓"
+      ],
+      [
+        "HSL support",
+        "✓"
+      ],
+      [
+        "Live preview",
+        "Color swatch"
+      ],
+      [
+        "CSS-ready output",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "css-gradient-generator-tool",
+      "color-palette-tool"
+    ]
+  },
+  {
+    "slug": "css-gradient-generator-tool",
+    "toolId": "css-gradient-generator",
+    "keyword": "CSS Gradient Generator",
+    "metaTitle": "CSS Gradient Generator — Create Linear & Radial Gradients Free",
+    "metaDescription": "Design beautiful CSS gradients visually. Generate linear and radial gradient code instantly. Copy CSS-ready output for your projects.",
+    "intro": "Gradients add depth and visual appeal to web designs, but writing CSS gradient syntax by hand is tedious. This visual generator lets you pick colors, adjust angles, add stops, and preview your gradient in real time. Copy the generated CSS code and paste it directly into your stylesheet. Perfect for backgrounds, buttons, and hero sections.",
+    "faq": [
+      {
+        "q": "Does it support radial gradients?",
+        "a": "Yes. You can create both linear and radial gradients with full control over direction, shape, and color stops."
+      },
+      {
+        "q": "Can I add more than two colors?",
+        "a": "Yes. Add as many color stops as you need. Drag stops to adjust their position along the gradient."
+      },
+      {
+        "q": "Does it generate cross-browser CSS?",
+        "a": "The tool generates standard CSS gradient syntax, which is supported by all modern browsers without vendor prefixes."
+      }
+    ],
+    "featureRows": [
+      [
+        "Linear gradients",
+        "✓"
+      ],
+      [
+        "Radial gradients",
+        "✓"
+      ],
+      [
+        "Multi-stop",
+        "✓"
+      ],
+      [
+        "Live preview",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "color-converter-hex-to-rgb",
+      "css-box-shadow-tool"
+    ]
+  },
+  {
+    "slug": "css-box-shadow-tool",
+    "toolId": "css-box-shadow-generator",
+    "keyword": "CSS Box Shadow Generator",
+    "metaTitle": "CSS Box Shadow Generator — Design Shadows Visually Free",
+    "metaDescription": "Create CSS box-shadow effects visually. Adjust blur, spread, offset, and color. Copy production-ready CSS code instantly.",
+    "intro": "Box shadows create the illusion of depth and elevation in modern UI design. This visual generator provides sliders for horizontal offset, vertical offset, blur radius, spread radius, and shadow color — with a live preview showing exactly how your shadow looks. Copy the CSS and paste it into your project for pixel-perfect shadows.",
+    "faq": [
+      {
+        "q": "Can I add multiple shadows?",
+        "a": "The generator creates single shadow values. For multiple shadows, combine outputs separated by commas in your CSS."
+      },
+      {
+        "q": "What is the spread radius?",
+        "a": "Spread expands or contracts the shadow. Positive values make the shadow larger than the element; negative values make it smaller."
+      },
+      {
+        "q": "Does it support inset shadows?",
+        "a": "Yes. Toggle the inset option to create inner shadows, commonly used for pressed button effects."
+      }
+    ],
+    "featureRows": [
+      [
+        "Offset control",
+        "X & Y axis"
+      ],
+      [
+        "Blur radius",
+        "Adjustable"
+      ],
+      [
+        "Spread radius",
+        "Adjustable"
+      ],
+      [
+        "Color picker",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "css-gradient-generator-tool",
+      "color-converter-hex-to-rgb"
+    ]
+  },
+  {
+    "slug": "color-palette-tool",
+    "toolId": "color-palette-generator",
+    "keyword": "Color Palette Generator",
+    "metaTitle": "Color Palette Generator — Create Color Schemes Free",
+    "metaDescription": "Generate harmonious color palettes for web design. Complementary, analogous, triadic, and split-complementary schemes instantly.",
+    "intro": "Great design starts with a cohesive color palette. This generator creates harmonious color schemes based on color theory — complementary, analogous, triadic, and split-complementary. Enter a base color and explore mathematically balanced combinations. Export palettes as HEX codes ready for your CSS, Figma, or Sketch projects.",
+    "faq": [
+      {
+        "q": "What color harmonies are available?",
+        "a": "Complementary, analogous, triadic, split-complementary, and monochromatic palettes — all based on color wheel relationships."
+      },
+      {
+        "q": "Can I start from a brand color?",
+        "a": "Yes. Enter your brand's primary HEX color and generate a full palette that harmonizes with it."
+      },
+      {
+        "q": "How do I use the palette in CSS?",
+        "a": "Each color is shown as a HEX code. Click to copy and paste directly into your CSS variables or design tokens."
+      }
+    ],
+    "featureRows": [
+      [
+        "Complementary",
+        "✓"
+      ],
+      [
+        "Analogous",
+        "✓"
+      ],
+      [
+        "Triadic",
+        "✓"
+      ],
+      [
+        "HEX export",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "color-converter-hex-to-rgb",
+      "css-gradient-generator-tool"
+    ]
+  },
+  {
+    "slug": "regex-tester-online",
+    "toolId": "regex-tester",
+    "keyword": "Regex Tester Online",
+    "metaTitle": "Regex Tester Online — Test Regular Expressions Free",
+    "metaDescription": "Test and debug regular expressions with real-time match highlighting. Support for JavaScript regex with flags. Free browser tool.",
+    "intro": "Regular expressions are powerful but notoriously hard to debug without visual feedback. This tester highlights matches in real time as you type your pattern and test string. Toggle flags for global, case-insensitive, and multiline matching. See capture groups, match positions, and learn regex syntax through immediate visual feedback.",
+    "faq": [
+      {
+        "q": "What regex engine does it use?",
+        "a": "JavaScript's native RegExp engine, which supports character classes, quantifiers, lookaheads, lookbehinds, capture groups, and named groups."
+      },
+      {
+        "q": "Can I test regex for form validation?",
+        "a": "Absolutely. Build and test email, phone, URL, and custom validation patterns before implementing them in your application."
+      },
+      {
+        "q": "Does it show capture groups?",
+        "a": "Yes. Each match displays its numbered and named capture groups so you can verify extraction patterns."
+      }
+    ],
+    "featureRows": [
+      [
+        "Real-time matching",
+        "✓"
+      ],
+      [
+        "Flag toggles",
+        "g, i, m"
+      ],
+      [
+        "Capture groups",
+        "✓"
+      ],
+      [
+        "Match highlighting",
+        "Color-coded"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "json-formatter-online",
+      "text-diff-checker-online"
+    ]
+  },
+  {
+    "slug": "jwt-decoder-online",
+    "toolId": "jwt-decoder",
+    "keyword": "JWT Decoder Online",
+    "metaTitle": "JWT Decoder Online — Decode JSON Web Tokens Free",
+    "metaDescription": "Decode and inspect JWT tokens instantly. View header, payload, claims, and expiration. Free, private, browser-based decoder.",
+    "intro": "Debugging OAuth flows, inspecting API access tokens, or verifying SSO integrations — all require reading JWT contents. This decoder splits any JWT into its header, payload, and signature sections with clean formatting. Check expiration timestamps, inspect custom claims, and verify token structure — all without sending your sensitive token to any server.",
+    "faq": [
+      {
+        "q": "Is it safe to paste my production JWT here?",
+        "a": "Yes. Decoding happens entirely in your browser. The token never leaves your device."
+      },
+      {
+        "q": "Does it verify signatures?",
+        "a": "The tool decodes and displays signature data but does not validate it, as that requires the secret key."
+      },
+      {
+        "q": "Can I decode tokens from any provider?",
+        "a": "Yes. JWTs follow RFC 7519 — tokens from Auth0, Firebase, AWS Cognito, Okta, and any other provider work."
+      }
+    ],
+    "featureRows": [
+      [
+        "Header decoding",
+        "✓"
+      ],
+      [
+        "Payload inspection",
+        "✓"
+      ],
+      [
+        "Expiry check",
+        "✓"
+      ],
+      [
+        "All providers",
+        "RFC 7519"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "base64-encoder-decoder",
+      "json-formatter-online"
+    ]
+  },
+  {
+    "slug": "cron-expression-generator",
+    "toolId": "cron-parser",
+    "keyword": "Cron Expression Generator",
+    "metaTitle": "Cron Expression Generator — Build Cron Schedules Free",
+    "metaDescription": "Build and test cron expressions with plain English descriptions. See next run times. Perfect for Linux, AWS, and GitHub Actions.",
+    "intro": "Cron syntax is compact but cryptic. This tool translates cron expressions into plain English and shows the next scheduled run times so you can verify your schedule before deploying. Supports the standard 5-field format used by Linux crontab, AWS CloudWatch, GitHub Actions, and all major cloud platforms.",
+    "faq": [
+      {
+        "q": "What cron format does it support?",
+        "a": "Standard 5-field format: minute, hour, day-of-month, month, day-of-week."
+      },
+      {
+        "q": "Does it show next run times?",
+        "a": "Yes. The tool calculates and displays the next several scheduled execution times."
+      },
+      {
+        "q": "Can I use it for AWS CloudWatch?",
+        "a": "Yes. AWS CloudWatch uses the same 5-field cron syntax. The expressions you build here work directly in AWS."
+      }
+    ],
+    "featureRows": [
+      [
+        "5-field cron",
+        "✓"
+      ],
+      [
+        "English translation",
+        "✓"
+      ],
+      [
+        "Next runs",
+        "Multiple shown"
+      ],
+      [
+        "AWS compatible",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "regex-tester-online",
+      "sql-formatter-online"
+    ]
+  },
+  {
+    "slug": "sql-formatter-online",
+    "toolId": "sql-formatter",
+    "keyword": "SQL Formatter Online",
+    "metaTitle": "SQL Formatter Online — Beautify SQL Queries Free",
+    "metaDescription": "Format and beautify SQL queries with proper indentation and keyword uppercasing. Supports SELECT, JOIN, and subqueries. Free tool.",
+    "intro": "Complex SQL queries with nested JOINs and subqueries become unreadable when written as a single line. This formatter adds proper indentation, uppercases SQL keywords, and structures clauses for maximum readability. Paste any SQL — from simple SELECTs to complex CTEs — and get clean, reviewable output instantly.",
+    "faq": [
+      {
+        "q": "Does it modify query logic?",
+        "a": "No. The formatter only changes whitespace and keyword casing. Your query logic remains exactly the same."
+      },
+      {
+        "q": "What SQL dialects work?",
+        "a": "Standard SQL syntax used by MySQL, PostgreSQL, SQLite, and SQL Server."
+      },
+      {
+        "q": "Can it minify SQL too?",
+        "a": "Yes. Use the Minify mode to compress queries into a compact single line for embedding in application code."
+      }
+    ],
+    "featureRows": [
+      [
+        "Indentation",
+        "Proper hierarchy"
+      ],
+      [
+        "Keyword uppercasing",
+        "✓"
+      ],
+      [
+        "JOIN support",
+        "All types"
+      ],
+      [
+        "Minification",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "json-formatter-online",
+      "cron-expression-generator"
+    ]
+  },
+  {
+    "slug": "unit-converter-metric",
+    "toolId": "unit-converter",
+    "keyword": "Metric Unit Converter",
+    "metaTitle": "Metric Unit Converter — Length, Weight, Temperature Free",
+    "metaDescription": "Convert between metric and imperial units instantly. Length, weight, temperature, volume, and speed conversions with precision.",
+    "intro": "Whether you are converting kilometers to miles for international travel, kilograms to pounds for shipping, or Celsius to Fahrenheit for cooking, this unit converter handles five essential categories with full precision. Simple, fast, and accurate — no ads, no distractions.",
+    "faq": [
+      {
+        "q": "What categories are supported?",
+        "a": "Length, weight, temperature, volume, and speed — covering the most common conversion needs."
+      },
+      {
+        "q": "Are the results precise?",
+        "a": "Yes. All conversions use standard mathematical formulas with full floating-point precision."
+      },
+      {
+        "q": "Does it handle scientific notation?",
+        "a": "Yes. Very large and very small numbers are displayed with appropriate formatting."
+      }
+    ],
+    "featureRows": [
+      [
+        "Length",
+        "m, ft, in, km, mi"
+      ],
+      [
+        "Weight",
+        "kg, lbs, oz, g"
+      ],
+      [
+        "Temperature",
+        "°C, °F, K"
+      ],
+      [
+        "Volume",
+        "L, gal, mL"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "aspect-ratio-calculator-tool",
+      "chmod-calculator-linux"
+    ]
+  },
+  {
+    "slug": "markdown-editor-online",
+    "toolId": "markdown-preview",
+    "keyword": "Online Markdown Editor",
+    "metaTitle": "Online Markdown Editor — Live Preview & HTML Export Free",
+    "metaDescription": "Write markdown with real-time live preview. GitHub Flavored Markdown with tables, code blocks, and HTML export. Free browser tool.",
+    "intro": "Whether you are writing GitHub READMEs, blog posts, or documentation, this live markdown editor shows rendered output as you type. Supports GitHub Flavored Markdown including tables, task lists, fenced code blocks with syntax highlighting, and more. Export your work as clean HTML ready for any publishing platform.",
+    "faq": [
+      {
+        "q": "Does it support GFM tables?",
+        "a": "Yes. Full GitHub Flavored Markdown support including pipe tables, task lists, and strikethrough."
+      },
+      {
+        "q": "Can I export to HTML?",
+        "a": "Yes. One-click export generates a clean HTML file ready for publishing."
+      },
+      {
+        "q": "Does the preview sync with scrolling?",
+        "a": "The preview updates in real time as you type — no manual refresh needed."
+      }
+    ],
+    "featureRows": [
+      [
+        "Live preview",
+        "Real-time"
+      ],
+      [
+        "GFM support",
+        "Full"
+      ],
+      [
+        "Code highlighting",
+        "✓"
+      ],
+      [
+        "HTML export",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "text-diff-checker-online",
+      "lorem-ipsum-for-web-design"
+    ]
+  },
+  {
+    "slug": "text-diff-checker-online",
+    "toolId": "text-diff-checker",
+    "keyword": "Text Diff Checker Online",
+    "metaTitle": "Text Diff Checker — Compare Text Differences Free Online",
+    "metaDescription": "Compare two texts and highlight differences instantly. Side-by-side diff view with line-by-line and character-level comparison.",
+    "intro": "Code reviews, contract revisions, document versioning — all require identifying exactly what changed between two versions of text. This diff checker highlights additions, deletions, and modifications with color-coded output. Compare any two text blocks side-by-side with both line-level and character-level precision.",
+    "faq": [
+      {
+        "q": "Does it show character-level differences?",
+        "a": "Yes. Within changed lines, individual character differences are highlighted so you can spot even single-character changes."
+      },
+      {
+        "q": "Can I compare code files?",
+        "a": "Absolutely. The diff checker works with any plain text including source code, configuration files, and log outputs."
+      },
+      {
+        "q": "Is there a size limit?",
+        "a": "No hard limit. Performance depends on text length, but most comparisons under 100KB are instant."
+      }
+    ],
+    "featureRows": [
+      [
+        "Side-by-side view",
+        "✓"
+      ],
+      [
+        "Line-level diff",
+        "✓"
+      ],
+      [
+        "Character-level diff",
+        "✓"
+      ],
+      [
+        "Color-coded output",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "markdown-editor-online",
+      "json-formatter-online"
+    ]
+  },
+  {
+    "slug": "uuid-generator-online",
+    "toolId": "uuid-generator",
+    "keyword": "UUID Generator Online",
+    "metaTitle": "UUID Generator Online — Generate UUIDs v4 Free",
+    "metaDescription": "Generate random UUID v4 identifiers instantly. Cryptographically secure, RFC 4122 compliant. Bulk generation available.",
+    "intro": "UUIDs are used everywhere — database primary keys, API request IDs, file identifiers, and session tokens. This generator creates cryptographically secure UUID v4 identifiers using the Web Crypto API. Generate single or bulk UUIDs instantly, all compliant with RFC 4122.",
+    "faq": [
+      {
+        "q": "Are these UUIDs unique?",
+        "a": "UUID v4 uses 122 random bits, giving ~5.3×10³⁶ possible values. The probability of collision is astronomically small."
+      },
+      {
+        "q": "What version does it generate?",
+        "a": "UUID version 4 (random), which is the most commonly used version in modern applications."
+      },
+      {
+        "q": "Can I generate multiple at once?",
+        "a": "Yes. The bulk generation feature creates multiple UUIDs instantly."
+      }
+    ],
+    "featureRows": [
+      [
+        "UUID v4",
+        "RFC 4122"
+      ],
+      [
+        "Crypto-secure",
+        "Web Crypto API"
+      ],
+      [
+        "Bulk generation",
+        "✓"
+      ],
+      [
+        "Copy to clipboard",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "password-generator-secure",
+      "hash-generator-sha256"
+    ]
+  },
+  {
+    "slug": "timestamp-converter-unix",
+    "toolId": "timestamp-converter",
+    "keyword": "Unix Timestamp Converter",
+    "metaTitle": "Unix Timestamp Converter — Convert Dates & Epochs Free",
+    "metaDescription": "Convert Unix timestamps to human-readable dates and vice versa. Support for seconds and milliseconds. Free browser tool.",
+    "intro": "Unix timestamps are the universal language of time in programming — but they are unreadable to humans. This converter translates between Unix epoch timestamps and human-readable dates in both directions. Supports seconds and milliseconds precision, making it perfect for debugging API timestamps, log files, and database records.",
+    "faq": [
+      {
+        "q": "What is a Unix timestamp?",
+        "a": "The number of seconds (or milliseconds) elapsed since January 1, 1970 00:00:00 UTC — known as the Unix epoch."
+      },
+      {
+        "q": "Does it support milliseconds?",
+        "a": "Yes. The tool auto-detects whether your input is in seconds or milliseconds based on the number of digits."
+      },
+      {
+        "q": "What timezone does it use?",
+        "a": "Timestamps are displayed in both UTC and your local timezone for easy comparison."
+      }
+    ],
+    "featureRows": [
+      [
+        "Timestamp → Date",
+        "✓"
+      ],
+      [
+        "Date → Timestamp",
+        "✓"
+      ],
+      [
+        "Millisecond precision",
+        "✓"
+      ],
+      [
+        "Timezone display",
+        "UTC + local"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "cron-expression-generator",
+      "json-formatter-online"
+    ]
+  },
+  {
+    "slug": "lorem-ipsum-for-web-design",
+    "toolId": "lorem-ipsum-generator",
+    "keyword": "Lorem Ipsum for Web Design",
+    "metaTitle": "Lorem Ipsum Generator for Web Design — Placeholder Text Free",
+    "metaDescription": "Generate lorem ipsum placeholder text for web designs. Customize paragraphs, sentences, and word count. Free browser tool.",
+    "intro": "Web designers and developers need placeholder text to visualize layouts before real content is ready. This generator creates lorem ipsum text in customizable amounts — by paragraphs, sentences, or word count. Perfect for populating mockups, testing responsive layouts, and demonstrating typography settings.",
+    "faq": [
+      {
+        "q": "Can I specify exact word count?",
+        "a": "Yes. Generate text by paragraph count, sentence count, or exact word count."
+      },
+      {
+        "q": "Is it real Latin?",
+        "a": "Lorem ipsum is derived from Cicero's 'De Finibus' but scrambled. It approximates natural language rhythm without conveying meaning."
+      },
+      {
+        "q": "Can I use it in production?",
+        "a": "Lorem ipsum is intended for design mockups only. Replace with real content before deployment for SEO and accessibility."
+      }
+    ],
+    "featureRows": [
+      [
+        "Paragraph mode",
+        "✓"
+      ],
+      [
+        "Sentence mode",
+        "✓"
+      ],
+      [
+        "Word count mode",
+        "✓"
+      ],
+      [
+        "Copy to clipboard",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "markdown-editor-online",
+      "text-diff-checker-online"
+    ]
+  },
+  {
+    "slug": "svg-to-png-converter",
+    "toolId": "svg-to-png",
+    "keyword": "SVG to PNG Converter",
+    "metaTitle": "SVG to PNG Converter — Convert Vector to Raster Free",
+    "metaDescription": "Convert SVG vector graphics to PNG images instantly. Custom resolution, transparent background support. Free browser tool.",
+    "intro": "SVGs are perfect for web display but many platforms — social media, email clients, presentation software — require raster PNG images. This converter renders SVG graphics to PNG at your chosen resolution, preserving transparency and visual fidelity. All processing happens locally, so proprietary logos and icons stay private.",
+    "faq": [
+      {
+        "q": "Can I set a custom resolution?",
+        "a": "Yes. Choose the output resolution to get PNG images at exactly the size you need — from thumbnails to print-quality."
+      },
+      {
+        "q": "Does it preserve transparency?",
+        "a": "Yes. Transparent backgrounds in SVG are maintained in the PNG output."
+      },
+      {
+        "q": "Does it handle complex SVGs?",
+        "a": "The converter handles most SVG features including paths, gradients, filters, and embedded fonts."
+      }
+    ],
+    "featureRows": [
+      [
+        "SVG to PNG",
+        "✓"
+      ],
+      [
+        "Custom resolution",
+        "✓"
+      ],
+      [
+        "Transparency",
+        "Preserved"
+      ],
+      [
+        "Complex SVGs",
+        "Supported"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "image-converter-jpg-to-png",
+      "image-converter-webp"
+    ]
+  },
+  {
+    "slug": "meta-tag-generator-seo",
+    "toolId": "meta-tag-generator",
+    "keyword": "SEO Meta Tag Generator",
+    "metaTitle": "SEO Meta Tag Generator — Create Open Graph & Twitter Cards Free",
+    "metaDescription": "Generate complete SEO meta tags with Open Graph and Twitter Card markup. Live search result preview. Free browser tool.",
+    "intro": "Meta tags control how your pages appear in Google search results and social media shares. This generator creates complete meta markup including standard HTML tags, Open Graph tags for Facebook and LinkedIn, and Twitter Card tags. Preview exactly how your page looks in search results and social shares before publishing.",
+    "faq": [
+      {
+        "q": "Does it generate Open Graph tags?",
+        "a": "Yes. Full OG markup for Facebook and LinkedIn including title, description, image, and URL."
+      },
+      {
+        "q": "Can I preview search results?",
+        "a": "Yes. The live preview shows exactly how your page will appear in Google search results."
+      },
+      {
+        "q": "What is the ideal title length?",
+        "a": "Google displays ~55-60 characters. Keep your title within this range and front-load keywords."
+      }
+    ],
+    "featureRows": [
+      [
+        "Standard meta tags",
+        "✓"
+      ],
+      [
+        "Open Graph",
+        "✓"
+      ],
+      [
+        "Twitter Cards",
+        "✓"
+      ],
+      [
+        "Search preview",
+        "Live"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "seo-auditor-tool",
+      "html-entity-encoder-tool"
+    ]
+  },
+  {
+    "slug": "chmod-calculator-linux",
+    "toolId": "chmod-calculator",
+    "keyword": "Linux Chmod Calculator",
+    "metaTitle": "Linux Chmod Calculator — File Permissions Tool Free",
+    "metaDescription": "Calculate Unix file permissions in numeric and symbolic notation. Interactive checkboxes with chmod command output.",
+    "intro": "File permissions on Linux servers are the first line of defense against unauthorized access. This interactive calculator converts between numeric (755) and symbolic (rwxr-xr-x) notation with click-to-toggle checkboxes. See the chmod command update in real time as you set permissions for owner, group, and others.",
+    "faq": [
+      {
+        "q": "What does 755 mean?",
+        "a": "Owner gets read+write+execute (7), group gets read+execute (5), others get read+execute (5). The standard for web directories."
+      },
+      {
+        "q": "What should SSH key permissions be?",
+        "a": "600 (owner read+write only). SSH will refuse to use keys with broader permissions."
+      },
+      {
+        "q": "What is the sticky bit?",
+        "a": "The sticky bit (chmod 1xxx) on directories means only file owners can delete their own files — used on /tmp."
+      }
+    ],
+    "featureRows": [
+      [
+        "Numeric notation",
+        "✓"
+      ],
+      [
+        "Symbolic notation",
+        "✓"
+      ],
+      [
+        "Interactive toggles",
+        "✓"
+      ],
+      [
+        "Command output",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "cron-expression-generator",
+      "regex-tester-online"
+    ]
+  },
+  {
+    "slug": "aspect-ratio-calculator-tool",
+    "toolId": "aspect-ratio-calculator",
+    "keyword": "Aspect Ratio Calculator",
+    "metaTitle": "Aspect Ratio Calculator — Calculate Image Dimensions Free",
+    "metaDescription": "Calculate aspect ratios and resize dimensions proportionally. Support for 16:9, 4:3, 1:1, and custom ratios. Free browser tool.",
+    "intro": "Maintaining correct aspect ratios prevents images from looking stretched or squashed. This calculator determines missing dimensions when you scale images proportionally. Enter width and height, or select common ratios like 16:9, 4:3, and 1:1, and get the corresponding dimension instantly.",
+    "faq": [
+      {
+        "q": "What common ratios are available?",
+        "a": "16:9 (widescreen), 4:3 (standard), 1:1 (square), 21:9 (ultrawide), and custom ratios."
+      },
+      {
+        "q": "Can I calculate from one dimension?",
+        "a": "Yes. Enter one dimension and the aspect ratio to calculate the other dimension proportionally."
+      },
+      {
+        "q": "Is this useful for responsive design?",
+        "a": "Absolutely. Calculate dimensions for different breakpoints while maintaining the same aspect ratio."
+      }
+    ],
+    "featureRows": [
+      [
+        "Common presets",
+        "16:9, 4:3, 1:1"
+      ],
+      [
+        "Custom ratios",
+        "✓"
+      ],
+      [
+        "Proportional scaling",
+        "✓"
+      ],
+      [
+        "Dimension calculator",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "image-cropper-for-social-media",
+      "unit-converter-metric"
+    ]
+  },
+  {
+    "slug": "doc-to-pdf-online",
+    "toolId": "doc-to-pdf-converter",
+    "keyword": "DOCX to PDF Online",
+    "metaTitle": "DOCX to PDF Converter Online — Convert Word to PDF Free",
+    "metaDescription": "Convert Word documents to PDF in your browser. Preserves formatting, tables, and images. No upload, no sign-up required.",
+    "intro": "Sharing documents as PDF ensures consistent formatting across every device and operating system. This converter transforms DOCX files into professional PDFs while preserving tables, images, headings, and text styles. Unlike cloud converters, your documents never leave your device — everything processes locally in your browser.",
+    "faq": [
+      {
+        "q": "Does it keep my formatting?",
+        "a": "Yes. Tables, images, headings, lists, bold, italic, and common Word styles are preserved in the PDF output."
+      },
+      {
+        "q": "What about embedded images?",
+        "a": "Embedded images and logos in your DOCX are maintained in the PDF with original positioning and quality."
+      },
+      {
+        "q": "Is there a page limit?",
+        "a": "No hard limit. Most documents under 10MB convert smoothly depending on your device."
+      }
+    ],
+    "featureRows": [
+      [
+        "DOCX to PDF",
+        "✓"
+      ],
+      [
+        "Tables preserved",
+        "✓"
+      ],
+      [
+        "Images preserved",
+        "✓"
+      ],
+      [
+        "Text styles",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "pdf-to-word-online",
+      "markdown-editor-online"
+    ]
+  },
+  {
+    "slug": "pdf-to-word-online",
+    "toolId": "pdf-to-doc-converter",
+    "keyword": "PDF to Word Online",
+    "metaTitle": "PDF to Word Converter Online — Extract Text from PDF Free",
+    "metaDescription": "Convert PDF files to editable Word documents in your browser. Extract text and formatting. No upload, 100% private.",
+    "intro": "Editing a PDF directly is nearly impossible — converting to Word makes it easy. This tool extracts text and basic formatting from PDF files and generates editable DOCX documents entirely in your browser. Perfect for updating resumes, editing contracts, and repurposing report content without expensive software.",
+    "faq": [
+      {
+        "q": "Does it work with scanned PDFs?",
+        "a": "This tool works best with text-based PDFs. Scanned documents (image-only PDFs) require OCR which is not included."
+      },
+      {
+        "q": "Is the formatting preserved?",
+        "a": "Text, paragraphs, headings, and basic styles are preserved. Complex layouts may need minor adjustments."
+      },
+      {
+        "q": "Can I open the output in Google Docs?",
+        "a": "Yes. The generated .docx is compatible with Google Docs, LibreOffice Writer, and Microsoft Word."
+      }
+    ],
+    "featureRows": [
+      [
+        "PDF to DOCX",
+        "✓"
+      ],
+      [
+        "Text extraction",
+        "✓"
+      ],
+      [
+        "Basic formatting",
+        "Preserved"
+      ],
+      [
+        "Google Docs compatible",
+        "✓"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "doc-to-pdf-online",
+      "markdown-editor-online"
+    ]
+  },
+  {
+    "slug": "seo-auditor-tool",
+    "toolId": "seo-performance-auditor",
+    "keyword": "SEO Auditor Tool",
+    "metaTitle": "SEO Auditor Tool — Website Performance Checker Free",
+    "metaDescription": "Analyze website SEO with Lighthouse scores, Core Web Vitals, security headers, and structured data checks. Free online auditor.",
+    "intro": "Ranking well in search requires more than great content — technical SEO, page speed, and accessibility all factor into Google's algorithm. This auditor analyses any public URL through the Google PageSpeed Insights API, returning Lighthouse scores, Core Web Vitals metrics, security header status, and structured data validation in a single comprehensive report.",
+    "faq": [
+      {
+        "q": "What metrics does it check?",
+        "a": "Lighthouse scores (Performance, SEO, Accessibility, Best Practices), Core Web Vitals (FCP, LCP, TBT, CLS), security headers, meta tags, and structured data."
+      },
+      {
+        "q": "Does it use Google's API?",
+        "a": "Yes. Real Lighthouse data from the Google PageSpeed Insights API — the same data you'd see in Chrome DevTools."
+      },
+      {
+        "q": "Can I audit any website?",
+        "a": "Any publicly accessible URL can be audited. Internal or password-protected pages are not supported."
+      }
+    ],
+    "featureRows": [
+      [
+        "Lighthouse scores",
+        "4 categories"
+      ],
+      [
+        "Core Web Vitals",
+        "FCP, LCP, TBT, CLS"
+      ],
+      [
+        "Security headers",
+        "Full check"
+      ],
+      [
+        "Structured data",
+        "Validated"
+      ],
+      [
+        "Cost",
+        "Free"
+      ]
+    ],
+    "relatedSlugs": [
+      "meta-tag-generator-seo",
+      "html-entity-encoder-tool"
+    ]
+  },
+  {
+    "slug": "python-compiler-online",
+    "toolId": "python-compiler",
+    "keyword": "Online Python Compiler",
+    "metaTitle": "Online Python Compiler — Run Python Code in Browser Free",
+    "metaDescription": "Write and run Python 3.11 code in your browser. WebAssembly-powered with Monaco editor. No installation, no sign-up.",
+    "intro": "Learning Python, prototyping algorithms, or testing quick scripts — all without installing anything. This browser-based compiler runs real Python 3.11 via WebAssembly (Pyodide), providing a full development environment with Monaco editor, syntax highlighting, and instant output. Your code never leaves your device.",
+    "faq": [
+      {
+        "q": "How does Python run in a browser?",
+        "a": "Pyodide compiles CPython to WebAssembly, running a full Python 3.11 interpreter directly in your browser — no server needed."
+      },
+      {
+        "q": "Does it support pip packages?",
+        "a": "Standard library is fully available. Popular packages like numpy and pandas can be loaded via micropip."
+      },
+      {
+        "q": "Is my code saved?",
+        "a": "No. Code stays in your browser session only. Copy your code before closing the tab."
+      }
+    ],
+    "featureRows": [
+      [
+        "Python 3.11",
+        "Full"
+      ],
+      [
+        "Monaco editor",
+        "✓"
+      ],
+      [
+        "Standard library",
+        "Complete"
+      ],
+      [
+        "Package support",
+        "micropip"
+      ],
+      [
+        "Privacy",
+        "100% client-side"
+      ]
+    ],
+    "relatedSlugs": [
+      "json-formatter-online",
+      "regex-tester-online"
+    ]
+  }
+]
+
+export function getVariantBySlug(slug: string): PseoVariant | undefined {
+  return pseoVariants.find((v) => v.slug === slug)
+}

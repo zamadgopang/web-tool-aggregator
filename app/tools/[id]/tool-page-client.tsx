@@ -22,6 +22,7 @@ export function ToolPageClient({ toolId, tool }: ToolPageClientProps) {
       <CommandSearch open={searchOpen} onOpenChange={setSearchOpen} />
 
       <main className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <article>
         {/* Ambient color blobs — give the glass cards something to refract */}
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
           <div className="absolute -top-20 -left-20 h-96 w-96 rounded-full bg-blue-400/10 dark:bg-blue-500/10 blur-[120px]" />
@@ -29,18 +30,19 @@ export function ToolPageClient({ toolId, tool }: ToolPageClientProps) {
           <div className="absolute bottom-1/4 left-1/4 h-72 w-72 rounded-full bg-rose-400/8 dark:bg-rose-500/8 blur-[120px]" />
         </div>
         {/* H1 Heading for SEO */}
-        <div className="pt-8 pb-2 max-w-4xl mx-auto">
+        <header className="pt-8 pb-2 max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             {tool.title}
           </h1>
           <p className="mt-2 text-lg text-muted-foreground">
             {tool.description} Free, fast, and runs 100% in your browser.
           </p>
-        </div>
+        </header>
 
         <ToolMapper toolId={toolId} />
 
         <ToolSeoContent tool={tool} />
+        </article>
       </main>
 
       <AgencyCTA />
